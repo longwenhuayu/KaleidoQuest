@@ -1,4 +1,4 @@
-// KaleidoQuest — 课堂实时答题游戏（kaleido.quest，by Dragon Chinese）
+// KaleidoQuest — 课堂实时答题游戏（kaleido.quest，by Vision Chinese Academy）
 const fs = require('fs');
 const path = require('path');
 for (const line of (fs.existsSync(path.join(__dirname, '.env')) ? fs.readFileSync(path.join(__dirname, '.env'), 'utf8') : '').split('\n')) {
@@ -70,7 +70,7 @@ async function sendReset(t, req) {
   await mail.send({
     to: t.email,
     subject: '重设 KaleidoQuest 密码 / Reset your KaleidoQuest password',
-    text: `${t.name} 您好：\n\n请在 1 小时内点下面的链接重设密码：\n${link}\n\n如果不是您本人操作，忽略这封邮件即可，密码不会改变。\n\n---\n\nHi ${t.name},\n\nReset your password within 1 hour:\n${link}\n\nIf you didn't ask for this, just ignore this email.\n\nKaleidoQuest · kaleido.quest · by Dragon Chinese`
+    text: `${t.name} 您好：\n\n请在 1 小时内点下面的链接重设密码：\n${link}\n\n如果不是您本人操作，忽略这封邮件即可，密码不会改变。\n\n---\n\nHi ${t.name},\n\nReset your password within 1 hour:\n${link}\n\nIf you didn't ask for this, just ignore this email.\n\nKaleidoQuest · kaleido.quest · by Vision Chinese Academy`
   });
 }
 app.post('/api/reset', (req, res) => {
