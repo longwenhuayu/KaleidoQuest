@@ -45,7 +45,7 @@
       ['7 × 8 = ?', '54', '56', '64', '48', '2', '20'],
       ['水在几度结冰？（填空题：只写正确答案）', '', '', '', '', '0', '20']];
     const csv = '﻿' + rows.map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(',')).join('\r\n');
-    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'vision-arena-template.csv'; a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'kaleidoquest-template.csv'; a.click();
   }
 
   function panel(el, add) {

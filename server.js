@@ -1,4 +1,4 @@
-// Vision Arena — 课堂实时答题游戏（by Vision Chinese Academy）
+// KaleidoQuest — 课堂实时答题游戏（kaleido.quest，by Vision Chinese Academy）
 const fs = require('fs');
 const path = require('path');
 for (const line of (fs.existsSync(path.join(__dirname, '.env')) ? fs.readFileSync(path.join(__dirname, '.env'), 'utf8') : '').split('\n')) {
@@ -143,5 +143,5 @@ wss.on('connection', (ws, req) => {
 setInterval(() => wss.clients.forEach(ws => { if (!ws.isAlive) return ws.terminate(); ws.isAlive = false; ws.ping(); }), 30e3).unref();
 
 const PORT = +process.env.PORT || 3048;
-server.listen(PORT, '127.0.0.1', () => console.log(`Vision Arena on http://127.0.0.1:${PORT}`));
+server.listen(PORT, '127.0.0.1', () => console.log(`KaleidoQuest on http://127.0.0.1:${PORT}`));
 module.exports = { server };

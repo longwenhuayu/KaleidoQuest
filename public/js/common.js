@@ -1,7 +1,7 @@
 // 共用：中英文、接口、小工具
 (function () {
   const DICT = {
-    tagline: ['全班一起玩的课堂答题游戏', 'Live quiz games your whole class plays together'],
+    tagline: ['每一门课，都是一场闯关 —— 全班一起玩的课堂答题游戏', 'Live quiz games your whole class plays together'],
     join_title: ['我是学生', "I'm a student"], join_pin: ['输入房间码', 'Game PIN'], join_btn: ['加入游戏', 'Join'],
     teacher_title: ['我是老师', "I'm a teacher"], login: ['登录', 'Log in'], register: ['注册', 'Sign up'], logout: ['退出', 'Log out'],
     email: ['邮箱', 'Email'], password: ['密码（至少 8 位）', 'Password (8+ characters)'], your_name: ['怎么称呼您', 'Your name'],

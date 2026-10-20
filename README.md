@@ -1,4 +1,6 @@
-# Vision Arena
+# KaleidoQuest
+
+**Every subject is a quest.** · [kaleido.quest](https://kaleido.quest)
 
 全班一起玩的课堂实时答题游戏（by Vision Chinese Academy 文心书院）。老师用大屏主持，学生用手机扫码加入，不用注册。
 
@@ -36,4 +38,4 @@ node test/e2e.cjs    # 浏览器端到端（需要 Playwright + Chrome，截图�
 
 ## 部署
 
-见 `deploy/`：PM2 配置（端口 3048）和 nginx 模板（含 WebSocket）。生产环境设 `COOKIE_SECURE=1`。
+见 `deploy/`：PM2 配置（进程名 `kaleido`、端口 3048、目录 `/opt/kaleido`）和 nginx 模板（含 WebSocket）。生产环境设 `COOKIE_SECURE=1`。

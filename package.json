@@ -1,8 +1,8 @@
 {
-  "name": "vision-arena",
+  "name": "kaleidoquest",
   "version": "0.1.0",
   "private": true,
-  "description": "Vision Arena — live classroom quiz games by Vision Chinese Academy",
+  "description": "KaleidoQuest — Every subject is a quest. Live classroom quiz games by Vision Chinese Academy",
   "main": "server.js",
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning server.js",

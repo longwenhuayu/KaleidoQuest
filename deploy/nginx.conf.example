@@ -1,7 +1,7 @@
-# /etc/nginx/sites-enabled/visionarena —— 域名生效后用 certbot --nginx 加 HTTPS
+# /etc/nginx/sites-enabled/kaleido.quest —— 用 certbot --nginx 加 HTTPS
 server {
     listen 80;
-    server_name visionarena.sg www.visionarena.sg arena.visionchinese.com;
+    server_name kaleido.quest www.kaleido.quest;
 
     client_max_body_size 2m;
 
