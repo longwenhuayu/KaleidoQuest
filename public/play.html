@@ -56,10 +56,23 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .medal{font-size:110px;line-height:1}
 .err{color:#fecaca}
+.chests{display:flex;gap:14px;justify-content:center}
+.chests button{border:0;background:rgba(255,255,255,.12);border-radius:22px;width:min(28vw,120px);height:min(28vw,120px);font-size:min(16vw,68px);cursor:pointer;animation:wiggle 1.2s infinite}
+.chests button:nth-child(2){animation-delay:.2s}.chests button:nth-child(3){animation-delay:.4s}
+.chests button.open{animation:openc .5s forwards;background:rgba(251,191,36,.35)}
+.chests button:disabled:not(.open){opacity:.25;animation:none}
+@keyframes wiggle{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-8deg)}90%{transform:rotate(8deg)}95%{transform:rotate(-4deg)}}
+@keyframes openc{50%{transform:scale(1.3)}100%{transform:scale(1.1)}}
+.outemoji{font-size:110px;line-height:1;animation:pop .45s}
+.picklist{display:flex;flex-direction:column;gap:8px;width:min(420px,100%)}
+.picklist button{border:0;border-radius:14px;padding:12px 16px;background:#fff;color:var(--ink);font-size:20px;font-weight:900;display:flex;align-items:center;gap:10px;cursor:pointer}
+.picklist button b{margin-left:auto;font-family:"Fredoka",sans-serif}
+.hitbar{position:fixed;left:12px;right:12px;top:62px;z-index:50;background:#fff;color:var(--ink);border-radius:14px;padding:12px 16px;font-weight:900;font-size:17px;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:pop .3s}
+.clock{font-family:"Fredoka",sans-serif;background:rgba(255,255,255,.14);border-radius:999px;padding:3px 10px}
 </style>
 </head>
 <body class="night">
-<div class="top"><span class="logo"><i></i></span><span id="gameTitle"></span><span class="sp"></span><span class="me" id="me" hidden><span id="meAv"></span><b id="meName"></b></span><span class="score" id="meScore"></span><button class="lang" type="button" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></div>
+<div class="top"><span class="logo"><i></i></span><span id="gameTitle"></span><span class="sp"></span><span class="me" id="me" hidden><span id="meAv"></span><b id="meName"></b></span><span class="clock" id="tqClock" hidden></span><span class="score" id="meScore"></span><button class="lang" type="button" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></div>
 
 <div class="view on" id="vJoin"><div class="mid">
   <div class="logo" style="font-size:30px"><i></i><span>KaleidoQuest</span></div>
@@ -81,6 +94,9 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 </div>
 <div class="view" id="vSent"><div class="mid"><div class="spinner"></div><div class="h" id="sentMsg"></div><div class="sub" id="sentSub"></div></div></div>
 <div class="view" id="vRes"><div class="mid"><div class="res" id="resIcon"></div><div class="h" id="resText"></div><div class="pts" id="resPts"></div><div class="sub" id="resAns"></div><div class="rankline" id="resRank"></div></div></div>
+<div class="view" id="vChest"><div class="mid"><div class="h" id="chestH"></div><div class="chests" id="chests"><button>🎁</button><button>🎁</button><button>🎁</button></div></div></div>
+<div class="view" id="vOut"><div class="mid"><div class="outemoji" id="outE"></div><div class="h" id="outH"></div><div class="pts" id="outPts"></div><button class="btn go" id="outGo" style="font-size:20px"></button></div></div>
+<div class="view" id="vPick"><div class="mid"><div class="h" id="pickH"></div><div class="sub" id="pickSub"></div><div class="picklist" id="pickList"></div></div></div>
 <div class="view" id="vEnd"><div class="mid"><div class="medal" id="endMedal"></div><div class="h" id="endRank"></div><div class="pts" id="endScore"></div><div class="sub" id="endStats"></div><a class="btn ghost" href="/play" id="endAgain" style="margin-top:10px"></a></div></div>
 <div class="view" id="vMsg"><div class="mid"><div class="h" id="msgText"></div><a class="btn go" href="/play" id="msgBtn"></a></div></div>
 
@@ -88,6 +104,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 <script>
 const { tt, $, esc, SHAPES, sfx } = VA;
 const qp = new URLSearchParams(location.search);
+let tq = null, outTimer = 0, pickTimer = 0, clockTimer = 0;
 let ws = null, me = null, pin = qp.get('pin') || '', cur = null, tEnd = 0, raf = 0, retry = 0, wakeLock = null, endState = false;
 const SAVE = 'va_play';
 const saved = () => { try { return JSON.parse(sessionStorage.getItem(SAVE)); } catch (e) { return null; } };
@@ -138,13 +155,18 @@ function handle(m) {
   if (m.t === 'wait') { view('vWait'); $('#waitAv').textContent = me.avatar; $('#waitName').textContent = me.name; $('#waitMsg').textContent = tt('你已加入！看大屏，等老师开始', "You're in! Watch the big screen"); return; }
   if (m.t === 'get_ready') { view('vReady'); $('#readyN').textContent = tt(`第 ${m.qi + 1} / ${m.total} 题`, `Question ${m.qi + 1} / ${m.total}`); return; }
   if (m.t === 'q') return question(m);
+  if (m.t === 'tq') { startClock(m); return question({ qi: m.qi, total: 0, q: m.q, left: 0, treasure: true, score: m.score }); }
+  if (m.t === 'tres') return tqResult(m);
+  if (m.t === 'tpick') return tqPick(m);
+  if (m.t === 'tout') return tqOut(m);
+  if (m.t === 'hit') return tqHit(m);
   if (m.t === 'answered') return sent();
   if (m.t === 'result') return result(m);
   if (m.t === 'between') { score(m.score); view('vSent'); $('#sentMsg').textContent = tt(`第 ${m.rank} 名`, `Rank ${m.rank}`); $('#sentSub').textContent = tt('看大屏，等下一题', 'Watch the big screen'); return; }
   if (m.t === 'end') return end(m);
   if (m.t === 'kicked') { endState = true; sessionStorage.removeItem(SAVE); msg(tt('你被老师移出了这局游戏', 'You were removed from the game')); }
 }
-function score(s) { $('#meScore').textContent = s ? s : ''; }
+function score(s) { $('#meScore').textContent = tq ? `${s || 0} 💎` : s ? s : ''; }
 function msg(text) { view('vMsg'); $('#msgText').textContent = text; }
 
 function question(m) {
@@ -152,7 +174,8 @@ function question(m) {
   if (m.answered) return sent();
   view('vQ');
   const q = m.q;
-  $('#qN').textContent = `${m.qi + 1}/${m.total}`;
+  $('#qN').textContent = m.treasure ? '💎' : `${m.qi + 1}/${m.total}`;
+  $('#tbar').parentElement.hidden = !!m.treasure;
   $('#qText').textContent = q.prompt || tt('🔊 听大屏朗读，选出答案', '🔊 Listen to the big screen');
   $('#qImg').innerHTML = q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '';
   const box = $('#qAns');
@@ -175,11 +198,12 @@ function question(m) {
     $('#undo').onclick = () => { seq.pop(); draw(); };
     $('#ordGo').onclick = () => answer([...seq]);
   }
+  if (m.treasure) return;
   tEnd = performance.now() + m.left; const total = q.time * 1000;
   const tick = () => { const left = Math.max(0, tEnd - performance.now()); $('#tbar').style.width = `${left / total * 100}%`; if (left > 0) raf = requestAnimationFrame(tick); else if (document.querySelector('#vQ.on')) sent(true); };
   tick();
 }
-function answer(ans) { if (!cur) return; send({ t: 'answer', qi: cur.qi, ans }); sent(); if (navigator.vibrate) navigator.vibrate(30); }
+function answer(ans) { if (!cur) return; send({ t: 'answer', qi: cur.qi, ans }); if (!cur.treasure) sent(); else document.querySelectorAll('#qAns button, #qAns input').forEach(x => x.disabled = true); if (navigator.vibrate) navigator.vibrate(30); }
 function sent(timeout) { cancelAnimationFrame(raf); view('vSent'); $('#sentMsg').textContent = timeout ? tt('⏰ 时间到！', "⏰ Time's up!") : tt('已提交！', 'Answer sent!'); $('#sentSub').textContent = tt('看看大屏…', 'Watch the big screen…'); }
 function result(m) {
   view('vRes'); score(m.score);
@@ -192,12 +216,68 @@ function result(m) {
   m.correct ? sfx.ok() : sfx.bad();
 }
 function end(m) {
-  endState = true; sessionStorage.removeItem(SAVE); view('vEnd'); score(m.score);
+  endState = true; clearInterval(clockTimer); $('#tqClock').hidden = true; sessionStorage.removeItem(SAVE); view('vEnd'); score(m.score);
   $('#endMedal').textContent = ['🥇', '🥈', '🥉'][m.rank - 1] || '🎉';
   $('#endRank').textContent = tt(`第 ${m.rank} 名（共 ${m.of} 人）`, `Rank ${m.rank} of ${m.of}`);
-  $('#endScore').textContent = m.score;
-  $('#endStats').textContent = tt(`答对 ${m.correct} / ${m.total} 题 · 最多连对 ${m.best} 题`, `${m.correct} / ${m.total} correct · best streak ${m.best}`);
+  $('#endScore').textContent = m.score + (m.unit ? ' ' + m.unit : '');
+  $('#endStats').textContent = m.mode === 'treasure' ? tt(`共答 ${m.total} 题，答对 ${m.correct} 题`, `${m.correct} correct out of ${m.total} answered`) : tt(`答对 ${m.correct} / ${m.total} 题 · 最多连对 ${m.best} 题`, `${m.correct} / ${m.total} correct · best streak ${m.best}`);
   if (m.rank <= 3) sfx.fanfare();
+}
+// ── 夺宝 ──
+const KIND = {
+  gain: ['💎', () => tt('宝石到手！', 'Gems!')], double: ['✨', () => tt('翻倍！', 'Double!')], nothing: ['📭', () => tt('空宝箱…', 'Empty chest…')],
+  lose25: ['💸', () => tt('糟糕，掉了一些', 'Oops, lost some')], lose50: ['💸', () => tt('糟糕，掉了一半！', 'Ouch, lost half!')],
+  steal: ['🦝', () => tt('偷到了！', 'Stolen!')], swap: ['🔄', () => tt('交换成功！', 'Swapped!')]
+};
+function startClock(m) {
+  if (!tq) { tq = {}; $('#tqClock').hidden = false; $('#gameTitle').hidden = true; }
+  tq.endsAt = m.endsAt; tq.skew = Date.now() - m.now; score(m.score);
+  clearInterval(clockTimer);
+  clockTimer = setInterval(() => { const s = Math.max(0, Math.ceil((tq.endsAt + tq.skew - Date.now()) / 1000)); $('#tqClock').textContent = `⏱ ${s / 60 | 0}:${String(s % 60).padStart(2, '0')}`; }, 250);
+}
+function tqResult(m) {
+  if (m.correct) {
+    view('vChest'); sfx.ok();
+    $('#chestH').textContent = tt('答对了！挑一个宝箱', 'Correct! Pick a chest');
+    $('#chests').querySelectorAll('button').forEach(b => { b.disabled = false; b.className = ''; b.textContent = '🎁'; b.onclick = () => { $('#chests').querySelectorAll('button').forEach(x => x.disabled = true); b.classList.add('open'); send({ t: 'pick' }); }; });
+  } else {
+    view('vRes'); sfx.bad();
+    document.body.className = 'night res-bad';
+    $('#resIcon').textContent = '❌'; $('#resText').textContent = tt('答错了', 'Not quite'); $('#resPts').textContent = '';
+    $('#resAns').textContent = tt(`正确答案：${m.answerText}`, `Answer: ${m.answerText}`);
+    let n = Math.ceil(m.wait / 1000);
+    $('#resRank').textContent = tt(`${n} 秒后继续…`, `Next in ${n}s…`);
+    const tmr = setInterval(() => { n--; if (n > 0) $('#resRank').textContent = tt(`${n} 秒后继续…`, `Next in ${n}s…`); else { clearInterval(tmr); send({ t: 'tnext' }); } }, 1000);
+  }
+}
+function tqPick(m) {
+  view('vPick');
+  $('#pickH').textContent = m.kind === 'steal' ? tt('🦝 选一个人，偷走他的宝石！', '🦝 Pick someone to steal from!') : tt('🔄 选一个人，交换宝石！', '🔄 Pick someone to swap with!');
+  $('#pickList').innerHTML = m.players.map(p => `<button data-id="${esc(p.id)}"><span>${p.avatar}</span>${esc(p.name)}<b>${p.score} 💎</b></button>`).join('');
+  $('#pickList').querySelectorAll('button').forEach(b => b.onclick = () => { $('#pickList').querySelectorAll('button').forEach(x => x.disabled = true); clearInterval(pickTimer); send({ t: 'target', id: b.dataset.id }); });
+  let n = Math.round(m.timeout / 1000);
+  const tick = () => { $('#pickSub').textContent = tt(`${n} 秒内不选就随机`, `Random pick in ${n}s`); n--; };
+  clearInterval(pickTimer); tick(); pickTimer = setInterval(() => { if (n < 0) return clearInterval(pickTimer); tick(); }, 1000);
+}
+function tqOut(m) {
+  clearInterval(pickTimer); view('vOut'); score(m.score);
+  const [e, h] = KIND[m.kind] || ['🎁', () => ''];
+  $('#outE').textContent = e; $('#outH').textContent = h();
+  const who = m.target ? `${m.target.avatar}${m.target.name}` : '';
+  $('#outPts').textContent = m.kind === 'gain' ? `+${m.amount} 💎` : m.kind === 'double' ? `${m.score} 💎` : m.kind.startsWith('lose') ? `−${m.amount} 💎`
+    : m.kind === 'steal' ? tt(`从 ${who} 那里 +${m.amount} 💎`, `+${m.amount} 💎 from ${who}`) : m.kind === 'swap' ? tt(`和 ${who} 交换，现在 ${m.score} 💎`, `Swapped with ${who}: now ${m.score} 💎`) : '';
+  m.kind === 'nothing' || m.kind.startsWith('lose') ? sfx.bad() : sfx.fanfare();
+  $('#outGo').textContent = tt('下一题 ▶', 'Next ▶');
+  const go = () => { clearTimeout(outTimer); send({ t: 'tnext' }); };
+  $('#outGo').onclick = go; clearTimeout(outTimer); outTimer = setTimeout(go, 2200);
+}
+function tqHit(m) {
+  score(m.score);
+  const who = `${m.by.avatar}${m.by.name}`;
+  const d = document.createElement('div'); d.className = 'hitbar';
+  d.textContent = m.kind === 'steal' ? tt(`🦝 ${who} 偷走了你 ${m.amount} 💎！`, `🦝 ${who} stole ${m.amount} 💎 from you!`) : tt(`🔄 ${who} 和你交换了宝石，现在 ${m.score} 💎`, `🔄 ${who} swapped gems with you: now ${m.score} 💎`);
+  document.body.appendChild(d); sfx.bad(); if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+  setTimeout(() => d.remove(), 2600);
 }
 async function keepAwake() { try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch (e) {} }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && me && !endState) { keepAwake(); if (!ws || ws.readyState > 1) connect(); } });

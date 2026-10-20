@@ -120,7 +120,7 @@ async function save() {
 }
 function showPlay() { const p = $('#playBtn'); p.hidden = !setId || !qs.length; p.href = `/host?set=${setId}`; p.textContent = '▶ ' + t('play'); }
 $('#saveBtn').onclick = save; $('#saveTop').onclick = save;
-$('#playBtn').onclick = async e => { if (dirty) { e.preventDefault(); if (await save()) location.href = $('#playBtn').href; } };
+$('#playBtn').onclick = async e => { e.preventDefault(); if (dirty && !await save()) return; VA.pickMode(setId); };
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
 ['title', 'subject', 'grade'].forEach(id => $('#' + id).addEventListener('input', mark));
 

@@ -60,6 +60,20 @@
   const setMuted = m => { muted = m; try { localStorage.setItem('va_muted', m ? '1' : '0'); } catch (e) {} };
   function speak(text, l) { if (!('speechSynthesis' in window) || !text) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = l || 'zh-CN'; u.rate = .9; const v = speechSynthesis.getVoices().find(v => v.lang.replace('_', '-').startsWith(u.lang)); if (v) u.voice = v; speechSynthesis.speak(u); }
 
-  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
+  // 开始游戏前选模式：擂台抢答 / 夺宝（选时长）
+  function pickMode(setId) {
+    document.querySelector('.modepick')?.remove();
+    const d = document.createElement('div');
+    d.className = 'modepick';
+    d.innerHTML = `<div class="mp-box"><h2>${tt('选一种玩法', 'Choose a game mode')}</h2>
+      <a class="mp-card" href="/host?set=${setId}&mode=classic"><b>⚔️ ${tt('擂台抢答', 'Classic')}</b><span>${tt('全班同一题，大屏倒计时，越快分越高。适合新课检查。', 'Everyone answers the same question together — faster answers score more.')}</span></a>
+      <div class="mp-card"><b>💎 ${tt('夺宝', 'Treasure Quest')}</b><span>${tt('各答各的，答对开宝箱：可能翻倍、偷别人的宝石，后面的也能翻盘。适合复习。', 'Self-paced. Correct answers open chests — double up, steal, or swap gems. Anyone can come back.')}</span>
+        <div class="mp-min">${[5, 7, 10].map(m => `<a class="btn go sm" href="/host?set=${setId}&mode=treasure&min=${m}">${m} ${tt('分钟', 'min')}</a>`).join('')}</div></div>
+      <button class="btn ghost sm mp-x" type="button">${tt('取消', 'Cancel')}</button></div>`;
+    d.onclick = e => { if (e.target === d || e.target.closest('.mp-x')) d.remove(); };
+    document.body.appendChild(d);
+  }
+
+  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
   document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); });
 })();

@@ -49,15 +49,16 @@ function renderSets() {
   $('#sets').innerHTML = sets.length ? sets.map(s => `<div class="card set" data-id="${s.id}">
     <h3><i>${SUBJECT_ICON[s.subject] || '📚'}</i>${esc(s.title)}</h3>
     <div class="meta"><span class="tag">${t('s_' + s.subject)}</span>${s.grade ? `<span>${esc(s.grade)}</span>` : ''}<span>${s.n} ${t('questions')}</span><span>· ${when(s.updated)}</span></div>
-    <div class="acts"><a class="btn go sm" href="/host?set=${s.id}"${s.n ? '' : ' aria-disabled="true" style="pointer-events:none;opacity:.45"'}>▶ ${t('play')}</a><a class="btn ghost sm" href="/edit?id=${s.id}">✏️ ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
+    <div class="acts"><button class="btn go sm" data-act="play"${s.n ? '' : ' disabled'}>▶ ${t('play')}</button><a class="btn ghost sm" href="/edit?id=${s.id}">✏️ ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
   </div>`).join('') : `<div class="empty">${t('empty_sets')}</div>`;
 }
 function renderReports() {
-  $('#reports').innerHTML = reports.length ? reports.map(r => `<a class="card rep" href="/report?id=${r.id}"><span style="font-size:24px">📊</span><b>${esc(r.title)}</b><span class="sp"></span><span class="muted">${r.players} ${t('players')} · ${when(r.ended)}</span></a>`).join('') : `<div class="empty">${t('empty_reports')}</div>`;
+  $('#reports').innerHTML = reports.length ? reports.map(r => `<a class="card rep" href="/report?id=${r.id}"><span style="font-size:24px">${r.mode === 'treasure' ? '💎' : '⚔️'}</span><b>${esc(r.title)}</b><span class="sp"></span><span class="muted">${r.players} ${t('players')} · ${when(r.ended)}</span></a>`).join('') : `<div class="empty">${t('empty_reports')}</div>`;
 }
 $('#sets').onclick = async e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const id = b.closest('.set').dataset.id;
+  if (b.dataset.act === 'play') return VA.pickMode(id);
   if (b.dataset.act === 'copy') { await api(`/api/sets/${id}/copy`, { method: 'POST' }); await load(); toast(tt('已复制', 'Duplicated')); }
   if (b.dataset.act === 'del') {
     if (!b.dataset.armed) { b.dataset.armed = 1; b.textContent = t('confirm_del'); setTimeout(() => { delete b.dataset.armed; b.textContent = t('del'); }, 3000); return; }

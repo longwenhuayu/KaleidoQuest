@@ -144,7 +144,7 @@ wss.on('connection', (ws, req) => {
       if (m.t === 'host') {
         const s = q('SELECT * FROM sets WHERE id = ? AND teacher_id = ?').get(+m.setId, teacher.id);
         if (!s) return G.send(ws, { t: 'error', error: 'set_not_found' });
-        room = G.createRoom(teacher, { id: s.id, title: s.title, questions: JSON.parse(s.questions) }, ws);
+        room = G.createRoom(teacher, { id: s.id, title: s.title, questions: JSON.parse(s.questions) }, ws, { mode: m.mode, minutes: m.minutes, seconds: m.seconds });
         if (!room) return G.send(ws, { t: 'error', error: 'empty_set' });
       } else {
         const r = G.rooms.get(String(m.pin));
@@ -152,7 +152,7 @@ wss.on('connection', (ws, req) => {
         room = r; room.host = ws;
       }
       isHost = true;
-      G.send(ws, { t: 'room', pin: room.pin, title: room.title, total: room.questions.length });
+      G.send(ws, { t: 'room', pin: room.pin, title: room.title, total: room.questions.length, mode: room.mode, minutes: room.minutes });
       return m.t === 'host' ? G.lobby(room) : G.resyncHost(room);
     }
     if (m.t === 'join' || m.t === 'rejoin') {
@@ -170,13 +170,13 @@ wss.on('connection', (ws, req) => {
         p = res.player;
       }
       room = r; player = p; r.touched = Date.now();
-      G.send(ws, { t: 'joined', pin: r.pin, id: p.id, token: p.token, name: p.name, avatar: p.avatar, title: r.title, score: p.score });
+      G.send(ws, { t: 'joined', pin: r.pin, id: p.id, token: p.token, name: p.name, avatar: p.avatar, title: r.title, score: p.score, mode: r.mode });
       G.lobby(r);
       return G.resync(r, p);
     }
     if (!room) return;
     if (isHost && room.host === ws) return G.hostCmd(room, m);
-    if (player && m.t === 'answer') return G.answer(room, player, m.qi, m.ans);
+    if (player) return G.playerCmd(room, player, m);
   });
   ws.on('close', () => { if (room && player) G.lobby(room); });
 });
