@@ -131,7 +131,8 @@ app.get(['/try/:id', '/hw/:code'], (req, res) => res.sendFile(path.join(__dirnam
 require('./lib/admin')(app, { sendReset, rooms: G.rooms });
 
 app.get('/api/health', (req, res) => res.json({ ok: true, rooms: G.rooms.size }));
-app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h' }));
+// HTML 每次都向服务器确认（部署后马上生效）；其他静态文件缓存 1 小时
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h', setHeaders: (res, file) => { if (file.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache'); } }));
 app.use('/api', (req, res) => res.status(404).json({ error: 'not_found' }));
 
 // ── WebSocket：主持人和学生都走这里 ──
