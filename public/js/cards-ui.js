@@ -1,6 +1,6 @@
 // 收集卡：存在本机（学生不用注册），结算画面和卡册共用
 (function () {
-  const { tt, esc } = VA;
+  const { tt, esc, icon } = VA;
   const KEY = 'kq_cards', AWARDS = 'kq_awards';
   const SET_NAME = { zh: ['字灵', 'Hanzi Spirits'], math: ['数兽', 'Number Beasts'], science: ['元素精灵', 'Science Sprites'], explorer: ['探索者', 'Explorers'] };
   const RARITY = { c: ['普通', 'Common'], r: ['稀有', 'Rare'], e: ['史诗', 'Epic'] };
@@ -53,7 +53,7 @@
   function rewardHtml(reward) {
     const got = save(reward);
     if (!got.length) return '';
-    return `<div class="kc-reward"><div class="kc-title">🎴 ${tt(`获得 ${got.length} 张收集卡`, `You got ${got.length} card${got.length > 1 ? 's' : ''}`)}</div><div class="kc-row">${got.map((g, i) => mini(g.card, { isNew: g.isNew, flip: true, delay: .3 + i * .35 })).join('')}</div><a class="kc-link" href="/cards">${tt('打开我的卡册 →', 'Open my card book →')}</a></div>`;
+    return `<div class="kc-reward"><div class="kc-title">${icon('layers')} ${tt(`获得 ${got.length} 张收集卡`, `You got ${got.length} card${got.length > 1 ? 's' : ''}`)}</div><div class="kc-row">${got.map((g, i) => mini(g.card, { isNew: g.isNew, flip: true, delay: .3 + i * .35 })).join('')}</div><a class="kc-link" href="/cards">${tt('打开我的卡册', 'Open my card book')} ${icon('arrow-right')}</a></div>`;
   }
   window.KQC = { all, save, mini, big, rewardHtml, SET_NAME, RARITY };
 })();

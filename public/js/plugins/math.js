@@ -1,13 +1,13 @@
 // 数学插件：程序出题，不用题库，每次都不一样
 (function () {
-  const { tt } = VA;
+  const { tt, icon } = VA;
   const R = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
   const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
   const frac = (n, d) => { const g = gcd(n, d); n /= g; d /= g; return d === 1 ? String(n) : `${n}/${d}`; };
   const OPS = [
-    ['add', '➕ 加法', '➕ Addition'], ['sub', '➖ 减法', '➖ Subtraction'], ['mul', '✖️ 乘法', '✖️ Multiplication'], ['div', '➗ 除法', '➗ Division'],
-    ['mix', '🧮 四则混合', '🧮 Mixed operations'], ['frac', '🍕 分数加减', '🍕 Fractions + −'], ['cmp', '⚖️ 比较大小', '⚖️ Compare'], ['tt', '✅ 乘法口诀判断', '✅ Times-table true/false']
+    ['add', '+', '加法', 'Addition'], ['sub', '−', '减法', 'Subtraction'], ['mul', '×', '乘法', 'Multiplication'], ['div', '÷', '除法', 'Division'],
+    ['mix', '±', '四则混合', 'Mixed operations'], ['frac', '½', '分数加减', 'Fractions + −'], ['cmp', '<>', '比较大小', 'Compare'], ['tt', '✓', '乘法口诀判断', 'Times-table true/false']
   ];
   const RANGES = [[10, '10 以内', 'within 10'], [20, '20 以内', 'within 20'], [100, '100 以内', 'within 100'], [1000, '1000 以内', 'within 1000']];
 
@@ -56,11 +56,11 @@
   function panel(el, add) {
     el.innerHTML = `
       <div class="muted">${tt('程序自动出题，每次按都不一样，不用准备题库。', 'Questions are generated — different every time, no question bank needed.')}</div>
-      <div class="checks">${OPS.map(([k, zh, en], i) => `<label><input type="checkbox" value="${k}"${i < 2 ? ' checked' : ''}> ${tt(zh, en)}</label>`).join('')}</div>
+      <div class="checks">${OPS.map(([k, sym, zh, en], i) => `<label><input type="checkbox" value="${k}"${i < 2 ? ' checked' : ''}> <b class="opsym">${sym}</b> ${tt(zh, en)}</label>`).join('')}</div>
       <label class="field">${tt('数的范围', 'Number range')}<select class="in" id="mRange">${RANGES.map(([v, zh, en]) => `<option value="${v}"${v === 100 ? ' selected' : ''}>${tt(zh, en)}</option>`).join('')}</select></label>
       <label class="field">${tt('作答方式', 'Answer format')}<select class="in" id="mFmt"><option value="input">${tt('学生输入答案（更难）', 'Students type the answer (harder)')}</option><option value="mcq">${tt('四选一', 'Multiple choice')}</option></select></label>
       <label class="field">${tt('出几题', 'How many')}<select class="in" id="mN"><option>10</option><option selected>15</option><option>20</option><option>30</option></select></label>
-      <button class="btn main" id="mGo">⚡ ${tt('生成题目', 'Generate')}</button>
+      <button class="btn main" id="mGo">${icon('zap')} ${tt('生成题目', 'Generate')}</button>
       <div class="err" id="mErr"></div>`;
     el.querySelector('#mGo').onclick = () => {
       const ops = [...el.querySelectorAll('.checks input:checked')].map(c => c.value);
@@ -74,5 +74,5 @@
       add(out);
     };
   }
-  (window.VAPlugins = window.VAPlugins || []).push({ id: 'math', icon: '➗', name: ['数学', 'Math'], panel, _make: make, _toQuestion: toQuestion });
+  (window.VAPlugins = window.VAPlugins || []).push({ id: 'math', icon: 'calculator', name: ['数学', 'Math'], panel, _make: make, _toQuestion: toQuestion });
 })();

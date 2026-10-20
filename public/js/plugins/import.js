@@ -1,6 +1,6 @@
-// 导入：Kahoot / Blooket 的 Excel、CSV，或从表格直接复制粘贴
+// 导入：其他平台导出的 Excel / CSV（能读 Kahoot、Blooket 的模板格式）、我们的模板，或从表格直接复制粘贴
 (function () {
-  const { tt } = VA;
+  const { tt, icon } = VA;
   const XLSX_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
   const load = src => new Promise(ok => { if (window.XLSX) return ok(); const s = document.createElement('script'); s.src = src; s.onload = s.onerror = ok; document.head.appendChild(s); });
   const cell = v => String(v == null ? '' : v).trim();
@@ -53,8 +53,8 @@
       <div class="muted">${tt('支持 Kahoot、Blooket 导出的 Excel / CSV，或我们的模板。也可以从 Excel / Google 表格选中几行，直接粘贴。', 'Import Kahoot or Blooket spreadsheets (Excel/CSV), our template, or paste rows copied from Excel / Google Sheets.')}</div>
       <input type="file" id="imFile" accept=".xlsx,.xls,.csv" class="in">
       <textarea class="in" id="imPaste" placeholder="${tt('或在这里粘贴表格内容（题目、选项1–4、正确答案序号、时间）', 'Or paste rows here (question, answers 1–4, correct #, time)')}"></textarea>
-      <button class="btn main" id="imGo">📥 ${tt('导入', 'Import')}</button>
-      <button class="btn ghost sm" id="imTpl">⬇️ ${tt('下载模板', 'Download template')}</button>
+      <button class="btn main" id="imGo">${icon('upload')} ${tt('导入', 'Import')}</button>
+      <button class="btn ghost sm" id="imTpl">${icon('download')} ${tt('下载模板', 'Download template')}</button>
       <div class="err" id="imErr"></div>`;
     const err = el.querySelector('#imErr');
     const done = (qs, n) => { if (!qs.length) { err.textContent = tt('没有读到题目，请检查格式或下载模板对照', 'No questions found — check the format or use the template'); return; } add(qs, tt(`导入了 ${qs.length} 题` + (n > qs.length ? `（${n - qs.length} 行缺少正确答案，已跳过）` : ''), `Imported ${qs.length} questions` + (n > qs.length ? ` (${n - qs.length} rows skipped: no correct answer)` : ''))); };
@@ -78,5 +78,5 @@
       err.textContent = tt('请选择文件或粘贴内容', 'Choose a file or paste some rows');
     };
   }
-  (window.VAPlugins = window.VAPlugins || []).push({ id: 'import', icon: '📥', name: ['导入', 'Import'], panel, _toQuestions: toQuestions });
+  (window.VAPlugins = window.VAPlugins || []).push({ id: 'import', icon: 'upload', name: ['导入', 'Import'], panel, _toQuestions: toQuestions });
 })();

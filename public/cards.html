@@ -49,7 +49,7 @@ const loadPy = () => pyReady || (pyReady = new Promise(ok => { const s = documen
 function render() {
   const book = KQC.all(), list = Object.values(book);
   const by = set => list.filter(x => x.card.set === set);
-  $('#h').textContent = '🎴 ' + tt('我的卡册', 'My Card Book');
+  $('#h').innerHTML = VA.icon('layers') + ' ' + tt('我的卡册', 'My Card Book');
   $('#sub').textContent = tt(`共收集 ${list.length} 张不同的卡。玩游戏、交作业都能得卡！`, `${list.length} different cards collected. Play games and finish homework to earn more!`);
   const sets = [['zh', null], ['math', KQ_CARDS.SETS.math.cards.length], ['science', KQ_CARDS.SETS.science.cards.length], ['explorer', KQ_CARDS.SETS.explorer.cards.length]];
   if (!tab) tab = (sets.find(([k]) => by(k).length) || sets[0])[0];

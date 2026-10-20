@@ -55,7 +55,7 @@ tr.click:hover td{background:#faf8ff}
 </style>
 </head>
 <body>
-<div class="topbar"><a class="logo" href="/teacher"><i></i><span>KaleidoQuest</span></a><span class="tag" style="margin-left:6px">🛡 Admin</span><span class="sp"></span><span class="muted" id="who"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher" id="toDash"></a></div>
+<div class="topbar"><a class="logo" href="/teacher"><i></i><span>KaleidoQuest</span></a><span class="tag" style="margin-left:6px"><svg class="ic" aria-hidden="true"><use href="/icons.svg#shield"></use></svg> Admin</span><span class="sp"></span><span class="muted" id="who"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher" id="toDash"></a></div>
 <div class="wrap">
   <div class="ttabs"><button data-v="ov" class="on"></button><button data-v="tc"></button><button data-v="sys"></button></div>
   <section id="vov"></section>
@@ -65,7 +65,7 @@ tr.click:hover td{background:#faf8ff}
 <div class="tip" id="tip" hidden></div>
 <script src="/js/common.js"></script>
 <script>
-const { t, tt, api, $, esc, toast } = VA;
+const { t, tt, api, $, esc, toast, icon } = VA;
 let me = null, OV = null, TC = [], SYS = null, tab = 'ov';
 const date = ms => ms ? new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '–';
 const ago = ms => { if (!ms) return tt('从未', 'never'); const m = (Date.now() - ms) / 6e4; return m < 60 ? tt(`${m | 0} 分钟前`, `${m | 0} min ago`) : m < 1440 ? tt(`${m / 60 | 0} 小时前`, `${m / 60 | 0} h ago`) : tt(`${m / 1440 | 0} 天前`, `${m / 1440 | 0} d ago`); };
@@ -133,13 +133,13 @@ async function openTeacher(id) {
   const el = document.createElement('div'); el.className = 'drawer';
   const self = d.id === me.id;
   el.innerHTML = `<div class="panel">
-    <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(d.name)}</h2><button class="btn ghost sm" data-x>✕</button></div>
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(d.name)}</h2><button class="btn ghost sm" data-x aria-label="${tt('关闭', 'Close')}">${icon('x')}</button></div>
     <div class="muted">${esc(d.email)} · ${tt('注册', 'Joined')} ${date(d.created)} · ${tt('最后活跃', 'Last active')} ${ago(d.last_seen)}</div>
-    <div class="acts">${d.disabled ? '' : `<button class="btn ghost sm" data-a="reset">✉️ ${tt('发重设密码邮件', 'Send reset email')}</button>`}
-      ${self ? `<span class="muted" style="font-size:13px">${tt('（这是你自己的账号）', '(your own account)')}</span>` : `<button class="btn ghost sm" data-a="disable">${d.disabled ? tt('✅ 重新启用', '✅ Enable') : tt('⛔ 停用账号', '⛔ Disable')}</button><button class="btn ghost sm danger" data-a="del">🗑 ${tt('删除账号和全部内容', 'Delete account & content')}</button>`}</div>
-    <h3>📚 ${tt('题包', 'Question sets')}（${d.sets.length}）</h3>${d.sets.map(s => `<div class="li"><span>${VA.SUBJECT_ICON[s.subject] || '📚'}</span><b>${esc(s.title)}</b><span class="muted">${s.n} ${t('questions')}</span><span class="sp"></span><button class="btn ghost sm" data-set="${s.id}">${tt('查看题目', 'View')}</button></div>`).join('') || `<div class="muted">–</div>`}
-    <h3>🎮 ${tt('游戏', 'Games')}（${d.games.length}）</h3>${d.games.map(g => `<div class="li"><span>${g.mode === 'treasure' ? '💎' : '⚔️'}</span><b>${esc(g.title)}</b><span class="muted">${g.players} ${t('players')} · ${date(g.ended)}</span><span class="sp"></span><a class="btn ghost sm" href="/report?admin=1&id=${g.id}" target="_blank">${tt('报告', 'Report')}</a></div>`).join('') || `<div class="muted">–</div>`}
-    <h3>📝 ${tt('作业', 'Homework')}（${d.assignments.length}）</h3>${d.assignments.map(a => `<div class="li"><span>📝</span><b>${esc(a.title)}</b><span class="muted">${tt(`${a.done} 人完成`, `${a.done} done`)} · ${tt('截止', 'Due')} ${date(a.due)}${a.closed ? ' · ' + tt('已关闭', 'closed') : ''}</span></div>`).join('') || `<div class="muted">–</div>`}
+    <div class="acts">${d.disabled ? '' : `<button class="btn ghost sm" data-a="reset">${icon('mail')} ${tt('发重设密码邮件', 'Send reset email')}</button>`}
+      ${self ? `<span class="muted" style="font-size:13px">${tt('（这是你自己的账号）', '(your own account)')}</span>` : `<button class="btn ghost sm" data-a="disable">${d.disabled ? icon('check') + ' ' + tt('重新启用', 'Enable') : icon('ban') + ' ' + tt('停用账号', 'Disable')}</button><button class="btn ghost sm danger" data-a="del">${icon('trash-2')} ${tt('删除账号和全部内容', 'Delete account & content')}</button>`}</div>
+    <h3>${icon('book-open')} ${tt('题包', 'Question sets')}（${d.sets.length}）</h3>${d.sets.map(s => `<div class="li">${VA.subjectIcon(s.subject)}<b>${esc(s.title)}</b><span class="muted">${s.n} ${t('questions')}</span><span class="sp"></span><button class="btn ghost sm" data-set="${s.id}">${tt('查看题目', 'View')}</button></div>`).join('') || `<div class="muted">–</div>`}
+    <h3>${icon('gamepad-2')} ${tt('游戏', 'Games')}（${d.games.length}）</h3>${d.games.map(g => `<div class="li">${icon(g.mode === 'treasure' ? 'gem' : 'swords')}<b>${esc(g.title)}</b><span class="muted">${g.players} ${t('players')} · ${date(g.ended)}</span><span class="sp"></span><a class="btn ghost sm" href="/report?admin=1&id=${g.id}" target="_blank">${tt('报告', 'Report')}</a></div>`).join('') || `<div class="muted">–</div>`}
+    <h3>${icon('clipboard-list')} ${tt('作业', 'Homework')}（${d.assignments.length}）</h3>${d.assignments.map(a => `<div class="li">${icon('clipboard-list')}<b>${esc(a.title)}</b><span class="muted">${tt(`${a.done} 人完成`, `${a.done} done`)} · ${tt('截止', 'Due')} ${date(a.due)}${a.closed ? ' · ' + tt('已关闭', 'closed') : ''}</span></div>`).join('') || `<div class="muted">–</div>`}
     <div id="setView"></div></div>`;
   el.onclick = async e => {
     if (e.target === el || e.target.closest('[data-x]')) return el.remove();
@@ -147,7 +147,7 @@ async function openTeacher(id) {
     if (s) {
       const set = await api('/api/admin/sets/' + s.dataset.set);
       const TY = { mcq: tt('选择', 'MCQ'), tf: tt('判断', 'T/F'), input: tt('填空', 'Type'), order: tt('排序', 'Order') };
-      el.querySelector('#setView').innerHTML = `<h3>🔍 ${esc(set.title)}</h3>` + set.questions.map((q, i) => `<div class="qv"><b>${i + 1}. ${esc(q.prompt || q.speak)}</b> <small>${TY[q.type]} · ${q.time}s</small><br><small>${q.type === 'mcq' ? q.options.map((o, k) => q.answer.includes(k) ? `<b>✔ ${esc(o)}</b>` : esc(o)).join(' · ') : q.type === 'tf' ? (q.answer ? '✔' : '✘') : q.type === 'input' ? q.answer.map(esc).join(' | ') : q.options.map(esc).join(' → ')}</small></div>`).join('');
+      el.querySelector('#setView').innerHTML = `<h3>${icon('search')} ${esc(set.title)}</h3>` + set.questions.map((q, i) => `<div class="qv"><b>${i + 1}. ${esc(q.prompt || q.speak)}</b> <small>${TY[q.type]} · ${q.time}s</small><br><small>${q.type === 'mcq' ? q.options.map((o, k) => q.answer.includes(k) ? `<b>${icon('check')} ${esc(o)}</b>` : esc(o)).join(' · ') : q.type === 'tf' ? icon(q.answer ? 'check' : 'x') : q.type === 'input' ? q.answer.map(esc).join(' | ') : q.options.map(esc).join(' → ')}</small></div>`).join('');
       el.querySelector('#setView').scrollIntoView({ behavior: 'smooth' });
       return;
     }
@@ -156,7 +156,7 @@ async function openTeacher(id) {
       if (b.dataset.a === 'reset') { await api(`/api/admin/teachers/${id}/reset`, { method: 'POST' }); toast(tt('已发送重设密码邮件', 'Reset email sent')); }
       if (b.dataset.a === 'disable') { await api(`/api/admin/teachers/${id}/disable`, { method: 'POST', body: { disabled: !d.disabled } }); await refreshTc(); openTeacher(id); }
       if (b.dataset.a === 'del') {
-        if (!b.dataset.armed) { b.dataset.armed = 1; b.textContent = tt('⚠️ 再点一次：永久删除，无法恢复', '⚠️ Click again — permanent'); setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = '🗑 ' + tt('删除账号和全部内容', 'Delete account & content'); } }, 3500); return; }
+        if (!b.dataset.armed) { b.dataset.armed = 1; b.innerHTML = icon('triangle-alert') + ' ' + tt('再点一次：永久删除，无法恢复', 'Click again — permanent'); setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.innerHTML = icon('trash-2') + ' ' + tt('删除账号和全部内容', 'Delete account & content'); } }, 3500); return; }
         await api(`/api/admin/teachers/${id}`, { method: 'DELETE' }); el.remove(); await refreshTc(); toast(tt('已删除', 'Deleted'));
       }
     } catch (x) { toast(x.message === 'mail_failed' ? tt('邮件发送失败', 'Email failed') : t('err_generic')); }
@@ -175,8 +175,8 @@ function renderSys() {
     <div class="card tile"><b>${up}</b><span>${tt('已运行', 'Uptime')}</span><small>Node ${esc(s.node)}</small></div>
     <div class="card tile"><b>${(s.dbSize / 1024).toFixed(0)} KB</b><span>${tt('数据库', 'Database')}</span></div>
     <div class="card tile"><b>${s.backup ? ago(s.backup.at) : '–'}</b><span>${tt('最近备份', 'Last backup')}</span><small>${s.backup ? tt(`共 ${s.backup.count} 份 · 保留 14 天`, `${s.backup.count} kept · 14 days`) : tt('还没有备份', 'No backups yet')}</small></div>
-    <div class="card tile"><b>${s.mail ? '✅' : '⚠️'}</b><span>${tt('找回密码邮件', 'Reset emails')}</span><small>${s.mail ? tt('已配置', 'Configured') : tt('未配置 SMTP', 'SMTP not set')}</small></div></div>
-    <button class="btn ghost sm" id="sysRefresh">↻ ${tt('刷新', 'Refresh')}</button>`;
+    <div class="card tile"><b>${icon(s.mail ? 'check' : 'triangle-alert', 'lg')}</b><span>${tt('找回密码邮件', 'Reset emails')}</span><small>${s.mail ? tt('已配置', 'Configured') : tt('未配置 SMTP', 'SMTP not set')}</small></div></div>
+    <button class="btn ghost sm" id="sysRefresh">${icon('rotate-ccw')} ${tt('刷新', 'Refresh')}</button>`;
   $('#sysRefresh').onclick = loadSys;
 }
 async function loadSys() { SYS = await api('/api/admin/system'); renderSys(); }

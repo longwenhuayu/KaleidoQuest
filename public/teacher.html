@@ -17,7 +17,7 @@
 .sets{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 .set{display:flex;flex-direction:column;gap:10px}
 .set h3{font-size:17px;line-height:1.35;display:flex;gap:8px;align-items:flex-start}
-.set h3 i{font-style:normal;font-size:22px}
+.set h3{align-items:center}
 .set .meta{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .set .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
 .empty{text-align:center;padding:50px 20px;color:var(--muted);font-size:16px}
@@ -61,13 +61,13 @@ let sets = [], reports = [], hws = [];
 const when = ms => new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 function renderSets() {
   $('#sets').innerHTML = sets.length ? sets.map(s => `<div class="card set" data-id="${s.id}">
-    <h3><i>${SUBJECT_ICON[s.subject] || '📚'}</i>${esc(s.title)}</h3>
+    <h3>${VA.subjectIcon(s.subject)}<span>${esc(s.title)}</span></h3>
     <div class="meta"><span class="tag">${t('s_' + s.subject)}</span>${s.grade ? `<span>${esc(s.grade)}</span>` : ''}<span>${s.n} ${t('questions')}</span><span>· ${when(s.updated)}</span></div>
-    <div class="acts"><button class="btn go sm" data-act="play"${s.n ? '' : ' disabled'}>▶ ${t('play')}</button><button class="btn ghost sm" data-act="hw"${s.n ? '' : ' disabled'}>📮 ${tt('布置作业', 'Assign')}</button><a class="btn ghost sm" href="/edit?id=${s.id}">✏️ ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
+    <div class="acts"><button class="btn go sm" data-act="play"${s.n ? '' : ' disabled'}>${VA.icon('play')} ${t('play')}</button><button class="btn ghost sm" data-act="hw"${s.n ? '' : ' disabled'}>${VA.icon('send')} ${tt('布置作业', 'Assign')}</button><a class="btn ghost sm" href="/edit?id=${s.id}">${VA.icon('pencil')} ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${VA.icon('copy')} ${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
   </div>`).join('') : `<div class="empty">${t('empty_sets')}</div>`;
 }
 function renderReports() {
-  $('#reports').innerHTML = reports.length ? reports.map(r => `<a class="card rep" href="/report?id=${r.id}"><span style="font-size:24px">${r.mode === 'treasure' ? '💎' : '⚔️'}</span><b>${esc(r.title)}</b><span class="sp"></span><span class="muted">${r.players} ${t('players')} · ${when(r.ended)}</span></a>`).join('') : `<div class="empty">${t('empty_reports')}</div>`;
+  $('#reports').innerHTML = reports.length ? reports.map(r => `<a class="card rep" href="/report?id=${r.id}"><span class="subj" style="background:#ede9fe;color:#6d28d9">${VA.icon(r.mode === 'treasure' ? 'gem' : 'swords')}</span><b>${esc(r.title)}</b><span class="sp"></span><span class="muted">${r.players} ${t('players')} · ${when(r.ended)}</span></a>`).join('') : `<div class="empty">${t('empty_reports')}</div>`;
 }
 $('#sets').onclick = async e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
@@ -91,13 +91,13 @@ function renderHw() {
   $('#hwTab').textContent = tt('作业', 'Homework'); $('#hwH').textContent = tt('布置的作业', 'Homework');
   const ST = { open: tt('进行中', 'Open'), due: tt('已截止', 'Past due'), closed: tt('已关闭', 'Closed') };
   $('#hws').innerHTML = hws.length ? hws.map(h => `<div class="card hw" data-id="${h.id}">
-    <span style="font-size:24px">📝</span>
+    <span class="subj" style="background:#fef3c7;color:#b45309">${VA.icon('clipboard-list')}</span>
     <div class="info"><b>${esc(h.title)}</b> <span class="st ${h.status}">${ST[h.status]}</span><div>${tt(`${h.done} 人完成`, `${h.done} done`)} · ${h.n} ${t('questions')} · ${tt('截止', 'Due')} ${when(h.due)} · <code>${h.code}</code></div></div>
-    <button class="btn ghost sm" data-hw="share">🔗 ${tt('链接 / 二维码', 'Link / QR')}</button>
-    <a class="btn go sm" href="/report?hw=${h.id}">📊 ${tt('看成绩', 'Results')}</a>
+    <button class="btn ghost sm" data-hw="share">${VA.icon('qr-code')} ${tt('链接 / 二维码', 'Link / QR')}</button>
+    <a class="btn go sm" href="/report?hw=${h.id}">${VA.icon('chart-column')} ${tt('看成绩', 'Results')}</a>
     <button class="btn ghost sm" data-hw="close">${h.status === 'closed' ? tt('重新开放', 'Reopen') : tt('关闭', 'Close')}</button>
     <button class="btn ghost sm danger" data-hw="del">${t('del')}</button></div>`).join('')
-    : `<div class="empty">${tt('还没有布置作业。在题包上点「📮 布置作业」就能生成链接。', 'No homework yet. Click “📮 Assign” on a question set to get a link.')}</div>`;
+    : `<div class="empty">${tt('还没有布置作业。在题包上点「布置作业」就能生成链接。', 'No homework yet. Click “Assign” on a question set to get a link.')}</div>`;
 }
 $('#hws').onclick = async e => {
   const b = e.target.closest('[data-hw]'); if (!b) return;
@@ -112,7 +112,7 @@ $('#hws').onclick = async e => {
 function modal(html) { const d = document.createElement('div'); d.className = 'modepick'; d.innerHTML = `<div class="mp-box">${html}</div>`; d.onclick = e => { if (e.target === d || e.target.closest('.mp-x')) d.remove(); }; document.body.appendChild(d); return d; }
 function assign(set) {
   const days = [[1, tt('明天', 'Tomorrow')], [3, tt('3 天后', 'In 3 days')], [7, tt('1 周后', 'In 1 week')], [14, tt('2 周后', 'In 2 weeks')]];
-  const d = modal(`<h2>📮 ${tt('布置作业', 'Assign homework')}</h2>
+  const d = modal(`<h2>${VA.icon('send')} ${tt('布置作业', 'Assign homework')}</h2>
     <label class="field">${tt('作业名称', 'Title')}<input class="in" id="hwTitle" maxlength="80" value="${esc(set.title)}"></label>
     <div class="row"><label class="field" style="flex:1">${tt('截止', 'Due')}<select class="in" id="hwDue">${days.map(([n, l]) => `<option value="${n}"${n === 7 ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
     <label class="field" style="flex:1">${tt('每人可以做几次', 'Attempts')}<select class="in" id="hwTries"><option value="0">${tt('不限（取最好）', 'Unlimited (best counts)')}</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
@@ -130,10 +130,10 @@ function assign(set) {
 }
 async function shareBox(title, code) {
   const link = hwLink(code);
-  const d = modal(`<h2>🔗 ${esc(title)}</h2><div class="muted">${tt('把链接发到班级群，或投屏让学生扫码。', 'Share the link with your class or project the QR code.')}</div>
-    <div class="share"><div class="qr" id="hwQr"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><input class="in" readonly value="${link}"><button class="btn main" id="copyBtn">📋 ${tt('复制链接', 'Copy link')}</button></div></div>
+  const d = modal(`<h2>${VA.icon('link')} ${esc(title)}</h2><div class="muted">${tt('把链接发到班级群，或投屏让学生扫码。', 'Share the link with your class or project the QR code.')}</div>
+    <div class="share"><div class="qr" id="hwQr"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><input class="in" readonly value="${link}"><button class="btn main" id="copyBtn">${VA.icon('copy')} ${tt('复制链接', 'Copy link')}</button></div></div>
     <button class="btn ghost sm mp-x" type="button" style="align-self:flex-end">${tt('关闭', 'Close')}</button>`);
-  d.querySelector('#copyBtn').onclick = async e => { try { await navigator.clipboard.writeText(link); } catch (x) { d.querySelector('input').select(); document.execCommand('copy'); } e.target.textContent = '✓ ' + tt('已复制', 'Copied'); };
+  d.querySelector('#copyBtn').onclick = async e => { try { await navigator.clipboard.writeText(link); } catch (x) { d.querySelector('input').select(); document.execCommand('copy'); } e.target.closest('button').innerHTML = VA.icon('check') + ' ' + tt('已复制', 'Copied'); };
   if (!window.QRCode) await new Promise(ok => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; s.onload = s.onerror = ok; document.head.appendChild(s); });
   if (window.QRCode) new QRCode(d.querySelector('#hwQr'), { text: link, width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M });
 }
@@ -143,7 +143,7 @@ async function load() {
   renderSets(); renderReports(); renderHw();
 }
 document.addEventListener('langchange', () => { renderSets(); renderReports(); renderHw(); });
-api('/api/me').then(me => { $('#who').textContent = me.name; if (me.isAdmin) $('#who').insertAdjacentHTML('beforebegin', `<a class="btn ghost sm" href="/admin">🛡 ${tt('管理后台', 'Admin')}</a>`); load(); if (['#reports', '#hw'].includes(location.hash)) document.querySelector(`[data-v=${location.hash.slice(1)}]`).click(); }).catch(() => { location.href = '/'; });
+api('/api/me').then(me => { $('#who').textContent = me.name; if (me.isAdmin) $('#who').insertAdjacentHTML('beforebegin', `<a class="btn ghost sm" href="/admin">${VA.icon('shield')} ${tt('管理后台', 'Admin')}</a>`); load(); if (['#reports', '#hw'].includes(location.hash)) document.querySelector(`[data-v=${location.hash.slice(1)}]`).click(); }).catch(() => { location.href = '/'; });
 </script>
 </body>
 </html>

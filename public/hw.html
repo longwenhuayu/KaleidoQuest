@@ -29,7 +29,8 @@ body{display:flex;flex-direction:column}
 .tbar i{display:block;height:100%;background:var(--accent);width:100%}
 .qtext{background:#fff;color:var(--ink);border-radius:16px;padding:12px 16px;font-size:20px;font-weight:800;text-align:center}
 .qimg{max-height:24vh;max-width:100%;border-radius:12px;align-self:center;background:#fff}
-.spk{align-self:center;border:0;background:#fff;border-radius:50%;width:64px;height:64px;font-size:30px;cursor:pointer}
+.spk{align-self:center;border:0;background:#fff;color:var(--brand2);border-radius:50%;width:64px;height:64px;cursor:pointer;display:grid;place-items:center}
+.spk .ic{width:30px;height:30px}
 .choices{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0}
 .choices.one{grid-template-columns:1fr}
 .choice{border:0;border-radius:18px;color:#fff;font-size:22px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;box-shadow:0 6px 0 rgba(0,0,0,.25);cursor:pointer;min-height:70px;word-break:break-word}
@@ -73,7 +74,7 @@ body{display:flex;flex-direction:column}
 <script src="/js/common.js"></script>
 <script src="/js/cards-ui.js"></script>
 <script>
-const { tt, $, esc, SHAPES, sfx, speak } = VA;
+const { tt, $, esc, SHAPES, sfx, speak, icon } = VA;
 const CODE = location.pathname.split('/').filter(Boolean).pop().toLowerCase();
 const KEY = 'kq_hw_' + CODE;
 let info = null, token = null, cur = null, tEnd = 0, raf = 0;
@@ -85,7 +86,7 @@ const errText = e => (ERR[e.message] || (() => tt('出错了，请再试一次',
 
 function intro() {
   view('vIntro'); $('#topTitle').textContent = info.title;
-  $('#iTitle').textContent = '📝 ' + info.title;
+  $('#iTitle').innerHTML = icon('clipboard-list') + ' ' + esc(info.title);
   $('#iMeta').innerHTML = `${info.teacher ? esc(tt(`${info.teacher}布置`, `From ${info.teacher}`)) + '<br>' : ''}${tt(`共 ${info.total} 题`, `${info.total} questions`)} · ${tt('截止', 'Due')} ${due(info.due)}${info.tries ? '<br>' + tt(`每人最多做 ${info.tries} 次`, `Up to ${info.tries} attempts`) : ''}`;
   $('#name').placeholder = tt('你的名字（老师看得懂的）', 'Your name (so your teacher knows you)');
   $('#startBtn').textContent = tt('开始 ▶', 'Start ▶');
@@ -104,15 +105,15 @@ function show(d) {
   $('#score').textContent = d.score ? d.score : '';
   $('#qN').textContent = `${d.pos + 1}/${d.total}`;
   const q = d.q;
-  $('#qText').textContent = q.prompt || tt('🔊 听一听，选出答案', '🔊 Listen and answer');
-  $('#qMedia').innerHTML = (q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '') + (q.speak ? '<button class="spk" id="spk">🔊</button>' : '');
+  $('#qText').textContent = q.prompt || tt('听一听，选出答案', 'Listen and answer');
+  $('#qMedia').innerHTML = (q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '') + (q.speak ? `<button class="spk" id="spk" aria-label="${tt('朗读', 'Play audio')}">${icon('volume-2')}</button>` : '');
   if (q.speak) { $('#spk').onclick = () => speak(q.speak, q.lang); setTimeout(() => speak(q.speak, q.lang), 300); }
   const box = $('#qAns');
   if (q.type === 'mcq') {
     box.innerHTML = `<div class="choices${q.options.some(o => [...o].length > 14) ? ' one' : ''}">${q.options.map((o, i) => `<button class="choice opt${i}" data-v="${i}"><span class="shape">${SHAPES[i]}</span>${esc(o)}</button>`).join('')}</div>`;
     box.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(+b.dataset.v));
   } else if (q.type === 'tf') {
-    box.innerHTML = `<div class="choices"><button class="choice opt1"><span class="shape">${SHAPES[1]}</span>✔ ${tt('对', 'True')}</button><button class="choice opt0"><span class="shape">${SHAPES[0]}</span>✘ ${tt('错', 'False')}</button></div>`;
+    box.innerHTML = `<div class="choices"><button class="choice opt1"><span class="shape">${VA.icon('check')}</span>${tt('对', 'True')}</button><button class="choice opt3"><span class="shape">${VA.icon('x')}</span>${tt('错', 'False')}</button></div>`;
     const [t, f] = box.querySelectorAll('.choice'); t.onclick = () => answer(true); f.onclick = () => answer(false);
   } else if (q.type === 'input') {
     box.innerHTML = `<form class="typebox"><input id="typeIn" maxlength="80" autocomplete="off" autocapitalize="off" placeholder="${tt('输入答案', 'Your answer')}"><button class="btn go" style="font-size:20px">${tt('提交', 'Submit')}</button></form>`;
@@ -120,7 +121,7 @@ function show(d) {
     setTimeout(() => $('#typeIn').focus(), 50);
   } else {
     const seq = [];
-    box.innerHTML = `<div style="opacity:.8;margin-bottom:6px">${tt('按正确顺序依次点：', 'Tap in the correct order:')}</div><div class="ord-seq" id="seq"></div><div class="ord-pick" style="margin-top:10px">${q.items.map(x => `<button data-i="${x.i}">${esc(x.text)}</button>`).join('')}</div><div class="row" style="margin-top:10px"><button class="btn ghost" id="undo">↶ ${tt('撤销', 'Undo')}</button><button class="btn go" id="ordGo" style="flex:1" disabled>${tt('提交', 'Submit')}</button></div>`;
+    box.innerHTML = `<div style="opacity:.8;margin-bottom:6px">${tt('按正确顺序依次点：', 'Tap in the correct order:')}</div><div class="ord-seq" id="seq"></div><div class="ord-pick" style="margin-top:10px">${q.items.map(x => `<button data-i="${x.i}">${esc(x.text)}</button>`).join('')}</div><div class="row" style="margin-top:10px"><button class="btn ghost" id="undo">${icon('undo-2')} ${tt('撤销', 'Undo')}</button><button class="btn go" id="ordGo" style="flex:1" disabled>${tt('提交', 'Submit')}</button></div>`;
     const draw = () => { $('#seq').innerHTML = seq.map(i => `<span>${esc(q.items.find(x => x.i === i).text)}</span>`).join(''); box.querySelectorAll('.ord-pick button').forEach(b => b.classList.toggle('used', seq.includes(+b.dataset.i))); $('#ordGo').disabled = seq.length !== q.items.length; };
     box.querySelectorAll('.ord-pick button').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (!seq.includes(i)) { seq.push(i); draw(); } });
     $('#undo').onclick = () => { seq.pop(); draw(); }; $('#ordGo').onclick = () => answer([...seq]);
@@ -139,7 +140,7 @@ async function answer(ans) {
     const r = d.result; cur = null;
     if (!r) return show(d);
     r.correct ? sfx.ok() : sfx.bad();
-    $('#fb').innerHTML = `<div class="fb ${r.correct ? 'ok' : 'bad'}"><b>${r.correct ? `✅ ${tt('答对了', 'Correct')} +${r.points}` : `❌ ${tt('答错了', 'Not quite')}`}</b><p>${r.correct ? '' : esc(tt(`正确答案：${r.answerText}`, `Answer: ${r.answerText}`))}${r.note ? `<br>💡 ${esc(r.note)}` : ''}</p><button class="btn ghost" id="nextBtn">${d.done ? tt('看成绩 ▶', 'See results ▶') : tt('下一题 ▶', 'Next ▶')}</button></div>`;
+    $('#fb').innerHTML = `<div class="fb ${r.correct ? 'ok' : 'bad'}"><b>${r.correct ? `${icon('check')} ${tt('答对了', 'Correct')} +${r.points}` : `${icon('x')} ${tt('答错了', 'Not quite')}`}</b><p>${r.correct ? '' : esc(tt(`正确答案：${r.answerText}`, `Answer: ${r.answerText}`))}${r.note ? `<br>${icon('lightbulb')} ${esc(r.note)}` : ''}</p><button class="btn ghost" id="nextBtn">${d.done ? tt('看成绩 ▶', 'See results ▶') : tt('下一题 ▶', 'Next ▶')}</button></div>`;
     const go = () => { $('#fb').innerHTML = ''; show(d); };
     $('#nextBtn').onclick = go;
     if (r.correct && !r.note) setTimeout(() => { if ($('#nextBtn')) go(); }, 1200);
@@ -154,7 +155,7 @@ function finish(d) {
   $('#dScore').textContent = d.score;
   $('#dStats').textContent = tt(`答对 ${d.correct} / ${d.total} 题 · 成绩已经交给老师`, `${d.correct} / ${d.total} correct · sent to your teacher`);
   $('#score').textContent = '';
-  $('#retryBtn').hidden = !d.canRetry; $('#retryBtn').textContent = tt('↻ 再做一次（取最好成绩）', '↻ Try again (best score counts)');
+  $('#retryBtn').hidden = !d.canRetry; $('#retryBtn').innerHTML = icon('rotate-ccw') + ' ' + tt('再做一次（取最好成绩）', 'Try again (best score counts)');
   if (pct >= .8) sfx.fanfare();
   $('#dCards').innerHTML = KQC.rewardHtml(d.reward);
 }

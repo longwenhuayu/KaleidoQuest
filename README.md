@@ -25,7 +25,7 @@ node test/e2e.cjs    # 浏览器端到端（需要 Playwright + Chrome，截图�
 | `lib/questions.js` | 通用题目格式和判分（选择 / 判断 / 填空 / 排序），前后端规则一致 |
 | `lib/auth.js` | 老师账号：scrypt 密码、HttpOnly 会话、登录限速 |
 | `public/` | 页面：首页、老师后台、编辑器、主持大屏、学生端、报告 |
-| `public/js/plugins/` | 学科插件：`chinese.js`、`math.js`、`import.js`（Kahoot / Blooket 导入） |
+| `public/js/plugins/` | 学科插件：`chinese.js`、`math.js`、`import.js`（读取 Excel / CSV，兼容 Kahoot、Blooket 导出的格式） |
 
 ## 加一个学科
 

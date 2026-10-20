@@ -1,6 +1,6 @@
 // 华文插件：粘贴本课字词 → 听音选字、看拼音选字、看字选拼音、声调、部件拼字
 (function () {
-  const { tt, esc, toast } = VA;
+  const { tt, esc, toast, icon } = VA;
   const PINYIN = 'https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js';
   const PRESETS = [
     ['小一生字', '人，口，手，大，小，上，下，日，月，水，火，山，石，田，土，木，花，鸟'],
@@ -9,11 +9,11 @@
     ['好拆的字', '好，明，林，休，你，妈，吃，唱，想，字，安，男，打，和，问，河']
   ];
   const TYPES = [
-    ['listen', '🔊 听音选字', '🔊 Listen & choose'],
-    ['py2w', '🔤 看拼音选字', '🔤 Pinyin → word'],
-    ['w2py', '📖 看字选拼音', '📖 Word → pinyin'],
-    ['tone', '🎵 声调', '🎵 Tones'],
-    ['parts', '🧩 部件拼字', '🧩 Build the character']
+    ['listen', 'volume-2', '听音选字', 'Listen & choose'],
+    ['py2w', 'type', '看拼音选字', 'Pinyin → word'],
+    ['w2py', 'book-open', '看字选拼音', 'Word → pinyin'],
+    ['tone', 'music', '声调', 'Tones'],
+    ['parts', 'puzzle', '部件拼字', 'Build the character']
   ];
   const load = src => new Promise(ok => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const s = document.createElement('script'); s.src = src; s.onload = s.onerror = ok; document.head.appendChild(s); });
   const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -42,7 +42,7 @@
   const near = (w, pool) => { const same = pool.filter(x => x !== w && [...x].length === [...w].length); return shuffle(same.length >= 3 ? same : pool.filter(x => x !== w)); };
 
   const GEN = {
-    listen: (w, pool) => mcq(tt('🔊 听一听，选出你听到的字词', '🔊 Listen and choose the word you hear'), w, near(w, pool), { speak: w, lang: 'zh-CN' }),
+    listen: (w, pool) => mcq(tt('听一听，选出你听到的字词', 'Listen and choose the word you hear'), w, near(w, pool), { speak: w, lang: 'zh-CN' }),
     py2w: (w, pool) => mcq(py(w), w, near(w, pool), { note: `${w} ${py(w)}` }),
     w2py: (w, pool) => mcq(tt(`「${w}」怎么读？`, `How do you read 「${w}」?`), py(w), [...toneVariants(w).slice(0, 2), ...near(w, pool).map(py)], {}, true),
     tone: w => {
@@ -70,9 +70,9 @@
       <div class="muted">${tt('贴上本课字词，自动出题。拼音按上下文标注（多音字也对）。', 'Paste this lesson’s words. Pinyin follows context, so polyphones are handled.')}</div>
       <div class="ptabs" id="zhPre">${PRESETS.map((p, i) => `<button type="button" data-i="${i}">${p[0]}</button>`).join('')}</div>
       <textarea class="in" id="zhWords" placeholder="${tt('例如：熊猫，学校，老师…', 'e.g. 熊猫，学校，老师…')}"></textarea>
-      <div class="checks">${TYPES.map(([k, zh, en], i) => `<label><input type="checkbox" value="${k}"${i < 4 ? ' checked' : ''}> ${tt(zh, en)}</label>`).join('')}</div>
+      <div class="checks">${TYPES.map(([k, ic, zh, en], i) => `<label><input type="checkbox" value="${k}"${i < 4 ? ' checked' : ''}> ${icon(ic)} ${tt(zh, en)}</label>`).join('')}</div>
       <label class="field">${tt('最多出几题', 'Max questions')}<select class="in" id="zhMax"><option>10</option><option selected>15</option><option>20</option><option>30</option></select></label>
-      <button class="btn main" id="zhGo">⚡ ${tt('生成题目', 'Generate')}</button>
+      <button class="btn main" id="zhGo">${icon('zap')} ${tt('生成题目', 'Generate')}</button>
       <div class="err" id="zhErr"></div>`;
     el.querySelector('#zhPre').onclick = e => { const b = e.target.closest('[data-i]'); if (b) el.querySelector('#zhWords').value = PRESETS[b.dataset.i][1]; };
     el.querySelector('#zhGo').onclick = async () => {
@@ -84,7 +84,7 @@
       el.querySelector('#zhGo').disabled = true; el.querySelector('#zhGo').textContent = tt('准备拼音…', 'Loading pinyin…');
       await load(PINYIN);
       if (types.includes('parts')) await load('/data/hanzi-data.js');
-      el.querySelector('#zhGo').disabled = false; el.querySelector('#zhGo').textContent = '⚡ ' + tt('生成题目', 'Generate');
+      el.querySelector('#zhGo').disabled = false; el.querySelector('#zhGo').innerHTML = icon('zap') + ' ' + tt('生成题目', 'Generate');
       if (!window.pinyinPro) { err.textContent = tt('拼音库加载失败，请检查网络', 'Could not load pinyin library'); return; }
       const chars = [...new Set(words.join('').split('').filter(isHan))];
       // 每种题型轮流出，直到达到上限
@@ -95,5 +95,5 @@
       add(out);
     };
   }
-  (window.VAPlugins = window.VAPlugins || []).push({ id: 'chinese', icon: '🀄', name: ['华文', 'Chinese'], panel });
+  (window.VAPlugins = window.VAPlugins || []).push({ id: 'chinese', icon: 'languages', name: ['华文', 'Chinese'], panel });
 })();

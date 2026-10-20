@@ -46,17 +46,18 @@ body{overflow:hidden}
 .qimg{max-height:34vh;max-width:46vw;border-radius:16px;object-fit:contain;background:#fff}
 .answered{text-align:center;font-weight:800}
 .answered b{display:block;font-family:"Fredoka",sans-serif;font-size:clamp(40px,5vw,64px)}
-.speak{background:#fff;color:var(--ink);border:0;border-radius:50%;width:84px;height:84px;font-size:38px;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.speak{background:#fff;color:var(--brand2);border:0;border-radius:50%;width:84px;height:84px;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.2);display:grid;place-items:center}
+.speak .ic{width:40px;height:40px}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .opt{border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;font-size:clamp(20px,2.8vw,36px);font-weight:800;color:#fff;min-height:84px;position:relative;transition:opacity .3s}
 .opt .shape{font-size:1.2em;opacity:.95}
 .opt .cnt{margin-left:auto;font-family:"Fredoka",sans-serif;font-size:1.1em}
 .opt.dim{opacity:.28}
-.opt.right::after{content:"✔";position:absolute;right:-10px;top:-12px;background:#fff;color:var(--ok);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.opt.right::after{content:"✓";position:absolute;right:-10px;top:-12px;background:#fff;color:var(--ok);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .items{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .items span{background:#fff;color:var(--ink);border-radius:12px;padding:10px 18px;font-size:clamp(20px,2.6vw,32px);font-weight:800}
 .typein{text-align:center;font-size:clamp(22px,3vw,36px);font-weight:800;opacity:.9}
-.bars{display:flex;align-items:flex-end;justify-content:center;gap:18px;height:30vh}
+.bars{display:flex;align-items:flex-end;justify-content:center;gap:18px;height:30vh;margin-bottom:22px}
 .bars div{width:clamp(60px,10vw,120px);border-radius:12px 12px 0 0;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-weight:900;font-size:26px;padding-top:6px;transition:height .6s cubic-bezier(.2,.8,.2,1)}
 .ans-box{background:#fff;color:var(--ink);border-radius:18px;padding:16px 26px;text-align:center;font-size:clamp(24px,3.4vw,44px);font-weight:900}
 .ans-box small{display:block;font-size:16px;color:var(--muted);font-weight:700;margin-top:4px}
@@ -138,7 +139,7 @@ body{overflow:hidden}
 </section>
 
 <section class="screen" id="sTreasure">
-  <div class="bar"><span class="logo"><i></i><span>💎 <span id="tqTitle"></span></span></span><span class="sp"></span><span class="bigclock" id="tqClock">0:00</span><span class="sp"></span><span class="pill" id="tqPlayers"></span><button class="ib" id="muteBtn3"></button><button class="ib" id="tqEnd"></button></div>
+  <div class="bar"><span class="logo"><i></i><span><svg class="ic" aria-hidden="true"><use href="/icons.svg#gem"></use></svg> <span id="tqTitle"></span></span></span><span class="sp"></span><span class="bigclock" id="tqClock">0:00</span><span class="sp"></span><span class="pill" id="tqPlayers"></span><button class="ib" id="muteBtn3"></button><button class="ib" id="tqEnd"></button></div>
   <div class="tq"><div class="tq-rank" id="tqRank"></div><div class="tq-feed"><h3 id="tqFeedH"></h3><div id="tqFeed" style="display:flex;flex-direction:column;gap:8px"></div></div></div>
 </section>
 
@@ -152,7 +153,7 @@ body{overflow:hidden}
 <script src="/js/common.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-const { t, tt, $, esc, SHAPES, sfx, speak } = VA;
+const { t, tt, $, esc, SHAPES, sfx, speak, icon } = VA;
 const QS = new URLSearchParams(location.search);
 const setId = +QS.get('set'), MODE = QS.get('mode') === 'treasure' ? 'treasure' : 'classic', MINUTES = +QS.get('min') || 7;
 const KEY = `va_host_${setId}_${MODE}`;
@@ -164,25 +165,25 @@ function show(id) { document.querySelectorAll('.screen').forEach(s => s.classLis
 const joinHost = () => location.host;
 
 function renderStatic() {
-  $('#joinUrl').innerHTML = `${tt('用手机打开', 'Join at')} <b>${esc(joinHost())}/play</b> ${tt('输入房间码', 'with PIN')}`;
+  $('#joinUrl').innerHTML = `${tt('用手机打开', 'Join at')} <b>${esc(joinHost())}/play</b> ${tt('输入房间码', 'and enter the code')}`;
   $('#startBtn').textContent = '▶ ' + tt('开始', 'Start');
-  $('#lockBtn').textContent = locked ? '🔒 ' + tt('已锁定', 'Locked') : '🔓 ' + tt('锁定房间', 'Lock');
-  ['#muteBtn', '#muteBtn2', '#muteBtn3'].forEach(s => $(s).textContent = VA.muted ? '🔇' : '🔊');
-  $('#skipBtn').textContent = tt('结束本题 ⏭', 'End question ⏭');
-  $('#toBoard').textContent = tt('排行榜 →', 'Leaderboard →');
+  $('#lockBtn').innerHTML = locked ? icon('lock') + ' ' + tt('已锁定', 'Locked') : icon('lock-open') + ' ' + tt('锁定房间', 'Lock');
+  ['#muteBtn', '#muteBtn2', '#muteBtn3'].forEach(s => $(s).innerHTML = icon(VA.muted ? 'volume-x' : 'volume-2'));
+  $('#skipBtn').innerHTML = tt('结束本题', 'End question') + ' ' + icon('skip-forward');
+  $('#toBoard').innerHTML = tt('排行榜', 'Leaderboard') + ' ' + icon('arrow-right');
   $('#ansLabel').textContent = tt('已作答', 'answers');
   $('#toDash').textContent = tt('回后台', 'Dashboard');
-  $('#tqEnd').textContent = tt('结束游戏 ⏹', 'End game ⏹');
+  $('#tqEnd').innerHTML = icon('square') + ' ' + tt('结束游戏', 'End game');
   $('#tqFeedH').textContent = tt('实时战况', 'LIVE');
-  $('#endTitle').textContent = tt('🏆 冠军诞生！', '🏆 And the winner is…');
-  $('#againBtn').textContent = '↻ ' + tt('再玩一次', 'Play again');
+  $('#endTitle').innerHTML = icon('trophy') + ' ' + tt('冠军诞生！', 'And the winner is…');
+  $('#againBtn').innerHTML = icon('rotate-ccw') + ' ' + tt('再玩一次', 'Play again');
   $('#againBtn').href = `/host?set=${setId}&mode=${MODE}&min=${MINUTES}&new=1`;
   renderPlayers();
 }
 function renderPlayers() {
   $('#players').innerHTML = players.length ? players.map(p => `<div class="pl${p.online ? '' : ' off'}${seen.has(p.id) ? ' old' : ''}" data-id="${p.id}" title="${tt('点一下踢出', 'Click to remove')}"><span>${p.avatar}</span>${esc(p.name)}</div>`).join('') : `<div class="waiting">${tt('等待学生加入…', 'Waiting for players…')}</div>`;
   players.forEach(p => seen.add(p.id));
-  $('#count').textContent = `👥 ${players.length}`;
+  $('#count').innerHTML = `${icon('users')} ${players.length}`;
   $('#startBtn').disabled = !players.length;
 }
 
@@ -212,7 +213,7 @@ function handle(m) {
     pin = m.pin; total = m.total; sessionStorage.setItem(KEY, pin);
     if (QS.get('new')) history.replaceState(null, '', `/host?set=${setId}&mode=${MODE}&min=${MINUTES}`);
     $('#pin').textContent = pin.replace(/(\d{3})(\d{3})/, '$1 $2');
-    $('#lTitle').textContent = (m.mode === 'treasure' ? `💎 ${tt('夺宝', 'Treasure Quest')} · ${m.minutes} ${tt('分钟', 'min')} · ` : '⚔️ ') + m.title;
+    $('#lTitle').innerHTML = (m.mode === 'treasure' ? `${icon('gem')} ${tt('夺宝', 'Treasure Quest')} · ${m.minutes} ${tt('分钟', 'min')} · ` : icon('swords') + ' ') + esc(m.title);
     $('#tqTitle').textContent = m.title;
     $('#qr').innerHTML = ''; new QRCode($('#qr'), { text: `${location.origin}/play?pin=${pin}`, width: 380, height: 380, correctLevel: QRCode.CorrectLevel.M });
     renderStatic();
@@ -237,13 +238,13 @@ function question(m) {
   const go = () => {
     show('sQ'); $('#qN').textContent = label;
     const q = m.q;
-    $('#qPrompt').textContent = q.prompt || tt('🔊 听一听', '🔊 Listen');
-    $('#qMedia').innerHTML = (q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '') + (q.speak ? `<button class="speak" id="spk">🔊</button>` : '');
+    $('#qPrompt').textContent = q.prompt || tt('听一听', 'Listen');
+    $('#qMedia').innerHTML = (q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '') + (q.speak ? `<button class="speak" id="spk" aria-label="${tt('朗读', 'Play audio')}">${icon('volume-2')}</button>` : '');
     if (q.speak) { $('#spk').onclick = () => speak(q.speak, q.lang); setTimeout(() => speak(q.speak, q.lang), 300); }
     $('#ansN').textContent = '0';
     let body = '';
     if (q.type === 'mcq') body = `<div class="opts">${q.options.map((o, i) => `<div class="opt opt${i}"><span class="shape">${SHAPES[i]}</span>${esc(o)}</div>`).join('')}</div>`;
-    else if (q.type === 'tf') body = `<div class="opts"><div class="opt opt1"><span class="shape">${SHAPES[1]}</span>✔ ${tt('对', 'True')}</div><div class="opt opt0"><span class="shape">${SHAPES[0]}</span>✘ ${tt('错', 'False')}</div></div>`;
+    else if (q.type === 'tf') body = `<div class="opts"><div class="opt opt1"><span class="shape">${VA.icon('check')}</span>${tt('对', 'True')}</div><div class="opt opt3"><span class="shape">${VA.icon('x')}</span>${tt('错', 'False')}</div></div>`;
     else if (q.type === 'order') body = `<div class="typein">${tt('在设备上按正确顺序排列：', 'Put these in order on your device:')}</div><div class="items" style="margin-top:12px">${q.items.map(x => `<span>${esc(x.text)}</span>`).join('')}</div>`;
     else body = `<div class="typein">⌨️ ${tt('在设备上输入答案', 'Type your answer on your device')}</div>`;
     $('#qBody').innerHTML = body;
@@ -273,23 +274,23 @@ function reveal(m) {
   $('#vPrompt').textContent = q.prompt || q.speak || '';
   let html = '';
   if (q.type === 'mcq' || q.type === 'tf') {
-    const labels = q.type === 'mcq' ? q.options : [tt('✔ 对', '✔ True'), tt('✘ 错', '✘ False')];
-    const colors = q.type === 'mcq' ? labels.map((_, i) => i) : [1, 0];
+    const labels = q.type === 'mcq' ? q.options : [tt('对', 'True'), tt('错', 'False')];
+    const colors = q.type === 'mcq' ? labels.map((_, i) => i) : [1, 3];
     const right = q.type === 'mcq' ? m.answer : [m.answer ? 0 : 1];
     const maxN = Math.max(1, ...m.dist);
     html += `<div class="bars">${m.dist.map((n, i) => `<div class="opt${colors[i]}" style="height:${8 + n / maxN * 92}%;${right.includes(i) ? '' : 'opacity:.35'}">${n}</div>`).join('')}</div>`;
-    html += `<div class="opts">${labels.map((o, i) => `<div class="opt opt${colors[i]}${right.includes(i) ? ' right' : ' dim'}"><span class="shape">${SHAPES[colors[i]]}</span>${esc(o)}</div>`).join('')}</div>`;
+    html += `<div class="opts">${labels.map((o, i) => `<div class="opt opt${colors[i]}${right.includes(i) ? ' right' : ' dim'}"><span class="shape">${q.type === 'tf' ? VA.icon(i ? 'x' : 'check') : SHAPES[i]}</span>${esc(o)}</div>`).join('')}</div>`;
   } else {
     html += `<div class="ans-box">${esc(m.answerText)}<small>${tt('正确答案', 'Correct answer')}</small></div>`;
   }
-  if (m.note) html += `<div class="note">💡 ${esc(m.note)}</div>`;
+  if (m.note) html += `<div class="note">${icon('lightbulb')} ${esc(m.note)}</div>`;
   $('#vBody').innerHTML = html;
 }
 
 function board(m) {
   show('sBoard');
-  $('#board').innerHTML = `<h2>🏅 ${tt('排行榜', 'Leaderboard')}</h2>` + (m.top.length ? m.top.map((p, i) => `<div class="brow"><span>${i + 1}</span><span class="av">${p.avatar}</span>${esc(p.name)}${p.streak >= 2 ? `<span class="st">🔥${p.streak}</span>` : ''}<span class="sc">${p.score}</span></div>`).join('') : `<div class="center-msg">${tt('还没有人得分', 'No scores yet')}</div>`);
-  $('#nextBtn').textContent = m.last ? tt('🏆 看最终结果', '🏆 Final results') : tt('下一题 →', 'Next question →');
+  $('#board').innerHTML = `<h2>${icon('trophy')} ${tt('排行榜', 'Leaderboard')}</h2>` + (m.top.length ? m.top.map((p, i) => `<div class="brow"><span>${i + 1}</span><span class="av">${p.avatar}</span>${esc(p.name)}${p.streak >= 2 ? `<span class="st">${icon('flame')}${p.streak}</span>` : ''}<span class="sc">${p.score}</span></div>`).join('') : `<div class="center-msg">${tt('还没有人得分', 'No scores yet')}</div>`);
+  $('#nextBtn').innerHTML = m.last ? icon('trophy') + ' ' + tt('看最终结果', 'Final results') : tt('下一题', 'Next question') + ' ' + icon('arrow-right');
 }
 
 function end(m) {
@@ -297,7 +298,7 @@ function end(m) {
   stopMusic(); show('sEnd'); sfx.fanfare(); sessionStorage.removeItem(KEY); endMsg = m;
   const order = [1, 0, 2];
   $('#podium').innerHTML = order.map(i => m.podium[i] ? `<div class="pod p${i + 1}"><div class="av">${m.podium[i].avatar}</div><div class="nm">${esc(m.podium[i].name)}</div><div class="blk">${i + 1}<small>${m.podium[i].score}${m.unit ? ' ' + m.unit : ''}</small></div></div>` : '').join('');
-  $('#reportBtn').textContent = '📊 ' + tt('查看报告', 'View report');
+  $('#reportBtn').innerHTML = icon('chart-column') + ' ' + tt('查看报告', 'View report');
   $('#reportBtn').href = m.reportId ? `/report?id=${m.reportId}` : '/teacher#reports';
   for (let i = 0; i < 90; i++) { const c = document.createElement('div'); c.className = 'confetti'; c.style.left = Math.random() * 100 + 'vw'; c.style.background = ['#f59e0b', '#7c3aed', '#16a34a', '#e11d48', '#2563eb'][i % 5]; c.style.animationDuration = 2 + Math.random() * 2.5 + 's'; c.style.animationDelay = Math.random() * 1.5 + 's'; document.body.appendChild(c); setTimeout(() => c.remove(), 6000); }
 }
@@ -318,14 +319,14 @@ function tqStart(m) {
 }
 function tqBoard(m) {
   if (state !== 'sTreasure') tqStart({ endsAt: m.endsAt, now: m.now });
-  $('#tqPlayers').textContent = `👥 ${m.players}`;
-  $('#tqRank').innerHTML = m.top.map((p, i) => `<div class="trow"><span>${i + 1}</span><span class="av">${p.avatar}</span>${esc(p.name)}<span class="sc${lastScores[p.id] != null && lastScores[p.id] !== p.score ? ' bump' : ''}">${p.score} 💎</span></div>`).join('');
+  $('#tqPlayers').innerHTML = `${icon('users')} ${m.players}`;
+  $('#tqRank').innerHTML = m.top.map((p, i) => `<div class="trow"><span>${i + 1}</span><span class="av">${p.avatar}</span>${esc(p.name)}<span class="sc${lastScores[p.id] != null && lastScores[p.id] !== p.score ? ' bump' : ''}">${p.score} ${icon('gem')}</span></div>`).join('');
   m.top.forEach(p => lastScores[p.id] = p.score);
   const newest = m.events.length ? m.events[0].at : lastEvAt;
   $('#tqFeed').innerHTML = m.events.map(e => `<div class="ev${e.at > lastEvAt ? ' new' : ''}">${esc(e.text)}</div>`).join('') || `<div style="opacity:.6">${tt('答对就能开宝箱…', 'Answer right to open chests…')}</div>`;
   lastEvAt = newest;
 }
-$('#tqEnd').onclick = () => { if ($('#tqEnd').dataset.armed) send({ t: 'end' }); else { $('#tqEnd').dataset.armed = 1; $('#tqEnd').textContent = tt('再点一次结束', 'Click again to end'); setTimeout(() => { delete $('#tqEnd').dataset.armed; renderStatic(); }, 2500); } };
+$('#tqEnd').onclick = () => { if ($('#tqEnd').dataset.armed) send({ t: 'end' }); else { $('#tqEnd').dataset.armed = 1; $('#tqEnd').innerHTML = icon('triangle-alert') + ' ' + tt('再点一次结束', 'Click again to end'); setTimeout(() => { delete $('#tqEnd').dataset.armed; renderStatic(); }, 2500); } };
 $('#startBtn').onclick = () => send({ t: 'start' });
 $('#lockBtn').onclick = () => send({ t: 'lock', on: !locked });
 $('#players').onclick = e => { const p = e.target.closest('.pl'); if (!p) return; if (p.dataset.armed) send({ t: 'kick', id: p.dataset.id }); else { p.dataset.armed = 1; p.style.background = 'rgba(220,38,38,.7)'; p.title = tt('再点一次踢出', 'Click again to remove'); setTimeout(() => { delete p.dataset.armed; p.style.background = ''; }, 2500); } };

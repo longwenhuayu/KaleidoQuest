@@ -1,6 +1,6 @@
-node_modules/
-data/
-.env
 *.log
-test/shots/
+.env
 backups/
+data/
+node_modules/
+test/shots/

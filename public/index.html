@@ -49,12 +49,12 @@
     </div>
     <div class="panels">
       <form class="panel" id="joinForm">
-        <h2>🎮 <span data-i="join_title"></span></h2>
+        <h2><svg class="ic" aria-hidden="true"><use href="/icons.svg#gamepad-2"></use></svg> <span data-i="join_title"></span></h2>
         <div class="pin"><input id="pin" inputmode="numeric" maxlength="6" autocomplete="off" data-ip="join_pin"><button class="btn go" data-i="join_btn"></button></div>
         <a href="/cards" id="cardsLink" style="display:inline-block;margin-top:10px;font-weight:800;text-decoration:none"></a>
       </form>
       <div class="panel" id="teacherPanel">
-        <h2>🧑‍🏫 <span data-i="teacher_title"></span></h2>
+        <h2><svg class="ic" aria-hidden="true"><use href="/icons.svg#presentation"></use></svg> <span data-i="teacher_title"></span></h2>
         <div class="tabs"><button type="button" data-tab="login" class="on" data-i="login"></button><button type="button" data-tab="register" data-i="register"></button></div>
         <form class="form" id="authForm">
           <input class="in" id="name" data-ip="your_name" autocomplete="name" hidden>
@@ -82,15 +82,15 @@ const { t, tt, api, $ } = VA;
 let tab = 'login';
 function renderText() {
   $('#pitch2').textContent = tt('华文、数学、英文、科学都能用。贴上本课内容一键出题，学生用手机扫码加入，不用注册。', 'Chinese, Math, English, Science — paste your lesson, get a quiz in seconds. Students join by QR, no sign-up.');
-  $('#subjects').innerHTML = [['🀄', tt('华文', 'Chinese')], ['➗', tt('数学', 'Math')], ['🔤', tt('英文', 'English')], ['🔬', tt('科学', 'Science')], ['🌴', tt('马来文', 'Malay')], ['🪔', tt('淡米尔文', 'Tamil')]].map(([i, n]) => `<span>${i} ${n}</span>`).join('');
+  $('#subjects').innerHTML = [['chinese', tt('华文', 'Chinese')], ['math', tt('数学', 'Math')], ['english', tt('英文', 'English')], ['science', tt('科学', 'Science')], ['malay', tt('马来文', 'Malay')], ['tamil', tt('淡米尔文', 'Tamil')]].map(([s, n]) => `<span>${VA.icon(VA.SUBJECT_ICON[s])} ${n}</span>`).join('');
   $('#authBtn').textContent = t(tab);
-  $('#cardsLink').textContent = '🎴 ' + tt('我的卡册', 'My card book');
+  $('#cardsLink').innerHTML = VA.icon('layers') + ' ' + tt('我的卡册', 'My card book');
   $('#forgotLink').textContent = tt('忘记密码？', 'Forgot password?');
   $('#forgotLink').hidden = tab !== 'login';
   $('#forgotHint').textContent = tt('输入注册时用的邮箱，我们会发一个重设密码的链接（1 小时内有效）。', "Enter your sign-up email and we'll send a reset link (valid for 1 hour).");
   $('#fEmail').placeholder = t('email');
   $('#fBtn').textContent = tt('发送重设链接', 'Send reset link');
-  $('#fBack').textContent = tt('← 返回登录', '← Back to log in');
+  $('#fBack').innerHTML = VA.icon('arrow-left') + ' ' + tt('返回登录', 'Back to log in');
 }
 document.addEventListener('langchange', renderText);
 document.addEventListener('DOMContentLoaded', renderText);
@@ -123,7 +123,7 @@ $('#forgotForm').onsubmit = async e => {
   }
   $('#fBtn').disabled = false;
 };
-api('/api/me').then(() => { $('#teacherPanel').innerHTML = `<h2>🧑‍🏫 ${t('teacher_title')}</h2><a class="btn main" href="/teacher" style="width:100%">${tt('进入老师后台 →', 'Go to dashboard →')}</a>`; }).catch(() => {});
+api('/api/me').then(() => { $('#teacherPanel').innerHTML = `<h2>${VA.icon('presentation')} ${t('teacher_title')}</h2><a class="btn main" href="/teacher" style="width:100%">${tt('进入老师后台', 'Go to dashboard')} ${VA.icon('arrow-right')}</a>`; }).catch(() => {});
 </script>
 </body>
 </html>

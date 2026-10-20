@@ -2,7 +2,7 @@
 (function () {
   const DICT = {
     tagline: ['每一门课，都是一场闯关 —— 全班一起玩的课堂答题游戏', 'Live quiz games your whole class plays together'],
-    join_title: ['我是学生', "I'm a student"], join_pin: ['输入房间码', 'Game PIN'], join_btn: ['加入游戏', 'Join'],
+    join_title: ['我是学生', "I'm a student"], join_pin: ['输入房间码', 'Game code'], join_btn: ['加入游戏', 'Join'],
     teacher_title: ['我是老师', "I'm a teacher"], login: ['登录', 'Log in'], register: ['注册', 'Sign up'], logout: ['退出', 'Log out'],
     email: ['邮箱', 'Email'], password: ['密码（至少 8 位）', 'Password (8+ characters)'], your_name: ['怎么称呼您', 'Your name'],
     my_sets: ['我的题包', 'My question sets'], reports: ['赛后报告', 'Reports'], new_set: ['新建题包', 'New set'],
@@ -13,7 +13,7 @@
     s_chinese: ['华文', 'Chinese'], s_math: ['数学', 'Math'], s_english: ['英文', 'English'], s_science: ['科学', 'Science'], s_general: ['综合', 'General'], s_malay: ['马来文', 'Malay'], s_tamil: ['淡米尔文', 'Tamil'],
     err_email: ['邮箱格式不对', 'Invalid email'], err_password: ['密码至少 8 位', 'Password must be 8+ characters'], err_name: ['请填写称呼', 'Please enter your name'],
     err_exists: ['这个邮箱已经注册过，请直接登录', 'Email already registered — please log in'], err_wrong: ['邮箱或密码不对。还没有账号？请先点上面的「注册」。', 'Wrong email or password. No account yet? Click “Sign up” above first.'], err_disabled: ['这个账号已被停用，请联系 ask@visionchinese.com', 'This account has been disabled — contact ask@visionchinese.com'], err_too_many: ['尝试太多次，请 15 分钟后再试', 'Too many attempts. Try again in 15 minutes'],
-    err_room_not_found: ['找不到这个房间，请检查房间码', 'Game not found — check the PIN'], err_locked: ['房间已锁定，请让老师解锁', 'This game is locked'], err_full: ['房间满了', 'Game is full'],
+    err_room_not_found: ['找不到这个房间，请检查房间码', 'Game not found — check the code'], err_locked: ['房间已锁定，请让老师解锁', 'This game is locked'], err_full: ['房间满了', 'Game is full'],
     err_name_req: ['请输入昵称', 'Please enter a nickname'], err_login_required: ['请先登录', 'Please log in first'], err_generic: ['出错了，请再试一次', 'Something went wrong — please try again']
   };
   let lang = 'zh';
@@ -37,8 +37,14 @@
   const $ = (s, root = document) => root.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   function toast(msg) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = msg; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
-  const SHAPES = ['▲', '◆', '●', '■', '★', '⬟'];
-  const SUBJECT_ICON = { chinese: '🀄', math: '➗', english: '🔤', science: '🔬', general: '📚', malay: '🌴', tamil: '🪔' };
+  // 选项标记：字母徽章（颜色 + 字母 + 底纹三重区分，不靠颜色也分得清）
+  const SHAPES = ['A', 'B', 'C', 'D', 'E', 'F'];
+  // 图标：Lucide（public/icons.svg）
+  const icon = (name, cls = '') => `<svg class="ic${cls ? ' ' + cls : ''}" aria-hidden="true"><use href="/icons.svg#${name}"></use></svg>`;
+  // 学科：Lucide 图标 + 底色
+  const SUBJECT_ICON = { chinese: 'languages', math: 'calculator', english: 'type', science: 'flask-conical', general: 'book-open', malay: 'message-square-text', tamil: 'message-circle-more' };
+  const SUBJECT_TONE = { chinese: ['#fee2e2', '#be123c'], math: ['#dbeafe', '#1d4ed8'], english: ['#ede9fe', '#6d28d9'], science: ['#dcfce7', '#15803d'], general: ['#f1f5f9', '#334155'], malay: ['#fef3c7', '#b45309'], tamil: ['#ffedd5', '#c2410c'] };
+  const subjectIcon = s => { const [bg, fg] = SUBJECT_TONE[s] || SUBJECT_TONE.general; return `<span class="subj" style="background:${bg};color:${fg}">${icon(SUBJECT_ICON[s] || 'book-open')}</span>`; };
   const wsUrl = () => (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws';
 
   // 声音：WebAudio 合成，免下载
@@ -66,8 +72,8 @@
     const d = document.createElement('div');
     d.className = 'modepick';
     d.innerHTML = `<div class="mp-box"><h2>${tt('选一种玩法', 'Choose a game mode')}</h2>
-      <a class="mp-card" href="/host?set=${setId}&mode=classic"><b>⚔️ ${tt('擂台抢答', 'Classic')}</b><span>${tt('全班同一题，大屏倒计时，越快分越高。适合新课检查。', 'Everyone answers the same question together — faster answers score more.')}</span></a>
-      <div class="mp-card"><b>💎 ${tt('夺宝', 'Treasure Quest')}</b><span>${tt('各答各的，答对开宝箱：可能翻倍、偷别人的宝石，后面的也能翻盘。适合复习。', 'Self-paced. Correct answers open chests — double up, steal, or swap gems. Anyone can come back.')}</span>
+      <a class="mp-card" href="/host?set=${setId}&mode=classic"><b>${icon('swords')} ${tt('擂台抢答', 'Classic')}</b><span>${tt('全班同一题，大屏倒计时，越快分越高。适合新课检查。', 'Everyone answers the same question together — faster answers score more.')}</span></a>
+      <div class="mp-card"><b>${icon('gem')} ${tt('夺宝', 'Treasure Quest')}</b><span>${tt('各答各的，答对开宝箱：可能翻倍、偷别人的宝石，后面的也能翻盘。适合复习。', 'Self-paced. Correct answers open chests — double up, steal, or swap gems. Anyone can come back.')}</span>
         <div class="mp-min">${[5, 7, 10].map(m => `<a class="btn go sm" href="/host?set=${setId}&mode=treasure&min=${m}">${m} ${tt('分钟', 'min')}</a>`).join('')}</div></div>
       <button class="btn ghost sm mp-x" type="button">${tt('取消', 'Cancel')}</button></div>`;
     d.onclick = e => { if (e.target === d || e.target.closest('.mp-x')) d.remove(); };
@@ -90,6 +96,6 @@
     });
   }
 
-  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
+  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, icon, subjectIcon, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
   document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); passwordEyes(); });
 })();

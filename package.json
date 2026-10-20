@@ -17,6 +17,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "lucide-static": "^0.460.0",
     "pinyin-pro": "^3.26.0"
   }
 }

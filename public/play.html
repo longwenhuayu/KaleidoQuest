@@ -104,7 +104,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 <script src="/js/common.js"></script>
 <script src="/js/cards-ui.js"></script>
 <script>
-const { tt, $, esc, SHAPES, sfx } = VA;
+const { tt, $, esc, SHAPES, sfx, icon } = VA;
 const qp = new URLSearchParams(location.search);
 let tq = null, outTimer = 0, pickTimer = 0, clockTimer = 0;
 let ws = null, me = null, pin = qp.get('pin') || '', cur = null, tEnd = 0, raf = 0, retry = 0, wakeLock = null, endState = false;
@@ -117,7 +117,7 @@ function renderStatic() {
   $('#joinBtn').textContent = tt('加入 ▶', 'Join ▶');
   $('#endAgain').textContent = tt('加入下一局', 'Join another game');
   $('#msgBtn').textContent = tt('重新加入', 'Join again');
-  $('#cardsLink').textContent = '🎴 ' + tt('我的卡册', 'My card book');
+  $('#cardsLink').innerHTML = icon('layers') + ' ' + tt('我的卡册', 'My card book');
 }
 document.addEventListener('langchange', renderStatic); renderStatic();
 $('#pinIn').value = pin; if (pin) setTimeout(() => $('#nameIn').focus(), 100);
@@ -134,7 +134,7 @@ const send = m => ws && ws.readyState === 1 && ws.send(JSON.stringify(m));
 $('#joinForm').onsubmit = e => {
   e.preventDefault();
   pin = $('#pinIn').value.trim(); const name = $('#nameIn').value.trim();
-  if (pin.length !== 6) { $('#joinErr').textContent = tt('请输入 6 位房间码', 'Enter the 6-digit PIN'); return; }
+  if (pin.length !== 6) { $('#joinErr').textContent = tt('请输入 6 位房间码', 'Enter the 6-digit game code'); return; }
   if (!name) { $('#joinErr').textContent = tt('请输入昵称', 'Enter a nickname'); return; }
   $('#joinBtn').disabled = true; $('#joinErr').textContent = '';
   connect({ t: 'join', pin, name });
@@ -144,7 +144,7 @@ function handle(m) {
   if (m.t === 'error') {
     if (m.error === 'rejoin_failed' || (m.error === 'room_not_found' && me)) { sessionStorage.removeItem(SAVE); me = null; endState = true; return msg(tt('这局游戏已经结束或不存在了', 'This game has ended')); }
     $('#joinBtn').disabled = false;
-    $('#joinErr').textContent = { room_not_found: tt('找不到这个房间，请检查房间码', 'Game not found — check the PIN'), locked: tt('房间已锁定，请让老师解锁', 'This game is locked'), full: tt('房间满了', 'This game is full'), name: tt('请输入昵称', 'Enter a nickname') }[m.error] || tt('出错了，请再试一次', 'Something went wrong');
+    $('#joinErr').textContent = { room_not_found: tt('找不到这个房间，请检查房间码', 'Game not found — check the code'), locked: tt('房间已锁定，请让老师解锁', 'This game is locked'), full: tt('房间满了', 'This game is full'), name: tt('请输入昵称', 'Enter a nickname') }[m.error] || tt('出错了，请再试一次', 'Something went wrong');
     try { ws.close(); } catch (e) {}
     return;
   }
@@ -169,7 +169,7 @@ function handle(m) {
   if (m.t === 'end') return end(m);
   if (m.t === 'kicked') { endState = true; sessionStorage.removeItem(SAVE); msg(tt('你被老师移出了这局游戏', 'You were removed from the game')); }
 }
-function score(s) { $('#meScore').textContent = tq ? `${s || 0} 💎` : s ? s : ''; }
+function score(s) { $('#meScore').innerHTML = tq ? `${s || 0} ${icon('gem')}` : s ? s : ''; }
 function msg(text) { view('vMsg'); $('#msgText').textContent = text; }
 
 function question(m) {
@@ -177,9 +177,9 @@ function question(m) {
   if (m.answered) return sent();
   view('vQ');
   const q = m.q;
-  $('#qN').textContent = m.treasure ? '💎' : `${m.qi + 1}/${m.total}`;
+  $('#qN').innerHTML = m.treasure ? icon('gem') : `${m.qi + 1}/${m.total}`;
   $('#tbar').parentElement.hidden = !!m.treasure;
-  $('#qText').textContent = q.prompt || tt('🔊 听大屏朗读，选出答案', '🔊 Listen to the big screen');
+  $('#qText').textContent = q.prompt || tt('听大屏朗读，选出答案', 'Listen to the big screen');
   $('#qImg').innerHTML = q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '';
   const box = $('#qAns');
   if (q.type === 'mcq') {
@@ -187,7 +187,7 @@ function question(m) {
     box.innerHTML = `<div class="choices${long ? ' one' : ''}">${q.options.map((o, i) => `<button class="choice opt${i}" data-v="${i}"><span class="shape">${SHAPES[i]}</span>${esc(o)}</button>`).join('')}</div>`;
     box.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(+b.dataset.v));
   } else if (q.type === 'tf') {
-    box.innerHTML = `<div class="choices"><button class="choice opt1" data-v="1"><span class="shape">${SHAPES[1]}</span>✔ ${tt('对', 'True')}</button><button class="choice opt0" data-v="0"><span class="shape">${SHAPES[0]}</span>✘ ${tt('错', 'False')}</button></div>`;
+    box.innerHTML = `<div class="choices"><button class="choice opt1" data-v="1"><span class="shape">${VA.icon('check')}</span>${tt('对', 'True')}</button><button class="choice opt3" data-v="0"><span class="shape">${VA.icon('x')}</span>${tt('错', 'False')}</button></div>`;
     box.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(b.dataset.v === '1'));
   } else if (q.type === 'input') {
     box.innerHTML = `<form class="typebox"><input id="typeIn" maxlength="80" autocomplete="off" autocapitalize="off" placeholder="${tt('输入答案', 'Your answer')}"><button class="btn go" style="font-size:20px">${tt('提交', 'Submit')}</button></form>`;
@@ -195,7 +195,7 @@ function question(m) {
     setTimeout(() => $('#typeIn').focus(), 50);
   } else {
     const seq = [];
-    box.innerHTML = `<div class="sub" style="margin-bottom:6px">${tt('按正确顺序依次点：', 'Tap in the correct order:')}</div><div class="ord-seq" id="seq"></div><div class="ord-pick" style="margin-top:10px">${q.items.map(x => `<button data-i="${x.i}">${esc(x.text)}</button>`).join('')}</div><div class="row" style="margin-top:10px"><button class="btn ghost" id="undo">↶ ${tt('撤销', 'Undo')}</button><button class="btn go" id="ordGo" style="flex:1" disabled>${tt('提交', 'Submit')}</button></div>`;
+    box.innerHTML = `<div class="sub" style="margin-bottom:6px">${tt('按正确顺序依次点：', 'Tap in the correct order:')}</div><div class="ord-seq" id="seq"></div><div class="ord-pick" style="margin-top:10px">${q.items.map(x => `<button data-i="${x.i}">${esc(x.text)}</button>`).join('')}</div><div class="row" style="margin-top:10px"><button class="btn ghost" id="undo">${icon('undo-2')} ${tt('撤销', 'Undo')}</button><button class="btn go" id="ordGo" style="flex:1" disabled>${tt('提交', 'Submit')}</button></div>`;
     const draw = () => { $('#seq').innerHTML = seq.map(i => `<span>${esc(q.items.find(x => x.i === i).text)}</span>`).join(''); box.querySelectorAll('.ord-pick button').forEach(b => b.classList.toggle('used', seq.includes(+b.dataset.i))); $('#ordGo').disabled = seq.length !== q.items.length; };
     box.querySelectorAll('.ord-pick button').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (!seq.includes(i)) { seq.push(i); draw(); } });
     $('#undo').onclick = () => { seq.pop(); draw(); };
@@ -207,12 +207,12 @@ function question(m) {
   tick();
 }
 function answer(ans) { if (!cur) return; send({ t: 'answer', qi: cur.qi, ans }); if (!cur.treasure) sent(); else document.querySelectorAll('#qAns button, #qAns input').forEach(x => x.disabled = true); if (navigator.vibrate) navigator.vibrate(30); }
-function sent(timeout) { cancelAnimationFrame(raf); view('vSent'); $('#sentMsg').textContent = timeout ? tt('⏰ 时间到！', "⏰ Time's up!") : tt('已提交！', 'Answer sent!'); $('#sentSub').textContent = tt('看看大屏…', 'Watch the big screen…'); }
+function sent(timeout) { cancelAnimationFrame(raf); view('vSent'); $('#sentMsg').innerHTML = timeout ? icon('hourglass') + ' ' + tt('时间到！', "Time's up!") : tt('已提交！', 'Answer sent!'); $('#sentSub').textContent = tt('看看大屏…', 'Watch the big screen…'); }
 function result(m) {
   view('vRes'); score(m.score);
   document.body.className = 'night ' + (m.correct ? 'res-ok' : 'res-bad');
-  $('#resIcon').textContent = m.correct ? '✅' : m.answered ? '❌' : '⏰';
-  $('#resText').textContent = m.correct ? (m.streak >= 3 ? tt(`连对 ${m.streak} 题！🔥`, `${m.streak} in a row! 🔥`) : tt('答对了！', 'Correct!')) : m.answered ? tt('答错了', 'Not quite') : tt('没来得及作答', 'No answer');
+  $('#resIcon').innerHTML = m.correct ? `<span class="bigic ok">${icon('check')}</span>` : m.answered ? `<span class="bigic bad">${icon('x')}</span>` : `<span class="bigic late">${icon('hourglass')}</span>`;
+  $('#resText').innerHTML = m.correct ? (m.streak >= 3 ? icon('flame') + ' ' + tt(`连对 ${m.streak} 题！`, `${m.streak} in a row!`) : tt('答对了！', 'Correct!')) : m.answered ? tt('答错了', 'Not quite') : tt('没来得及作答', 'No answer');
   $('#resPts').textContent = m.correct ? `+${m.points}` : '';
   $('#resAns').textContent = m.correct ? '' : tt(`正确答案：${m.answerText}`, `Answer: ${m.answerText}`);
   $('#resRank').textContent = tt(`第 ${m.rank} / ${m.of} 名`, `Rank ${m.rank} of ${m.of}`);
@@ -237,7 +237,7 @@ function startClock(m) {
   if (!tq) { tq = {}; $('#tqClock').hidden = false; $('#gameTitle').hidden = true; }
   tq.endsAt = m.endsAt; tq.skew = Date.now() - m.now; score(m.score);
   clearInterval(clockTimer);
-  clockTimer = setInterval(() => { const s = Math.max(0, Math.ceil((tq.endsAt + tq.skew - Date.now()) / 1000)); $('#tqClock').textContent = `⏱ ${s / 60 | 0}:${String(s % 60).padStart(2, '0')}`; }, 250);
+  clockTimer = setInterval(() => { const s = Math.max(0, Math.ceil((tq.endsAt + tq.skew - Date.now()) / 1000)); $('#tqClock').innerHTML = `${icon('timer')} ${s / 60 | 0}:${String(s % 60).padStart(2, '0')}`; }, 250);
 }
 function tqResult(m) {
   if (m.correct) {
@@ -247,7 +247,7 @@ function tqResult(m) {
   } else {
     view('vRes'); sfx.bad();
     document.body.className = 'night res-bad';
-    $('#resIcon').textContent = '❌'; $('#resText').textContent = tt('答错了', 'Not quite'); $('#resPts').textContent = '';
+    $('#resIcon').innerHTML = `<span class="bigic bad">${icon('x')}</span>`; $('#resText').textContent = tt('答错了', 'Not quite'); $('#resPts').textContent = '';
     $('#resAns').textContent = tt(`正确答案：${m.answerText}`, `Answer: ${m.answerText}`);
     let n = Math.ceil(m.wait / 1000);
     $('#resRank').textContent = tt(`${n} 秒后继续…`, `Next in ${n}s…`);
@@ -256,8 +256,8 @@ function tqResult(m) {
 }
 function tqPick(m) {
   view('vPick');
-  $('#pickH').textContent = m.kind === 'steal' ? tt('🦝 选一个人，偷走他的宝石！', '🦝 Pick someone to steal from!') : tt('🔄 选一个人，交换宝石！', '🔄 Pick someone to swap with!');
-  $('#pickList').innerHTML = m.players.map(p => `<button data-id="${esc(p.id)}"><span>${p.avatar}</span>${esc(p.name)}<b>${p.score} 💎</b></button>`).join('');
+  $('#pickH').textContent = m.kind === 'steal' ? tt('选一个人，偷走他的宝石！', 'Pick someone to steal from!') : tt('选一个人，交换宝石！', 'Pick someone to swap with!');
+  $('#pickList').innerHTML = m.players.map(p => `<button data-id="${esc(p.id)}"><span>${p.avatar}</span>${esc(p.name)}<b>${p.score} ${icon('gem')}</b></button>`).join('');
   $('#pickList').querySelectorAll('button').forEach(b => b.onclick = () => { $('#pickList').querySelectorAll('button').forEach(x => x.disabled = true); clearInterval(pickTimer); send({ t: 'target', id: b.dataset.id }); });
   let n = Math.round(m.timeout / 1000);
   const tick = () => { $('#pickSub').textContent = tt(`${n} 秒内不选就随机`, `Random pick in ${n}s`); n--; };
@@ -268,8 +268,9 @@ function tqOut(m) {
   const [e, h] = KIND[m.kind] || ['🎁', () => ''];
   $('#outE').textContent = e; $('#outH').textContent = h();
   const who = m.target ? `${m.target.avatar}${m.target.name}` : '';
-  $('#outPts').textContent = m.kind === 'gain' ? `+${m.amount} 💎` : m.kind === 'double' ? `${m.score} 💎` : m.kind.startsWith('lose') ? `−${m.amount} 💎`
-    : m.kind === 'steal' ? tt(`从 ${who} 那里 +${m.amount} 💎`, `+${m.amount} 💎 from ${who}`) : m.kind === 'swap' ? tt(`和 ${who} 交换，现在 ${m.score} 💎`, `Swapped with ${who}: now ${m.score} 💎`) : '';
+  const G = icon('gem'), W = esc(who);
+  $('#outPts').innerHTML = m.kind === 'gain' ? `+${m.amount} ${G}` : m.kind === 'double' ? `${m.score} ${G}` : m.kind.startsWith('lose') ? `−${m.amount} ${G}`
+    : m.kind === 'steal' ? tt(`从 ${W} 那里 +${m.amount} ${G}`, `+${m.amount} ${G} from ${W}`) : m.kind === 'swap' ? tt(`和 ${W} 交换，现在 ${m.score} ${G}`, `Swapped with ${W}: now ${m.score} ${G}`) : '';
   m.kind === 'nothing' || m.kind.startsWith('lose') ? sfx.bad() : sfx.fanfare();
   $('#outGo').textContent = tt('下一题 ▶', 'Next ▶');
   const go = () => { clearTimeout(outTimer); send({ t: 'tnext' }); };
@@ -279,7 +280,8 @@ function tqHit(m) {
   score(m.score);
   const who = `${m.by.avatar}${m.by.name}`;
   const d = document.createElement('div'); d.className = 'hitbar';
-  d.textContent = m.kind === 'steal' ? tt(`🦝 ${who} 偷走了你 ${m.amount} 💎！`, `🦝 ${who} stole ${m.amount} 💎 from you!`) : tt(`🔄 ${who} 和你交换了宝石，现在 ${m.score} 💎`, `🔄 ${who} swapped gems with you: now ${m.score} 💎`);
+  const G = icon('gem'), W = esc(who);
+  d.innerHTML = m.kind === 'steal' ? tt(`${W} 偷走了你 ${m.amount} ${G}！`, `${W} stole ${m.amount} ${G} from you!`) : tt(`${W} 和你交换了宝石，现在 ${m.score} ${G}`, `${W} swapped gems with you: now ${m.score} ${G}`);
   document.body.appendChild(d); sfx.bad(); if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
   setTimeout(() => d.remove(), 2600);
 }

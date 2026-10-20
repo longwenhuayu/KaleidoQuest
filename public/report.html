@@ -40,7 +40,7 @@ td.y{background:#dcfce7;color:#166534}td.x{background:#fee2e2;color:#991b1b}td.z
 <div class="wrap" id="root"></div>
 <script src="/js/common.js"></script>
 <script>
-const { t, tt, api, $, esc, toast } = VA;
+const { t, tt, api, $, esc, toast, icon } = VA;
 const RQ = new URLSearchParams(location.search), id = +RQ.get('id'), hwId = +RQ.get('hw');
 let G = null;
 const pctColor = p => p >= 80 ? 'var(--ok)' : p >= 50 ? 'var(--accent)' : 'var(--bad)';
@@ -52,7 +52,7 @@ function render() {
   const hard = qs.map((q, i) => ({ ...q, i, pct: acc[i] })).filter(q => q.answered).sort((a, b) => a.pct - b.pct).slice(0, 3);
   const weak = qs.map((_, i) => i).filter(i => acc[i] < 60);
   $('#root').innerHTML = `
-    <h1>${HW ? '📝' : TQ ? '💎' : '⚔️'} ${esc(G.title)}</h1>
+    <h1>${icon(HW ? 'clipboard-list' : TQ ? 'gem' : 'swords', 'lg')} ${esc(G.title)}</h1>
     <div class="muted">${HW ? tt(`作业 · 截止 ${new Date(G.due).toLocaleString('zh-CN')} · 链接 ${location.origin}/hw/${G.code}`, `Homework · due ${new Date(G.due).toLocaleString('en-SG')} · ${location.origin}/hw/${G.code}`) : `${TQ ? tt(`夺宝 · ${r.minutes} 分钟`, `Treasure Quest · ${r.minutes} min`) : tt('擂台抢答', 'Classic')} · ${new Date(G.ended).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN')}`}</div>
     <div class="sum">
       <div class="card"><b>${n}</b><span>${HW ? tt('完成人数', 'Students done') : tt('参加人数', 'Players')}</span></div>
@@ -60,16 +60,16 @@ function render() {
       <div class="card"><b>${avgScore}</b><span>${TQ ? tt('平均宝石', 'Avg gems') : tt('平均分', 'Avg score')}</span></div>
       <div class="card"><b>${qs.length}</b><span>${tt('题数', 'Questions')}</span></div>
     </div>
-    ${hard.length ? `<h2>⚠️ ${tt('最需要讲评的题', 'Questions to review')}</h2><div class="hard">${hard.map(q => `<div class="card"><b>${q.pct}%</b> · ${tt('第', 'Q')}${q.i + 1}${tt('题', '')}<div style="margin-top:4px;font-weight:700">${esc(q.prompt)}</div><div class="muted" style="font-size:13px">${tt('正确答案', 'Answer')}：${esc(q.answerText)}</div></div>`).join('')}</div>` : ''}
+    ${hard.length ? `<h2>${icon('triangle-alert')} ${tt('最需要讲评的题', 'Questions to review')}</h2><div class="hard">${hard.map(q => `<div class="card"><b>${q.pct}%</b> · ${tt('第', 'Q')}${q.i + 1}${tt('题', '')}<div style="margin-top:4px;font-weight:700">${esc(q.prompt)}</div><div class="muted" style="font-size:13px">${tt('正确答案', 'Answer')}：${esc(q.answerText)}</div></div>`).join('')}</div>` : ''}
     <div class="acts">
-      ${weak.length && G.setId ? `<button class="btn main" id="reviewBtn">🔁 ${tt(`用 ${weak.length} 道错题生成复习题包`, `Make a review set from ${weak.length} weak questions`)}</button>` : ''}
-      <button class="btn ghost" id="csvBtn">⬇️ ${tt('导出 CSV', 'Export CSV')}</button>
+      ${weak.length && G.setId ? `<button class="btn main" id="reviewBtn">${icon('repeat')} ${tt(`用 ${weak.length} 道错题生成复习题包`, `Make a review set from ${weak.length} weak questions`)}</button>` : ''}
+      <button class="btn ghost" id="csvBtn">${icon('download')} ${tt('导出 CSV', 'Export CSV')}</button>
     </div>
-    <h2>📋 ${tt('每道题', 'By question')}</h2>
+    <h2>${icon('list-ordered')} ${tt('每道题', 'By question')}</h2>
     <div class="card" style="padding:4px 0">${qs.map((q, i) => `<div class="qrow"><span class="muted">${i + 1}</span><span class="p">${esc(q.prompt)}<small>${esc(q.answerText)} · ${(q.avgMs / 1000).toFixed(1)}s</small></span><span class="meter"><i style="width:${acc[i]}%;background:${pctColor(acc[i])}"></i></span><span class="pct" style="color:${pctColor(acc[i])}">${acc[i]}%</span></div>`).join('')}</div>
-    <h2>🧑‍🎓 ${tt('每位学生', 'By student')}</h2>
+    <h2>${icon('graduation-cap')} ${tt('每位学生', 'By student')}</h2>
     <div class="tbl"><table><tr><th>#</th><th>${tt('学生', 'Student')}</th><th>${tt('得分', 'Score')}</th><th>${TQ ? tt('答对 / 作答', 'Correct / tried') : tt('答对', 'Correct')}</th>${HW ? `<th>${tt('做了几次', 'Attempts')}</th><th>${tt('用时', 'Time')}</th>` : ''}${qs.map((_, i) => `<th>${i + 1}</th>`).join('')}</tr>
-      ${r.players.map(p => `<tr><td>${p.rank}</td><td class="n">${p.avatar} ${esc(p.name)}</td><td>${p.score}${TQ ? ' 💎' : ''}</td><td>${p.correct}/${TQ ? p.tries : qs.length}</td>${HW ? `<td>${p.tries}</td><td>${p.minutes} ${tt('分', 'min')}</td>` : ''}${p.answers.map(a => a === 1 ? '<td class="y">✔</td>' : a === 0 ? '<td class="x">✘</td>' : '<td class="z">–</td>').join('')}</tr>`).join('')}</table></div>`;
+      ${r.players.map(p => `<tr><td>${p.rank}</td><td class="n">${p.avatar} ${esc(p.name)}</td><td>${p.score}${TQ ? ' ' + icon('gem') : ''}</td><td>${p.correct}/${TQ ? p.tries : qs.length}</td>${HW ? `<td>${p.tries}</td><td>${p.minutes} ${tt('分', 'min')}</td>` : ''}${p.answers.map(a => a === 1 ? `<td class="y">${icon('check')}</td>` : a === 0 ? `<td class="x">${icon('x')}</td>` : '<td class="z">–</td>').join('')}</tr>`).join('')}</table></div>`;
   $('#csvBtn').onclick = () => {
     const rows = [[tt('名次', 'Rank'), tt('学生', 'Student'), tt('得分', 'Score'), tt('答对', 'Correct'), ...qs.map((_, i) => `Q${i + 1}`)], ...r.players.map(p => [p.rank, p.name, p.score, p.correct, ...p.answers.map(a => a === 1 ? 1 : a === 0 ? 0 : '')])];
     rows.push([], [tt('题目', 'Question'), tt('正确率', 'Accuracy'), tt('正确答案', 'Answer')], ...qs.map((q, i) => [q.prompt, acc[i] + '%', q.answerText]));

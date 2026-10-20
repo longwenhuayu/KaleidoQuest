@@ -1,5 +1,5 @@
 // 题包编辑器：通用题型 + 学科插件出题
-const { t, tt, api, $, esc, toast, SHAPES } = VA;
+const { t, tt, api, $, esc, toast, SHAPES, icon } = VA;
 const params = new URLSearchParams(location.search);
 let setId = params.get('id') ? +params.get('id') : null;
 let qs = [], dirty = false;
@@ -36,9 +36,9 @@ function qCard(q, i) {
   let body = '';
   if (q.type === 'mcq') {
     body = `<div class="opts">${q.options.map((o, k) => `<div class="opt opt${k}"><span class="shape">${SHAPES[k]}</span><input type="text" data-f="opt" data-k="${k}" value="${esc(o)}" maxlength="120" placeholder="${tt('选项', 'Option')} ${k + 1}"><label><input type="checkbox" data-f="ans" data-k="${k}"${q.answer.includes(k) ? ' checked' : ''}>${tt('正确', 'Correct')}</label>${q.options.length > 2 ? `<button class="x" data-f="delopt" data-k="${k}" title="−">×</button>` : ''}</div>`).join('')}</div>
-      ${q.options.length < 6 ? `<button class="btn ghost sm" data-f="addopt" style="margin-top:8px">＋ ${tt('加选项', 'Add option')}</button>` : ''}`;
+      ${q.options.length < 6 ? `<button class="btn ghost sm" data-f="addopt" style="margin-top:8px">${icon('plus')} ${tt('加选项', 'Add option')}</button>` : ''}`;
   } else if (q.type === 'tf') {
-    body = `<div class="tfrow"><button class="t${q.answer ? ' on' : ''}" data-f="tf" data-v="1">✔ ${tt('对', 'True')}</button><button class="f${!q.answer ? ' on' : ''}" data-f="tf" data-v="0">✘ ${tt('错', 'False')}</button></div>`;
+    body = `<div class="tfrow"><button class="t${q.answer ? ' on' : ''}" data-f="tf" data-v="1">${icon('check')} ${tt('对', 'True')}</button><button class="f${!q.answer ? ' on' : ''}" data-f="tf" data-v="0">${icon('x')} ${tt('错', 'False')}</button></div>`;
   } else if (q.type === 'input') {
     body = `<label class="field" style="margin-top:10px">${tt('正确答案（可以写几个，用 | 分开；数字 0.75 和 3/4 自动算相同）', 'Accepted answers (separate with | ; 0.75 = 3/4 automatically)')}<input class="in" data-f="input" value="${esc(q.answer.join(' | '))}" maxlength="400"></label>`;
   } else {
@@ -46,17 +46,17 @@ function qCard(q, i) {
   }
   return `<div class="card qc${err ? ' bad' : ''}" data-i="${i}">
     <div class="qh"><b>${i + 1}.</b><select data-f="type">${Object.entries(TYPES()).map(([k, v]) => `<option value="${k}"${q.type === k ? ' selected' : ''}>${v}</option>`).join('')}</select>
-      <select data-f="time">${TIMES.map(s => `<option value="${s}"${q.time === s ? ' selected' : ''}>⏱ ${s}s</option>`).join('')}</select>
-      <span class="sp"></span><button class="ib" data-f="up" title="↑">↑</button><button class="ib" data-f="down" title="↓">↓</button><button class="ib" data-f="dup" title="⧉">⧉</button><button class="ib" data-f="del" title="🗑">🗑</button></div>
+      <select data-f="time">${TIMES.map(s => `<option value="${s}"${q.time === s ? ' selected' : ''}>${s}s</option>`).join('')}</select>
+      <span class="sp"></span><button class="ib" data-f="up" title="${tt('上移', 'Move up')}">${icon('arrow-up')}</button><button class="ib" data-f="down" title="${tt('下移', 'Move down')}">${icon('arrow-down')}</button><button class="ib" data-f="dup" title="${tt('复制这题', 'Duplicate')}">${icon('copy')}</button><button class="ib" data-f="del" title="${tt('删除这题', 'Delete')}">${icon('trash-2')}</button></div>
     <textarea data-f="prompt" maxlength="300" placeholder="${tt('题目', 'Question')}">${esc(q.prompt)}</textarea>
     ${body}
     <details class="more"${q.speak || q.image || q.note ? ' open' : ''}><summary>${tt('更多：朗读、图片、讲解', 'More: audio, image, explanation')}</summary>
-      <div class="row"><label class="field" style="flex:2">🔊 ${tt('大屏朗读的内容（听力题）', 'Read aloud on the big screen (listening)')}<input class="in" data-f="speak" value="${esc(q.speak || '')}" maxlength="120"></label>
+      <div class="row"><label class="field" style="flex:2">${icon('volume-2')} ${tt('大屏朗读的内容（听力题）', 'Read aloud on the big screen (listening)')}<input class="in" data-f="speak" value="${esc(q.speak || '')}" maxlength="120"></label>
       <label class="field" style="flex:1">${tt('语言', 'Language')}<select class="in" data-f="lang">${LANGS.map(([v, n]) => `<option value="${v}"${(q.lang || 'zh-CN') === v ? ' selected' : ''}>${n}</option>`).join('')}</select></label></div>
-      <div class="row"><label class="field" style="flex:1">🖼 ${tt('图片网址（https://…）', 'Image URL (https://…)')}<input class="in" data-f="image" value="${esc(q.image || '')}" maxlength="500"></label></div>
-      <div class="row"><label class="field" style="flex:1">💡 ${tt('揭晓答案时显示的讲解', 'Explanation shown after the answer')}<input class="in" data-f="note" value="${esc(q.note || '')}" maxlength="300"></label></div>
+      <div class="row"><label class="field" style="flex:1">${icon('image')} ${tt('图片网址（https://…）', 'Image URL (https://…)')}<input class="in" data-f="image" value="${esc(q.image || '')}" maxlength="500"></label></div>
+      <div class="row"><label class="field" style="flex:1">${icon('lightbulb')} ${tt('揭晓答案时显示的讲解', 'Explanation shown after the answer')}<input class="in" data-f="note" value="${esc(q.note || '')}" maxlength="300"></label></div>
     </details>
-    ${err ? `<div class="qerr">⚠️ ${err}</div>` : ''}
+    ${err ? `<div class="qerr">${icon('triangle-alert')} ${err}</div>` : ''}
   </div>`;
 }
 function render() {
@@ -118,7 +118,7 @@ async function save() {
     dirty = false; toast(t('saved')); showPlay(); return true;
   } catch (x) { $('#saveErr').textContent = x.status === 401 ? t('err_login_required') : t('err_generic'); return false; }
 }
-function showPlay() { const p = $('#playBtn'); p.hidden = !setId || !qs.length; p.href = `/host?set=${setId}`; p.textContent = '▶ ' + t('play'); }
+function showPlay() { const p = $('#playBtn'); p.hidden = !setId || !qs.length; p.href = `/host?set=${setId}`; p.innerHTML = icon('play') + ' ' + t('play'); }
 $('#saveBtn').onclick = save; $('#saveTop').onclick = save;
 $('#playBtn').onclick = async e => { e.preventDefault(); if (dirty && !await save()) return; VA.pickMode(setId); };
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
@@ -128,7 +128,7 @@ window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); 
 const PLUGINS = window.VAPlugins || [];
 let activePlugin = null;
 function renderPanel() {
-  $('#ptabs').innerHTML = PLUGINS.map(p => `<button data-p="${p.id}"${p.id === activePlugin ? ' class="on"' : ''}>${p.icon} ${tt(p.name[0], p.name[1])}</button>`).join('');
+  $('#ptabs').innerHTML = PLUGINS.map(p => `<button data-p="${p.id}"${p.id === activePlugin ? ' class="on"' : ''}>${icon(p.icon)} ${tt(p.name[0], p.name[1])}</button>`).join('');
   const p = PLUGINS.find(x => x.id === activePlugin) || PLUGINS[0];
   if (p) p.panel($('#pbody'), addQuestions);
 }
@@ -137,12 +137,12 @@ $('#subject').addEventListener('change', () => { if (PLUGINS.some(p => p.id === 
 
 function renderStatic() {
   $('#lTitle').textContent = tt('题包名称', 'Title'); $('#lSubject').textContent = tt('学科', 'Subject'); $('#lGrade').textContent = tt('年级 / 课次（选填）', 'Grade / unit (optional)');
-  $('#lQuick').textContent = '⚡ ' + tt('快速出题', 'Quick create');
-  $('#saveTop').textContent = t('save'); $('#saveBtn').textContent = '💾 ' + t('save');
+  $('#lQuick').innerHTML = icon('zap') + ' ' + tt('快速出题', 'Quick create');
+  $('#saveTop').textContent = t('save'); $('#saveBtn').innerHTML = icon('save') + ' ' + t('save');
   const cur = $('#subject').value;
-  $('#subject').innerHTML = SUBJECTS.map(s => `<option value="${s}">${VA.SUBJECT_ICON[s]} ${t('s_' + s)}</option>`).join('');
+  $('#subject').innerHTML = SUBJECTS.map(s => `<option value="${s}">${t('s_' + s)}</option>`).join('');
   if (cur) $('#subject').value = cur;
-  $('#addbar').innerHTML = Object.entries(TYPES()).map(([k, v]) => `<button class="btn ghost sm" data-add="${k}">＋ ${v}</button>`).join('');
+  $('#addbar').innerHTML = Object.entries(TYPES()).map(([k, v]) => `<button class="btn ghost sm" data-add="${k}">${icon('plus')} ${v}</button>`).join('');
   $('#title').placeholder = tt('例如：小三第五课 生字复习', 'e.g. P3 Unit 5 vocabulary');
   showPlay();
 }

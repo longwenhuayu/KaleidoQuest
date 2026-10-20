@@ -1,7 +1,7 @@
 // 插件单元测试（在 Node 里模拟浏览器的 window / VA）
 const assert = require('assert');
 const fs = require('fs');
-global.window = global; global.VA = { tt: (zh) => zh, esc: s => s, toast() {} };
+global.window = global; global.VA = { tt: (zh) => zh, esc: s => s, toast() {}, icon: n => `<svg data-icon="${n}"></svg>` };
 global.document = { querySelector: () => null, createElement: () => ({}), head: { appendChild() {} } };
 for (const f of ['math', 'import', 'chinese']) eval(fs.readFileSync(`public/js/plugins/${f}.js`, 'utf8'));
 const Q = require('../lib/questions');
