@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css">
+<link rel="stylesheet" href="/css/app.css?v=20261020b">
 <style>
 html,body{height:100%}
 body{display:flex;flex-direction:column}
@@ -72,7 +72,7 @@ body{display:flex;flex-direction:column}
 <div id="fb"></div>
 
 <script src="/js/common.js"></script>
-<script src="/js/cards-ui.js"></script>
+<script src="/js/cards-ui.js?v=20261020b"></script>
 <script>
 const { tt, $, esc, SHAPES, sfx, speak, icon } = VA;
 const CODE = location.pathname.split('/').filter(Boolean).pop().toLowerCase();
@@ -89,7 +89,7 @@ const errText = e => (ERR[e.message] || (() => tt('出错了，请再试一次',
 
 const title = () => Array.isArray(info.title) ? tt(info.title[0], info.title[1]) : info.title;
 function intro() {
-  view('vIntro'); $('#topTitle').textContent = title();
+  view('vIntro'); $('#topTitle').textContent = title(); document.title = `${title()} · KaleidoQuest`;
   $('#iTitle').innerHTML = icon(TRY ? 'gamepad-2' : 'clipboard-list') + ' ' + esc(title());
   $('#iMeta').innerHTML = TRY ? `${esc(tt(info.desc[0], info.desc[1]))}<br>${tt(`共 ${info.total} 题 · 免登录试玩`, `${info.total} questions · no sign-up needed`)}` : `${info.teacher ? esc(tt(`${info.teacher}布置`, `From ${info.teacher}`)) + '<br>' : ''}${tt(`共 ${info.total} 题`, `${info.total} questions`)} · ${tt('截止', 'Due')} ${due(info.due)}${info.tries ? '<br>' + tt(`每人最多做 ${info.tries} 次`, `Up to ${info.tries} attempts`) : ''}`;
   $('#name').placeholder = TRY ? tt('你的名字（可以不填）', 'Your name (optional)') : tt('你的名字（老师看得懂的）', 'Your name (so your teacher knows you)');
