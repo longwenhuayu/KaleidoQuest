@@ -46,11 +46,13 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-ava
 - `lib/ai.js` AI 出题（SiliconFlow `deepseek-ai/DeepSeek-V3`，每位老师每天 30 次，记在内存里，重启清零）
 - `lib/cards.js` + `lib/data/hanzi-ety.json` 收集卡抽卡；`lib/admin.js` 管理后台；`lib/mail.js`
 - `lib/data/gallery.json` / `collections.json` 由 `scripts/build-gallery.js` 生成（**改题改这个脚本再跑**；用固定种子，新游戏只能往后加，否则旧游戏选项顺序会变）
-- 前端 `public/`：index（首页 + 登录弹窗）、gallery、teacher（+ js/classes.js）、edit（+ js/edit.js、plugins/ai|chinese|math|import）、host、play、hw（也服务 /try/:id）、report、cards、me（学生登录）、guide、poster、admin、reset
+- 前端 `public/`：index（首页 + 登录弹窗）、gallery、teacher（+ js/classes.js）、edit（+ js/edit.js、plugins/ai|chinese|math|import）、host、play、hw（也服务 /try/:id）、report、cards、me（学生登录）、guide、privacy（隐私说明）、poster、admin、reset
 - `public/js/common.js`：`VA`（i18n `tt(zh,en)`、`icon()`、`subjectIcon()`、`pickMode()`、`av()` 头像、`mascot()` 吉祥物…）；`js/cards-ui.js`（`KQC`）；`js/gallery-ui.js`（`KQG`）
 - 图片资源：`public/card-art/`（44 张卡）、`gallery-covers/`（37 张）、`mascot/`（hello/think/cheer/point/wait）、`loops/`（首页动图）、`icons.svg`（Lucide，`scripts/build-icons.js` 生成，加图标改那里）
 - 生成脚本：`scripts/gen-card-art.js`、`gen-gallery-covers.js`（Qwen-Image；key 从环境变量传，不写进仓库）、`record-loops.js`（录首页动图）
 - 海报：`poster/kaleidoquest-poster.png / .pdf`，网页版 `/poster`
+
+- **隐私说明 `/privacy` 写的都是实际做法**：改了数据收集、保存期限、第三方服务、cookie 或锁定规则时，要同步更新这一页和它的日期。
 
 ## 设计约定
 

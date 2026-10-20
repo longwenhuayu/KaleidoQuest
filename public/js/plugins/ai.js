@@ -16,6 +16,7 @@
       </div>
       <button class="btn main" id="aiGo">${icon('sparkles')} ${tt('AI 出题', 'Generate')}</button>
       <div class="muted" id="aiLeft" style="font-size:12px"></div>
+      <div class="muted" style="font-size:12px">${tt('填的主题和课文会发送给 AI 服务商（硅基流动）生成题目，请不要填写学生的个人资料。', 'Your topic and text are sent to our AI provider (SiliconFlow). Please don’t include students’ personal details.')} <a href="/privacy" target="_blank">${tt('隐私说明', 'Privacy')}</a></div>
       <div class="err" id="aiErr"></div>`;
     const $ = s => el.querySelector(s), err = $('#aiErr');
     // 题目语言默认跟学科走：新加坡的英文、数学、科学都用英文教

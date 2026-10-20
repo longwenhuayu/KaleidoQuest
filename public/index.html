@@ -120,7 +120,7 @@
   <div class="ggrid" id="galGrid"></div>
 </section>
 <section class="ready"><img class="mascot" src="/mascot/cheer.webp" width="150" height="150" alt=""><div><h2 id="readyH"></h2><p id="readyP"></p><div class="cta" style="margin-top:16px"><button class="btn main" type="button" id="signupBtn2"></button><a class="btn ghost" href="/guide" id="guideBtn2"></a></div></div></section>
-<div class="foot"><a href="/guide">老师上手指南 Teacher guide</a> · <a href="/me">学生登录 Student sign-in</a> · <a href="/cards">卡册 Card book</a> · © Vision Chinese Academy 文心书院 · <a href="https://visionchinese.com" target="_blank" rel="noopener">visionchinese.com</a></div>
+<div class="foot"><a href="/guide">老师上手指南 Teacher guide</a> · <a href="/me">学生登录 Student sign-in</a> · <a href="/cards">卡册 Card book</a> · <a href="/privacy">隐私说明 Privacy</a> · © Vision Chinese Academy 文心书院 · <a href="https://visionchinese.com" target="_blank" rel="noopener">visionchinese.com</a></div>
 
 <div class="auth" id="auth" hidden>
   <div class="panel" id="teacherPanel">
@@ -203,7 +203,7 @@ function renderText() {
   $('#fEmail').placeholder = t('email');
   $('#fBtn').textContent = tt('发送重设链接', 'Send reset link');
   $('#fBack').innerHTML = VA.icon('arrow-left') + ' ' + tt('返回登录', 'Back to log in');
-  $('#stuBox').innerHTML = `${tt('我是学生：', "I'm a student: ")}<a href="/play">${tt('加入游戏', 'join a game')}</a> · <a href="/me">${tt('学生登录', 'student sign-in')}</a>`;
+  $('#stuBox').innerHTML = `${tt('我是学生：', "I'm a student: ")}<a href="/play">${tt('加入游戏', 'join a game')}</a> · <a href="/me">${tt('学生登录', 'student sign-in')}</a><br><a href="/privacy" style="font-weight:600;font-size:13px">${tt('我们如何处理资料（隐私说明）', 'How we handle data (privacy notice)')}</a>`;
   if (me) { $('#loginBtn').textContent = tt('老师后台', 'Dashboard'); $('#signupBtn').innerHTML = VA.icon('presentation') + ' ' + tt('进入老师后台', 'Go to dashboard'); }
 }
 Promise.all([VA.api('/api/gallery'), VA.api('/api/collections')]).then(([g, c]) => { gallery = g; colls = c; renderText(); }).catch(() => {});

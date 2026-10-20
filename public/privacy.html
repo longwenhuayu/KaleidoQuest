@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e0b26">
+<title>KaleidoQuest · 隐私说明</title>
+<meta name="description" content="KaleidoQuest 隐私说明：我们收集哪些资料、怎么使用、交给哪些第三方，以及怎么删除。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css?v=20261021d">
+<style>
+header{display:flex;align-items:center;gap:12px;padding:16px 24px;max-width:1000px;margin:0 auto}
+header .sp{flex:1}
+.lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
+.doc{max-width:820px;margin:0 auto;padding:10px 20px 60px}
+.doc h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:clamp(30px,5vw,42px)}
+.doc .date{color:#a39dc9;font-size:14px;margin-top:6px}
+.sum{background:linear-gradient(120deg,rgba(124,58,237,.35),rgba(8,145,178,.25));border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:20px 24px;margin:22px 0 10px}
+.sum h2{font-size:18px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sum li{line-height:1.8;color:#ece9ff;font-size:15px}
+.sec{background:#fff;color:var(--ink);border-radius:18px;padding:20px 24px;margin-top:14px}
+.sec h2{font-size:19px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sec h2 .ic{color:var(--brand2)}
+.sec h3{font-size:15px;margin:12px 0 4px}
+.sec p,.sec li{font-size:15px;line-height:1.75;color:#3f3a6b}
+.sec ul{padding-left:20px}
+.sec b{color:var(--ink)}
+.sec a{font-weight:700}
+ul{margin:4px 0}
+</style>
+</head>
+<body class="home">
+<header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
+<main class="doc" id="doc"></main>
+<script src="/js/common.js?v=20261021d"></script>
+<script>
+const { tt, icon } = VA;
+const MAIL = 'longwenhuayu@gmail.com';
+const SUMMARY = () => [
+  tt('学生<b>不用注册</b>，玩游戏只需要一个昵称。', 'Students <b>don’t need accounts</b> — just a nickname to play.'),
+  tt('我们<b>不放广告、不卖资料</b>，也没有安装任何统计或追踪工具。', 'We show <b>no ads, sell no data</b>, and use no analytics or tracking tools.'),
+  tt('老师用 AI 出题时，填的主题或课文会发给 AI 服务商（硅基流动）；<b>学生的资料不会发出去</b>。', 'When a teacher uses AI questions, the topic or lesson text goes to our AI provider (SiliconFlow). <b>Student data is never sent.</b>'),
+  tt('老师可以随时自己删除题包、报告、作业和班级；要删除整个账号，写信给我们即可。', 'Teachers can delete their sets, reports, homework and classes at any time; email us to delete a whole account.')
+];
+// [图标, 标题, 内容]
+const SECTIONS = () => [
+  ['user', tt('我们收集哪些资料', 'What we collect'), tt(`
+    <h3>老师</h3><ul><li>注册时填的名字、邮箱和密码（密码只保存加密后的结果，我们看不到原文）。</li><li>你建的题包、开局后的成绩报告、布置的作业。</li><li>你建的班级：学生名字（由你填写）和系统生成的 4 位登录密码。</li><li>最近一次登录的时间。</li></ul>
+    <h3>学生</h3><ul><li>加入游戏或做作业时自己填的<b>昵称</b>，以及答题记录和分数。这些会出现在老师的报告里。</li><li>如果老师建了班级、学生用 4 位密码登录：还会保存他收集到的卡片。</li><li>免登录试玩（游戏库）的成绩只暂存在服务器内存里，大约 3 小时后清除，不写进数据库。</li></ul>
+    <h3>自动记录</h3><ul><li>服务器访问日志会记录访问者的 IP 地址和访问的页面，用来排查故障和防止滥用，按天轮换，保留 14 天。</li><li>为了防止暴力破解和刷接口，服务器会在内存里短暂记录 IP 地址的请求次数。</li></ul>`, `
+    <h3>Teachers</h3><ul><li>The name, email and password you sign up with (passwords are stored only as a secure hash — we can’t see them).</li><li>Your question sets, game reports and homework.</li><li>Classes you create: student names you type in and the 4-digit PINs we generate.</li><li>When you last signed in.</li></ul>
+    <h3>Students</h3><ul><li>The <b>nickname</b> they type to join a game or homework, plus their answers and scores. These appear in the teacher’s report.</li><li>If a teacher sets up a class and the student signs in with a PIN: the cards they collect.</li><li>Gallery “try it” plays are kept only in server memory, cleared after about 3 hours, and never written to the database.</li></ul>
+    <h3>Collected automatically</h3><ul><li>Server access logs record IP addresses and pages visited, for troubleshooting and abuse prevention. They rotate daily and are kept for 14 days.</li><li>To stop password guessing and spam, the server briefly counts requests per IP address in memory.</li></ul>`)],
+  ['shield', tt('资料用来做什么', 'How we use it'), tt(`<ul><li>让你登录、保存题包、开局、生成报告和作业成绩。</li><li>保存学生的卡册。</li><li>发送重设密码的邮件（只有你自己申请时才发）。</li><li>排查故障、防止滥用。</li></ul><p>我们<b>不会</b>用这些资料做广告、不会卖给别人，也不会给学生发任何邮件或消息。</p>`,
+    `<ul><li>To sign you in, save your sets, run games, and produce reports and homework results.</li><li>To keep students’ card books.</li><li>To send password-reset emails (only when you ask for one).</li><li>To fix problems and prevent abuse.</li></ul><p>We <b>do not</b> use this data for advertising, we never sell it, and we never email or message students.</p>`)],
+  ['link', tt('第三方服务', 'Third-party services'), tt(`<ul>
+    <li><b>硅基流动 SiliconFlow</b>（服务器在中国）：老师使用「AI 出题」时，我们把你填的学科、年级、主题或课文发给它，由 DeepSeek 模型生成题目。<b>不会发送任何学生资料或老师的账号资料。</b>请勿在课文里填写学生的个人资料。硅基流动如何处理这些内容，请参阅它的隐私政策。</li>
+    <li><b>Google Fonts、cdnjs、jsDelivr</b>：网页从这些服务加载字体和二维码、拼音等组件，你的浏览器会因此向它们发出请求（它们能看到你的 IP 地址）。</li>
+    <li><b>邮件</b>：重设密码的邮件由文心书院自己的邮件服务器（visionchinese.com）发出。</li></ul>
+    <p>收集卡插画、游戏封面和吉祥物是用 AI 预先生成的图片，网站运行时不会把任何资料发去生成图片。</p>`,
+    `<ul>
+    <li><b>SiliconFlow</b> (servers in China): when a teacher uses “AI questions”, we send the subject, level, topic or lesson text you enter so a DeepSeek model can write the questions. <b>No student data and no account details are sent.</b> Please don’t put students’ personal details in lesson text. See SiliconFlow’s own privacy policy for how it handles this content.</li>
+    <li><b>Google Fonts, cdnjs, jsDelivr</b>: pages load fonts and QR-code / pinyin components from these services, so your browser contacts them (they can see your IP address).</li>
+    <li><b>Email</b>: password-reset emails are sent from Vision Chinese Academy’s own mail server (visionchinese.com).</li></ul>
+    <p>Card art, game covers and the mascot were generated with AI ahead of time; using the site never sends any data out to make images.</p>`)],
+  ['lock', tt('Cookie 和本机存储', 'Cookies and browser storage'), tt(`<ul><li><b>登录 cookie</b>：老师登录保持 30 天，学生登录保持 180 天。只用来记住你已经登录，网页脚本读不到。</li>
+    <li><b>浏览器本机存储</b>：没登录的学生的卡册、上次用的昵称和头像、界面语言、是否静音、作业做到第几题。这些只存在那台设备的浏览器里，不会上传；清除浏览器资料就会删掉。</li>
+    <li>我们<b>没有</b>任何广告或统计用的 cookie。</li></ul>`,
+    `<ul><li><b>Sign-in cookies</b>: teachers stay signed in for 30 days, students for 180 days. They only remember that you are signed in and can’t be read by page scripts.</li>
+    <li><b>Browser storage</b>: for students who aren’t signed in — their card book, last nickname and avatar; plus language, mute setting and homework progress. This stays in that browser, is never uploaded, and is erased when browser data is cleared.</li>
+    <li>We use <b>no</b> advertising or analytics cookies.</li></ul>`)],
+  ['graduation-cap', tt('关于学生', 'About students'), tt(`<ul><li>KaleidoQuest 是给学校和老师在课堂上使用的。学生不需要邮箱，也不需要注册账号。</li>
+    <li>建议学生用名字或昵称，<b>不要用全名</b>。老师建班级时也请这样填写。</li>
+    <li>知道班级码的人能看到这个班的学生名字（看不到密码），所以请把班级码只发给自己的学生。</li>
+    <li>请老师按照所在学校的规定，告知学生和家长课堂上使用了这个平台。</li></ul>`,
+    `<ul><li>KaleidoQuest is for teachers and schools to use in class. Students need no email and no account.</li>
+    <li>Students should use a first name or nickname, <b>not a full name</b>. Please do the same when you set up a class.</li>
+    <li>Anyone with a class code can see that class’s student names (not their PINs), so share the code only with your students.</li>
+    <li>Teachers should let students and parents know about the platform as their school’s policy requires.</li></ul>`)],
+  ['trash-2', tt('保存多久、怎么删除', 'Keeping and deleting data'), tt(`<ul><li>老师可以随时在后台删除题包、赛后报告、作业、班级和学生；删除学生或班级时，他们的卡册一起删除。</li>
+    <li>要删除整个老师账号和所有相关资料，请写信到 <a href="mailto:${MAIL}">${MAIL}</a>。</li>
+    <li>数据库每天备份一次，备份保留 14 天，所以删除的资料最多会在备份里多留 14 天。</li>
+    <li>服务器访问日志保留 14 天。</li></ul>`,
+    `<ul><li>Teachers can delete sets, game reports, homework, classes and students at any time; removing a student or class also removes their card book.</li>
+    <li>To delete a whole teacher account and all its data, email <a href="mailto:${MAIL}">${MAIL}</a>.</li>
+    <li>The database is backed up daily and backups are kept for 14 days, so deleted data may remain in a backup for up to 14 more days.</li>
+    <li>Server access logs are kept for 14 days.</li></ul>`)],
+  ['shield', tt('安全', 'Security'), tt(`<ul><li>全站使用 HTTPS 加密连接。</li><li>密码用 scrypt 加密保存；重设密码的链接 1 小时内有效、只能用一次。</li><li>登录和学生密码都有尝试次数限制：学生密码错 8 次会锁住 1 小时，老师重设密码可以马上解锁。</li><li>每个老师只能看到自己的题包、报告、作业和班级。文心书院的管理员为了技术支持和防止滥用，可以查看账号资料。</li></ul>`,
+    `<ul><li>The whole site uses HTTPS.</li><li>Passwords are hashed with scrypt; reset links expire after 1 hour and work once.</li><li>Sign-in attempts are rate-limited: a student PIN locks for 1 hour after 8 wrong tries, and the teacher can unlock it at once by resetting the PIN.</li><li>Each teacher can see only their own sets, reports, homework and classes. Vision Chinese Academy administrators can view account data for support and abuse prevention.</li></ul>`)],
+  ['mail', tt('联系我们', 'Contact'), tt(`<p>想查看、更正或删除你的资料，或者对这份说明有任何问题，请写信到 <a href="mailto:${MAIL}">${MAIL}</a>。</p><p>KaleidoQuest 由文心书院 Vision Chinese Academy 开发和运营。这份说明如有更新，会在本页标明日期。</p>`,
+    `<p>To see, correct or delete your data, or with any question about this notice, email <a href="mailto:${MAIL}">${MAIL}</a>.</p><p>KaleidoQuest is built and run by Vision Chinese Academy. If this notice changes, the date on this page will be updated.</p>`)]
+];
+function render() {
+  document.title = tt('KaleidoQuest · 隐私说明', 'KaleidoQuest · Privacy notice');
+  document.getElementById('doc').innerHTML = `<h1>${tt('隐私说明', 'Privacy notice')}</h1><div class="date">${tt('更新日期：2026 年 10 月 21 日', 'Last updated: 21 October 2026')}</div>
+    <div class="sum"><h2>${icon('sparkles')} ${tt('简单说', 'In short')}</h2><ul>${SUMMARY().map(x => `<li>${x}</li>`).join('')}</ul></div>
+    ${SECTIONS().map(([ic, h, body]) => `<section class="sec"><h2>${icon(ic)} ${h}</h2>${body}</section>`).join('')}`;
+}
+document.addEventListener('langchange', render);
+render();
+</script>
+</body>
+</html>
