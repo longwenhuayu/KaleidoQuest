@@ -79,3 +79,8 @@ a.mp-card:hover{border-color:var(--brand2);background:#faf8ff}
 .kb-ety{background:rgba(255,255,255,.85);border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.6;text-align:left}
 .kb-ety b{display:block;color:var(--brand2);margin-bottom:2px}
 .kb-ety small{color:var(--muted)}
+.pw-wrap{position:relative;display:block}
+.pw-wrap input{width:100%;padding-right:46px}
+.pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:10px;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center}
+.pw-eye:hover{color:var(--brand2);background:#f3f0ff}
+.pw-eye:focus-visible{outline:2px solid var(--brand2);outline-offset:1px}

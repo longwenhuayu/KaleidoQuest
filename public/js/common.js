@@ -74,6 +74,22 @@
     document.body.appendChild(d);
   }
 
-  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
-  document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); });
+  // 密码框加「小眼睛」：点一下显示 / 隐藏密码
+  const EYE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const EYE_OFF = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a10.6 10.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
+  function passwordEyes(root = document) {
+    root.querySelectorAll('input[type=password]:not([data-eye])').forEach(inp => {
+      inp.dataset.eye = '1';
+      const wrap = document.createElement('span'); wrap.className = 'pw-wrap';
+      inp.parentNode.insertBefore(wrap, inp); wrap.appendChild(inp);
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'pw-eye';
+      const sync = () => { const shown = inp.type === 'text'; b.innerHTML = shown ? EYE_OFF : EYE; b.setAttribute('aria-pressed', shown); b.setAttribute('aria-label', shown ? tt('隐藏密码', 'Hide password') : tt('显示密码', 'Show password')); b.title = b.getAttribute('aria-label'); };
+      b.onclick = () => { const pos = inp.selectionStart; inp.type = inp.type === 'password' ? 'text' : 'password'; sync(); inp.focus(); try { inp.setSelectionRange(pos, pos); } catch (e) {} };
+      sync(); wrap.appendChild(b);
+      document.addEventListener('langchange', sync);
+    });
+  }
+
+  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
+  document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); passwordEyes(); });
 })();
