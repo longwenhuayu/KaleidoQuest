@@ -10,48 +10,68 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/app.css">
 <style>
-.hero{min-height:100vh;display:flex;flex-direction:column}
-.hero header{display:flex;align-items:center;padding:18px 24px}
+.hero{display:flex;flex-direction:column;overflow-x:clip}
+.hero header{display:flex;align-items:center;padding:18px 24px;max-width:1200px;margin:0 auto;width:100%}
 .hero header .sp{flex:1}
 .hero .logo{font-size:24px}
-.hero main{flex:1;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;max-width:1120px;margin:0 auto;padding:20px 24px 60px;width:100%}
-.pitch h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:clamp(40px,6vw,72px);line-height:1.02;letter-spacing:-1px}
-.pitch h1 span{background:linear-gradient(90deg,#fbbf24,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
-.pitch p{font-size:19px;opacity:.85;margin-top:16px;line-height:1.6;max-width:520px}
+.hero main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:56px;align-items:center;max-width:1120px;margin:0 auto;padding:48px 24px 64px;width:100%}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;letter-spacing:.4px;color:#e9e5ff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:6px 14px 6px 8px;margin-bottom:18px}
+.kicker i{width:18px;height:18px;border-radius:50%;background:conic-gradient(#7c3aed,#2563eb,#0891b2,#16a34a,#f59e0b,#ea580c,#db2777,#7c3aed)}
+.pitch h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:clamp(42px,6vw,76px);line-height:1.02;letter-spacing:-1px}
+.pitch h1 span{background:linear-gradient(90deg,#fbbf24,#fb7185 55%,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pitch p{font-size:19px;color:#ddd8f5;margin-top:18px;line-height:1.6;max-width:520px}
+.pitch #pitch2{font-size:16px;color:#b9b3dc;margin-top:8px}
 .subjects{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
-.subjects span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
-.panels{display:flex;flex-direction:column;gap:16px}
-.panel{background:#fff;color:var(--ink);border-radius:22px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
-.panel h2{font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.subjects span{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 11px;font-weight:700;font-size:13px;color:#f1efff}
+.subjects .ic{color:var(--sc)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;align-items:center}
+.cta .btn{font-size:16px;padding:13px 22px}
+.cta .ghost{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
+.panels{display:flex;flex-direction:column;gap:16px;position:relative;isolation:isolate}
+.panels::before{content:"";position:absolute;inset:8% -6%;z-index:-1;border-radius:50%;background:conic-gradient(from 30deg,#7c3aed,#2563eb,#0891b2,#16a34a,#f59e0b,#ea580c,#db2777,#7c3aed);filter:blur(70px);opacity:.28}
+.panel{background:#fff;color:var(--ink);border-radius:22px;padding:22px 24px;box-shadow:0 24px 60px rgba(5,3,30,.45)}
+.panel h2{font-size:17px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.panel h2 .ic{color:var(--brand2)}
+#joinForm{border-top:5px solid var(--accent)}
+#teacherPanel{border-top:5px solid var(--brand2)}
 .pin{display:flex;gap:10px}
-.pin input{flex:1;font-size:26px;font-weight:900;letter-spacing:6px;text-align:center;padding:12px;border:2px solid var(--line);border-radius:14px;min-width:0}
-.pin input:focus{outline:none;border-color:var(--accent)}
-.tabs{display:flex;gap:6px;margin-bottom:12px}
-.tabs button{flex:1;border:0;border-radius:10px;padding:9px;font-weight:800;background:#f3f0ff;cursor:pointer}
-.tabs button.on{background:var(--brand2);color:#fff}
+.pin input{flex:1;width:100%;font-size:26px;font-weight:900;letter-spacing:6px;text-align:center;padding:12px;border:2px solid var(--line);border-radius:14px;min-width:0;background:#faf9ff}
+.pin input::placeholder{letter-spacing:2px;font-size:20px;color:#a8a3c7}
+.pin input:focus{outline:none;border-color:var(--accent);background:#fff}
+.tabs{display:flex;gap:4px;margin-bottom:12px;background:#f3f0ff;border-radius:12px;padding:4px}
+.tabs button{flex:1;border:0;border-radius:9px;padding:8px;font-weight:800;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button.on{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(30,27,75,.15)}
 .form{display:grid;gap:10px}
 .forgot{background:none;border:0;color:var(--brand2);font-weight:700;font-size:13px;cursor:pointer;justify-self:center}
-.gal{max-width:1120px;margin:0 auto;padding:10px 24px 50px}
+/* 游戏库 */
+.gal{max-width:1120px;margin:0 auto;padding:8px 24px 56px}
+.gal-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .gal h2{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:32px;display:flex;align-items:center;gap:10px}
-.gal .sub{opacity:.82;margin:6px 0 18px;line-height:1.6}
-.gal .more{text-align:center;margin-top:20px}
-.tryme{display:inline-flex;margin-top:22px}
-.foot{text-align:center;padding:16px;font-size:13px;opacity:.7}
+.gal .sub{color:#c9c3ea;margin-top:6px;line-height:1.6}
+.gal .ggrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gall{border:1.5px dashed rgba(255,255,255,.3);border-radius:18px;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:22px;color:#fff;text-decoration:none;background:rgba(255,255,255,.04);transition:background .15s,border-color .15s}
+.gall:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.55)}
+.gall b{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:24px;display:flex;align-items:center;gap:8px}
+.gall span{color:#c9c3ea;font-size:14px;line-height:1.6}
+.foot{text-align:center;padding:20px 16px 28px;font-size:13px;color:#a39dc9;border-top:1px solid rgba(255,255,255,.08)}
 .foot a{color:#c4b5fd}
-.lang{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
-@media (max-width:860px){.hero main{grid-template-columns:1fr;gap:26px}.pitch{text-align:center}.pitch p{margin:14px auto 0}.subjects{justify-content:center}}
+.lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
+@media (max-width:980px){.gal .ggrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.hero main{grid-template-columns:minmax(0,1fr);gap:30px;padding:20px 16px 44px}.pitch{text-align:center}.pitch p{margin-left:auto;margin-right:auto}.subjects,.cta{justify-content:center}.kicker{margin-bottom:14px}.hero header{padding:14px 16px}.gal{padding:0 16px 44px}.gal h2{font-size:26px}}
+@media (max-width:600px){.gal .ggrid{grid-template-columns:minmax(0,1fr)}.pitch p{font-size:17px}.panel{padding:20px 18px}}
 </style>
 </head>
-<body class="night">
+<body class="home">
 <div class="hero">
   <header><a class="logo" href="/"><i></i><span>KaleidoQuest<small>by Vision Chinese Academy</small></span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
   <main>
     <div class="pitch">
+      <div class="kicker" id="kicker"><i></i><span></span></div>
       <h1>Every subject<br><span>is a quest.</span></h1>
       <p data-i="tagline"></p>
       <p id="pitch2" style="font-size:16px"></p>
       <div class="subjects" id="subjects"></div>
-      <a class="btn go tryme" href="#gallery" id="tryLink"></a>
+      <div class="cta"><a class="btn go" href="#gallery" id="tryLink"></a><a class="btn ghost" href="/gallery" id="galLink"></a></div>
     </div>
     <div class="panels">
       <form class="panel" id="joinForm">
@@ -82,9 +102,8 @@
   </main>
 </div>
 <section class="gal" id="gallery">
-  <h2 id="galH"></h2><div class="sub" id="galSub"></div>
+  <div class="gal-head"><div><h2 id="galH"></h2><div class="sub" id="galSub"></div></div></div>
   <div class="ggrid" id="galGrid"></div>
-  <div class="more"><a class="btn ghost" href="/gallery" id="galAll" style="background:rgba(255,255,255,.12);color:#fff"></a></div>
 </section>
 <div>
   <div class="foot">© Vision Chinese Academy 文心书院 · <a href="https://visionchinese.com" target="_blank" rel="noopener">visionchinese.com</a></div>
@@ -96,7 +115,10 @@ const { t, tt, api, $ } = VA;
 let tab = 'login';
 function renderText() {
   $('#pitch2').textContent = tt('华文、数学、英文、科学都能用。贴上本课内容一键出题，学生用手机扫码加入，不用注册。', 'Chinese, Math, English, Science — paste your lesson, get a quiz in seconds. Students join by QR, no sign-up.');
-  $('#subjects').innerHTML = [['chinese', tt('华文', 'Chinese')], ['math', tt('数学', 'Math')], ['english', tt('英文', 'English')], ['science', tt('科学', 'Science')], ['malay', tt('马来文', 'Malay')], ['tamil', tt('淡米尔文', 'Tamil')]].map(([s, n]) => `<span>${VA.icon(VA.SUBJECT_ICON[s])} ${n}</span>`).join('');
+  // 深色底上用浅一档的学科色
+  const SC = { chinese: '#fda4af', math: '#93c5fd', english: '#c4b5fd', science: '#86efac', malay: '#fcd34d', tamil: '#fdba74' };
+  $('#subjects').innerHTML = [['chinese', tt('华文', 'Chinese')], ['math', tt('数学', 'Math')], ['english', tt('英文', 'English')], ['science', tt('科学', 'Science')], ['malay', tt('马来文', 'Malay')], ['tamil', tt('淡米尔文', 'Tamil')]].map(([s, n]) => `<span style="--sc:${SC[s]}">${VA.icon(VA.SUBJECT_ICON[s])} ${n}</span>`).join('');
+  $('#kicker span').textContent = tt('免费 · 学生免注册 · 手机扫码加入', 'Free · No student sign-up · Join by QR');
   $('#authBtn').textContent = t(tab);
   $('#cardsLink').innerHTML = VA.icon('layers') + ' ' + tt('我的卡册', 'My card book');
   $('#forgotLink').textContent = tt('忘记密码？', 'Forgot password?');
@@ -105,12 +127,13 @@ function renderText() {
   $('#fEmail').placeholder = t('email');
   $('#fBtn').textContent = tt('发送重设链接', 'Send reset link');
   $('#fBack').innerHTML = VA.icon('arrow-left') + ' ' + tt('返回登录', 'Back to log in');
-  $('#tryLink').innerHTML = VA.icon('play') + ' ' + tt('先免登录试玩一个游戏', 'Try a game — no sign-up');
+  $('#tryLink').innerHTML = VA.icon('play') + ' ' + tt('免登录试玩', 'Try a game');
+  $('#galLink').innerHTML = VA.icon('layout-grid') + ' ' + tt('游戏库', 'Gallery');
   $('#galH').innerHTML = VA.icon('layout-grid') + ' ' + tt('游戏库：直接开玩', 'Gallery: play right now');
   $('#galSub').textContent = tt('每个学科挑一个给你先试试。学生免登录单人试玩，老师可以直接投屏全班一起玩。', 'One pick from each subject. Students try them solo, no sign-up; teachers can host one for the whole class.');
-  $('#galAll').innerHTML = tt(`查看全部 ${gallery.length || 25} 个游戏`, `See all ${gallery.length || 25} games`) + ' ' + VA.icon('arrow-right');
-  // 每个学科挑第一个
-  $('#galGrid').innerHTML = gallery.filter((g, i) => gallery.findIndex(x => x.subject === g.subject) === i).map(KQG.card).join('');
+  // 每个学科挑第一个，最后一格是「查看全部」
+  $('#galGrid').innerHTML = gallery.length ? gallery.filter((g, i) => gallery.findIndex(x => x.subject === g.subject) === i).map(KQG.card).join('') +
+    `<a class="gall" href="/gallery"><b>${tt(`全部 ${gallery.length} 个游戏`, `All ${gallery.length} games`)} ${VA.icon('arrow-right')}</b><span>${tt('华文、数学、英文、科学、综合，每科 5 个。复制到自己的题包里还能改。', 'Chinese, Math, English, Science and General — 5 each. Copy any one to edit it.')}</span></a>` : '';
 }
 let gallery = [];
 VA.api('/api/gallery').then(d => { gallery = d; renderText(); }).catch(() => {});
