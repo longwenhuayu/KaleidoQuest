@@ -2,7 +2,7 @@
 
 > 续做前先读这份；结束前把新进展、新坑、待办更新到这里。最后更新：2026-10-21
 
-**KaleidoQuest — Every subject is a quest.** 课堂实时答题游戏，by Vision Chinese Academy 文心书院（2026-10-21 曾短暂改名 Dragon Chinese，已恢复）。页脚和海报底部写「Copyright © Vision Chinese Academy」。
+**KaleidoQuest — Every subject is a quest.** 课堂实时答题游戏，by Vision Chinese Academy 文心书院（2026-10-21 曾短暂改名 Dragon Chinese，已恢复）。页脚和海报底部写「© Vision Chinese Academy 文心书院 · visionchinese.com」。
 线上 https://kaleido.quest · 负责人 朱海滨（回复用中文）。本地目录叫 `vision-arena`（旧名 Vision Arena），对外一律用 KaleidoQuest。
 
 ## 线上环境
