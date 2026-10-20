@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>KaleidoQuest · 管理后台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+.ttabs{display:flex;gap:16px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.ttabs button{border:0;background:none;font-weight:800;font-size:16px;padding:10px 2px;border-bottom:3px solid transparent;cursor:pointer;color:var(--muted);margin-bottom:-1px}
+.ttabs button.on{color:var(--ink);border-color:var(--brand2)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.tile{padding:14px 16px}
+.tile b{display:block;font-family:"Fredoka",sans-serif;font-size:30px;color:var(--ink)}
+.tile span{font-size:13px;color:var(--muted);font-weight:700}
+.tile small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chart h3{font-size:15px;margin-bottom:2px}
+.chart .sub{font-size:12px;color:var(--muted);margin-bottom:8px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .bar{fill:var(--brand2);pointer-events:none}
+.chart .hit{fill:transparent;cursor:default}
+.chart .hit:hover+.bar,.chart .bar.hl{fill:#5b21b6}
+.chart .grid line{stroke:#ece9f8}
+.chart .ax{font-size:10px;fill:var(--muted)}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:6px 9px;border-radius:8px;z-index:50;white-space:nowrap}
+details.tbl{margin-top:12px}
+details.tbl summary{cursor:pointer;color:var(--muted);font-weight:700;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left;white-space:nowrap}
+th{font-size:12px;color:var(--muted);font-weight:800;background:#faf9ff}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.click{cursor:pointer}
+tr.click:hover td{background:#faf8ff}
+.badge{font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px}
+.badge.ok{background:#dcfce7;color:#166534}.badge.off{background:#fee2e2;color:#991b1b}.badge.adm{background:#ede9fe;color:#5b21b6}
+.scroll{overflow:auto;border:1px solid var(--line);border-radius:14px}
+.drawer{position:fixed;inset:0;z-index:100;background:rgba(30,27,75,.4);display:flex;justify-content:flex-end}
+.drawer .panel{width:min(620px,100%);height:100%;background:var(--bg);overflow:auto;padding:22px;animation:slidein .2s}
+@keyframes slidein{from{transform:translateX(40px);opacity:0}}
+.drawer h2{font-size:22px}
+.drawer h3{font-size:15px;margin:18px 0 8px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.li{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;font-size:14px}
+.li .sp{flex:1}
+.li a,.li button{font-size:12px}
+.qv{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px;font-size:14px}
+.qv small{color:var(--muted)}
+.search{max-width:360px;margin-bottom:12px}
+@media (max-width:760px){.charts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topbar"><a class="logo" href="/teacher"><i></i><span>KaleidoQuest</span></a><span class="tag" style="margin-left:6px">🛡 Admin</span><span class="sp"></span><span class="muted" id="who"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher" id="toDash"></a></div>
+<div class="wrap">
+  <div class="ttabs"><button data-v="ov" class="on"></button><button data-v="tc"></button><button data-v="sys"></button></div>
+  <section id="vov"></section>
+  <section id="vtc" hidden><input class="in search" id="q"><div class="scroll"><table id="tTable"></table></div></section>
+  <section id="vsys" hidden></section>
+</div>
+<div class="tip" id="tip" hidden></div>
+<script src="/js/common.js"></script>
+<script>
+const { t, tt, api, $, esc, toast } = VA;
+let me = null, OV = null, TC = [], SYS = null, tab = 'ov';
+const date = ms => ms ? new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '–';
+const ago = ms => { if (!ms) return tt('从未', 'never'); const m = (Date.now() - ms) / 6e4; return m < 60 ? tt(`${m | 0} 分钟前`, `${m | 0} min ago`) : m < 1440 ? tt(`${m / 60 | 0} 小时前`, `${m / 60 | 0} h ago`) : tt(`${m / 1440 | 0} 天前`, `${m / 1440 | 0} d ago`); };
+
+function staticText() {
+  const [a, b, c] = document.querySelectorAll('.ttabs button');
+  a.textContent = tt('总览', 'Overview'); b.textContent = tt('老师', 'Teachers'); c.textContent = tt('系统', 'System');
+  $('#toDash').textContent = tt('回老师后台', 'Teacher dashboard');
+  $('#q').placeholder = tt('搜索邮箱或名字', 'Search email or name');
+}
+
+// 单系列柱状图：一个颜色，柱顶圆角，悬停显示数字
+function bars(days, key, label) {
+  const W = 520, H = 170, L = 28, B = 22, bw = (W - L) / days.length;
+  const max = Math.max(1, ...days.map(d => d[key]));
+  const step = max <= 5 ? 1 : Math.ceil(max / 4);
+  const ticks = []; for (let v = 0; v <= max; v += step) ticks.push(v);
+  const y = v => (H - B) - (v / (ticks.at(-1) || 1)) * (H - B - 8);
+  const g = ticks.map(v => `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${v}</text>`).join('');
+  const marks = days.map((d, i) => {
+    const x = L + i * bw + 1, w = Math.max(2, bw - 2), top = y(d[key]), h = (H - B) - top;
+    const r = Math.min(4, w / 2, h);
+    const path = h <= 0 ? '' : `M${x},${H - B} V${top + r} Q${x},${top} ${x + r},${top} H${x + w - r} Q${x + w},${top} ${x + w},${top + r} V${H - B} Z`;
+    return `<rect class="hit" x="${L + i * bw}" y="0" width="${bw}" height="${H - B}" data-tip="${esc(d.day.slice(5))} · ${label} ${d[key]}"/><path class="bar" d="${path}"/>`;
+  }).join('');
+  const xl = days.map((d, i) => i % 5 === 4 || i === days.length - 1 ? `<text class="ax" x="${L + i * bw + bw / 2}" y="${H - 6}" text-anchor="middle">${d.day.slice(5)}</text>` : '').join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}"><g class="grid">${g}</g>${marks}${xl}</svg>`;
+}
+document.addEventListener('mousemove', e => {
+  const h = e.target.closest && e.target.closest('[data-tip]'), tip = $('#tip');
+  if (!h) { tip.hidden = true; return; }
+  tip.hidden = false; tip.textContent = h.dataset.tip;
+  tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.clientX + 12) + 'px'; tip.style.top = (e.clientY - 34) + 'px';
+});
+
+function renderOv() {
+  const o = OV; if (!o) return;
+  const T = o.totals;
+  $('#vov').innerHTML = `<div class="tiles">
+    <div class="card tile"><b>${T.teachers}</b><span>${tt('老师总数', 'Teachers')}</span><small>${tt(`本周新增 ${o.week.teachers}`, `+${o.week.teachers} this week`)}</small></div>
+    <div class="card tile"><b>${T.activeWeek}</b><span>${tt('7 天内活跃老师', 'Active (7 days)')}</span></div>
+    <div class="card tile"><b>${T.games}</b><span>${tt('累计开局', 'Games played')}</span><small>${tt(`本周 ${o.week.games} · 今天 ${o.today.games}`, `${o.week.games} this week · ${o.today.games} today`)}</small></div>
+    <div class="card tile"><b>${T.participations}</b><span>${tt('累计学生人次', 'Student plays')}</span><small>${tt(`本周 ${o.week.students}`, `${o.week.students} this week`)}</small></div>
+    <div class="card tile"><b>${T.sets}</b><span>${tt('题包', 'Question sets')}</span></div>
+    <div class="card tile"><b>${T.assignments}</b><span>${tt('作业', 'Homework')}</span></div></div>
+    <div class="charts">
+      <div class="card chart"><h3>${tt('每天开局数', 'Games per day')}</h3><div class="sub">${tt('最近 30 天 · 课堂擂台和夺宝', 'Last 30 days · classic & treasure')}</div>${bars(o.days, 'games', tt('开局', 'games'))}</div>
+      <div class="card chart"><h3>${tt('每天学生人次', 'Student plays per day')}</h3><div class="sub">${tt('最近 30 天 · 课堂参与 + 作业完成', 'Last 30 days · in class + homework')}</div>${bars(o.days, 'students', tt('人次', 'plays'))}</div>
+    </div>
+    <details class="tbl"><summary>${tt('查看每天的数字', 'Show daily numbers')}</summary><div class="scroll" style="margin-top:8px"><table><tr><th>${tt('日期', 'Date')}</th><th class="num">${tt('开局', 'Games')}</th><th class="num">${tt('学生人次', 'Student plays')}</th><th class="num">${tt('新老师', 'New teachers')}</th></tr>${[...o.days].reverse().map(d => `<tr><td>${d.day}</td><td class="num">${d.games}</td><td class="num">${d.students}</td><td class="num">${d.teachers}</td></tr>`).join('')}</table></div></details>`;
+}
+
+function renderTc() {
+  $('#tTable').innerHTML = `<tr><th>${tt('老师', 'Teacher')}</th><th>${tt('注册', 'Joined')}</th><th>${tt('最后活跃', 'Last active')}</th><th class="num">${tt('题包', 'Sets')}</th><th class="num">${tt('开局', 'Games')}</th><th class="num">${tt('作业', 'HW')}</th><th>${tt('状态', 'Status')}</th></tr>` +
+    (TC.length ? TC.map(x => `<tr class="click" data-id="${x.id}"><td><b>${esc(x.name)}</b><br><small class="muted">${esc(x.email)}</small></td><td>${date(x.created)}</td><td>${ago(x.last_seen)}</td><td class="num">${x.sets}</td><td class="num">${x.games}</td><td class="num">${x.assignments}</td><td>${x.admin ? `<span class="badge adm">${tt('管理员', 'Admin')}</span> ` : ''}${x.disabled ? `<span class="badge off">${tt('已停用', 'Disabled')}</span>` : `<span class="badge ok">${tt('正常', 'Active')}</span>`}</td></tr>`).join('')
+      : `<tr><td colspan="7" class="muted" style="text-align:center;padding:30px">${tt('没有找到', 'No match')}</td></tr>`);
+}
+let qTimer = 0;
+$('#q').oninput = () => { clearTimeout(qTimer); qTimer = setTimeout(async () => { TC = await api('/api/admin/teachers?q=' + encodeURIComponent($('#q').value)); renderTc(); }, 250); };
+$('#tTable').onclick = e => { const r = e.target.closest('tr[data-id]'); if (r) openTeacher(+r.dataset.id); };
+
+async function openTeacher(id) {
+  const d = await api('/api/admin/teachers/' + id);
+  document.querySelector('.drawer')?.remove();
+  const el = document.createElement('div'); el.className = 'drawer';
+  const self = d.id === me.id;
+  el.innerHTML = `<div class="panel">
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(d.name)}</h2><button class="btn ghost sm" data-x>✕</button></div>
+    <div class="muted">${esc(d.email)} · ${tt('注册', 'Joined')} ${date(d.created)} · ${tt('最后活跃', 'Last active')} ${ago(d.last_seen)}</div>
+    <div class="acts">${d.disabled ? '' : `<button class="btn ghost sm" data-a="reset">✉️ ${tt('发重设密码邮件', 'Send reset email')}</button>`}
+      ${self ? `<span class="muted" style="font-size:13px">${tt('（这是你自己的账号）', '(your own account)')}</span>` : `<button class="btn ghost sm" data-a="disable">${d.disabled ? tt('✅ 重新启用', '✅ Enable') : tt('⛔ 停用账号', '⛔ Disable')}</button><button class="btn ghost sm danger" data-a="del">🗑 ${tt('删除账号和全部内容', 'Delete account & content')}</button>`}</div>
+    <h3>📚 ${tt('题包', 'Question sets')}（${d.sets.length}）</h3>${d.sets.map(s => `<div class="li"><span>${VA.SUBJECT_ICON[s.subject] || '📚'}</span><b>${esc(s.title)}</b><span class="muted">${s.n} ${t('questions')}</span><span class="sp"></span><button class="btn ghost sm" data-set="${s.id}">${tt('查看题目', 'View')}</button></div>`).join('') || `<div class="muted">–</div>`}
+    <h3>🎮 ${tt('游戏', 'Games')}（${d.games.length}）</h3>${d.games.map(g => `<div class="li"><span>${g.mode === 'treasure' ? '💎' : '⚔️'}</span><b>${esc(g.title)}</b><span class="muted">${g.players} ${t('players')} · ${date(g.ended)}</span><span class="sp"></span><a class="btn ghost sm" href="/report?admin=1&id=${g.id}" target="_blank">${tt('报告', 'Report')}</a></div>`).join('') || `<div class="muted">–</div>`}
+    <h3>📝 ${tt('作业', 'Homework')}（${d.assignments.length}）</h3>${d.assignments.map(a => `<div class="li"><span>📝</span><b>${esc(a.title)}</b><span class="muted">${tt(`${a.done} 人完成`, `${a.done} done`)} · ${tt('截止', 'Due')} ${date(a.due)}${a.closed ? ' · ' + tt('已关闭', 'closed') : ''}</span></div>`).join('') || `<div class="muted">–</div>`}
+    <div id="setView"></div></div>`;
+  el.onclick = async e => {
+    if (e.target === el || e.target.closest('[data-x]')) return el.remove();
+    const s = e.target.closest('[data-set]');
+    if (s) {
+      const set = await api('/api/admin/sets/' + s.dataset.set);
+      const TY = { mcq: tt('选择', 'MCQ'), tf: tt('判断', 'T/F'), input: tt('填空', 'Type'), order: tt('排序', 'Order') };
+      el.querySelector('#setView').innerHTML = `<h3>🔍 ${esc(set.title)}</h3>` + set.questions.map((q, i) => `<div class="qv"><b>${i + 1}. ${esc(q.prompt || q.speak)}</b> <small>${TY[q.type]} · ${q.time}s</small><br><small>${q.type === 'mcq' ? q.options.map((o, k) => q.answer.includes(k) ? `<b>✔ ${esc(o)}</b>` : esc(o)).join(' · ') : q.type === 'tf' ? (q.answer ? '✔' : '✘') : q.type === 'input' ? q.answer.map(esc).join(' | ') : q.options.map(esc).join(' → ')}</small></div>`).join('');
+      el.querySelector('#setView').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    const b = e.target.closest('[data-a]'); if (!b) return;
+    try {
+      if (b.dataset.a === 'reset') { await api(`/api/admin/teachers/${id}/reset`, { method: 'POST' }); toast(tt('已发送重设密码邮件', 'Reset email sent')); }
+      if (b.dataset.a === 'disable') { await api(`/api/admin/teachers/${id}/disable`, { method: 'POST', body: { disabled: !d.disabled } }); await refreshTc(); openTeacher(id); }
+      if (b.dataset.a === 'del') {
+        if (!b.dataset.armed) { b.dataset.armed = 1; b.textContent = tt('⚠️ 再点一次：永久删除，无法恢复', '⚠️ Click again — permanent'); setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = '🗑 ' + tt('删除账号和全部内容', 'Delete account & content'); } }, 3500); return; }
+        await api(`/api/admin/teachers/${id}`, { method: 'DELETE' }); el.remove(); await refreshTc(); toast(tt('已删除', 'Deleted'));
+      }
+    } catch (x) { toast(x.message === 'mail_failed' ? tt('邮件发送失败', 'Email failed') : t('err_generic')); }
+  };
+  document.body.appendChild(el);
+}
+async function refreshTc() { TC = await api('/api/admin/teachers?q=' + encodeURIComponent($('#q').value)); renderTc(); }
+
+function renderSys() {
+  const s = SYS; if (!s) return;
+  const up = s.uptime > 86400 ? tt(`${s.uptime / 86400 | 0} 天`, `${s.uptime / 86400 | 0} d`) : tt(`${s.uptime / 3600 | 0} 小时`, `${s.uptime / 3600 | 0} h`);
+  $('#vsys').innerHTML = `<div class="tiles">
+    <div class="card tile"><b>${s.live}</b><span>${tt('进行中的房间', 'Live rooms')}</span></div>
+    <div class="card tile"><b>${s.online}</b><span>${tt('在线学生', 'Students online')}</span></div>
+    <div class="card tile"><b>${s.memory} MB</b><span>${tt('内存', 'Memory')}</span></div>
+    <div class="card tile"><b>${up}</b><span>${tt('已运行', 'Uptime')}</span><small>Node ${esc(s.node)}</small></div>
+    <div class="card tile"><b>${(s.dbSize / 1024).toFixed(0)} KB</b><span>${tt('数据库', 'Database')}</span></div>
+    <div class="card tile"><b>${s.backup ? ago(s.backup.at) : '–'}</b><span>${tt('最近备份', 'Last backup')}</span><small>${s.backup ? tt(`共 ${s.backup.count} 份 · 保留 14 天`, `${s.backup.count} kept · 14 days`) : tt('还没有备份', 'No backups yet')}</small></div>
+    <div class="card tile"><b>${s.mail ? '✅' : '⚠️'}</b><span>${tt('找回密码邮件', 'Reset emails')}</span><small>${s.mail ? tt('已配置', 'Configured') : tt('未配置 SMTP', 'SMTP not set')}</small></div></div>
+    <button class="btn ghost sm" id="sysRefresh">↻ ${tt('刷新', 'Refresh')}</button>`;
+  $('#sysRefresh').onclick = loadSys;
+}
+async function loadSys() { SYS = await api('/api/admin/system'); renderSys(); }
+
+document.querySelectorAll('.ttabs button').forEach(b => b.onclick = () => {
+  tab = b.dataset.v; document.querySelectorAll('.ttabs button').forEach(x => x.classList.toggle('on', x === b));
+  ['ov', 'tc', 'sys'].forEach(v => $('#v' + v).hidden = v !== tab);
+  if (tab === 'sys') loadSys();
+});
+document.addEventListener('langchange', () => { staticText(); renderOv(); renderTc(); renderSys(); });
+(async () => {
+  try { me = await api('/api/me'); } catch (e) { location.href = '/'; return; }
+  if (!me.isAdmin) { document.querySelector('.wrap').innerHTML = `<div class="card" style="text-align:center;padding:40px">${tt('这个账号没有管理员权限。', 'This account is not an admin.')}</div>`; return; }
+  $('#who').textContent = me.name; staticText();
+  [OV, TC] = await Promise.all([api('/api/admin/overview'), api('/api/admin/teachers')]);
+  renderOv(); renderTc();
+})();
+</script>
+</body>
+</html>

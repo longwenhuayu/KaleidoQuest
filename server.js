@@ -37,6 +37,7 @@ app.post('/api/login', (req, res) => {
   const email = String(req.body.email || '').trim().toLowerCase();
   const t = q('SELECT * FROM teachers WHERE email = ?').get(email);
   if (!t || !A.verify(String(req.body.password || ''), t.pw)) { A.recordFail(req.ip); return res.status(401).json({ error: 'wrong' }); }
+  if (t.disabled) return res.status(403).json({ error: 'disabled' });
   A.startSession(res, t.id);
   res.json({ id: t.id, email: t.email, name: t.name });
 });
@@ -57,18 +58,21 @@ app.post('/api/forgot', async (req, res) => {
   if (resetLimited('ip:' + req.ip, 10) || resetLimited('em:' + email, 3)) return res.status(429).json({ error: 'too_many' });
   // 不管邮箱有没有注册都回一样的结果，免得被人拿来探测
   res.json({ ok: true });
-  const t = q('SELECT id, name, email FROM teachers WHERE email = ?').get(email);
+  const t = q('SELECT id, name, email FROM teachers WHERE email = ? AND disabled = 0').get(email);
   if (!t) return;
+  sendReset(t, req).catch(e => console.error('reset mail failed', e.message));
+});
+async function sendReset(t, req) {
   const token = crypto.randomBytes(32).toString('base64url');
   q('DELETE FROM resets WHERE teacher_id = ?').run(t.id);
   q('INSERT INTO resets (token_hash, teacher_id, expires) VALUES (?, ?, ?)').run(sha(token), t.id, Date.now() + 3600e3);
   const link = `${process.env.APP_URL || `${req.protocol}://${req.get('host')}`}/reset?token=${token}`;
-  mail.send({
+  await mail.send({
     to: t.email,
     subject: '重设 KaleidoQuest 密码 / Reset your KaleidoQuest password',
     text: `${t.name} 您好：\n\n请在 1 小时内点下面的链接重设密码：\n${link}\n\n如果不是您本人操作，忽略这封邮件即可，密码不会改变。\n\n---\n\nHi ${t.name},\n\nReset your password within 1 hour:\n${link}\n\nIf you didn't ask for this, just ignore this email.\n\nKaleidoQuest · kaleido.quest · by Vision Chinese Academy`
-  }).catch(e => console.error('reset mail failed', e.message));
-});
+  });
+}
 app.post('/api/reset', (req, res) => {
   const token = String(req.body.token || ''), pw = String(req.body.password || '');
   if (pw.length < 8) return res.status(400).json({ error: 'password' });
@@ -80,7 +84,7 @@ app.post('/api/reset', (req, res) => {
   A.startSession(res, r.teacher_id);
   res.json({ ok: true });
 });
-app.get('/api/me', (req, res) => { const t = A.teacherFrom(req); t ? res.json(t) : res.status(401).json({ error: 'login_required' }); });
+app.get('/api/me', (req, res) => { const t = A.teacherFrom(req); t ? res.json({ ...t, isAdmin: A.isAdmin(t) }) : res.status(401).json({ error: 'login_required' }); });
 
 // ── 题包 ──
 const SUBJECTS = new Set(['chinese', 'math', 'english', 'science', 'general', 'malay', 'tamil']);
@@ -121,6 +125,7 @@ app.get('/api/games/:id', A.requireTeacher, (req, res) => {
 app.delete('/api/games/:id', A.requireTeacher, (req, res) => { q('DELETE FROM games WHERE id = ? AND teacher_id = ?').run(+req.params.id, req.teacher.id); res.json({ ok: true }); });
 
 require('./lib/homework')(app);
+require('./lib/admin')(app, { sendReset, rooms: G.rooms });
 app.get('/hw/:code', (req, res) => res.sendFile(path.join(__dirname, 'public', 'hw.html')));
 
 app.get('/api/health', (req, res) => res.json({ ok: true, rooms: G.rooms.size }));

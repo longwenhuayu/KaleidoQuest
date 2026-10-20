@@ -89,7 +89,7 @@ function render() {
 }
 document.addEventListener('langchange', () => G && render());
 if (hwId) $('#backLink').href = '/teacher#hw';
-api(hwId ? `/api/assignments/${hwId}` : `/api/games/${id}`).then(g => { G = g; render(); }).catch(e => { if (e.status === 401) location.href = '/'; else $('#root').innerHTML = `<div class="card">${tt('找不到这份报告', 'Report not found')}</div>`; });
+api(hwId ? `/api/assignments/${hwId}` : RQ.get('admin') ? `/api/admin/games/${id}` : `/api/games/${id}`).then(g => { G = g; render(); }).catch(e => { if (e.status === 401) location.href = '/'; else $('#root').innerHTML = `<div class="card">${tt('找不到这份报告', 'Report not found')}</div>`; });
 </script>
 </body>
 </html>
