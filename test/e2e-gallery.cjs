@@ -14,7 +14,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   // 手机单人试玩
   const P = await (await b.newContext({ viewport: { width: 390, height: 780 }, isMobile: true, hasTouch: true })).newPage(); watch(P, 'try');
   await P.goto(BASE + '/'); await P.waitForSelector('#galGrid .gcard');
-  await P.locator('#galGrid .gcard[data-id="m-20"] a[href="/try/m-20"]').click();
+  await P.locator('#galGrid .gcard[data-id="m-20"] .gacts a[href="/try/m-20"]').click();
   await P.waitForSelector('#vIntro.on'); await shot(P, '61-try-intro');
   await P.click('#startBtn');
   for (let k = 0; ; k++) {

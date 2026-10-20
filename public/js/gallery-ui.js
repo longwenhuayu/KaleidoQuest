@@ -8,6 +8,7 @@
   function card(g) {
     const name = tt(g.title[0], g.title[1]), desc = tt(g.desc[0], g.desc[1]), grade = tt(g.grade[0], g.grade[1]);
     return `<article class="gcard s-${esc(g.subject)}" data-id="${esc(g.id)}">
+      <a class="gcover" href="/try/${esc(g.id)}" tabindex="-1" aria-hidden="true"><img src="/gallery-covers/${esc(g.id)}.webp" alt="" loading="lazy" onerror="this.parentNode.remove()"></a>
       <div class="gtop">${subjectIcon(g.subject)}<span class="gsub">${tt(SUBJ.find(s => s[0] === g.subject)[1], SUBJ.find(s => s[0] === g.subject)[2])}</span><span class="ggrade">${esc(grade)}</span></div>
       <h3>${esc(name)}</h3><p>${esc(desc)}</p>
       <div class="gmeta"><span>${icon('list-ordered')} ${g.n} ${tt('题', 'questions')}${g.listening ? ` · ${icon('volume-2')} ${tt('听力', 'Listening')}` : ''}</span><button type="button" class="gcopy" data-g="copy">${icon('copy')} ${tt('复制来改', 'Copy & edit')}</button></div>

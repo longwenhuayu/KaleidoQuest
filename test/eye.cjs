@@ -6,6 +6,7 @@ const BASE = process.env.BASE || 'http://localhost:3048';
   const p = await (await b.newContext({ viewport: { width: 1200, height: 800 } })).newPage();
   const errs = []; p.on('pageerror', e => errs.push(e.message));
   await p.goto(BASE + '/');
+  await p.click('#loginBtn');
   await p.fill('#email', 'a@b.sg'); await p.fill('#password', 'MySecret9');
   const before = await p.getAttribute('#password', 'type');
   await p.click('.pw-eye');

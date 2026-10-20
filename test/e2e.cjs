@@ -11,7 +11,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   const T = await tctx.newPage(); watch(T, 'teacher');
   await T.goto(BASE + '/', { waitUntil: 'networkidle' });
   await shot(T, '01-home');
-  await T.click('[data-tab=register]');
+  await T.click('#signupBtn');
   await T.fill('#name', '王老师'); await T.fill('#email', `t${Date.now()}@test.sg`); await T.fill('#password', 'secret123');
   await T.click('#authBtn');
   await T.waitForURL('**/teacher');

@@ -7,6 +7,7 @@ const LOG = process.env.SERVER_LOG || '/tmp/claude-501/kq-r.log';
   const p = await b.newPage({ viewport: { width: 1200, height: 800 } });
   const errs = []; p.on('pageerror', e => errs.push(e.message));
   await p.goto('http://localhost:3048/');
+  await p.click('#loginBtn');
   await p.fill('#email', 'me@x.sg');
   await p.click('#forgotLink');
   await p.click('#fBtn');

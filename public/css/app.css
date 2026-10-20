@@ -141,6 +141,10 @@ a.mp-card:hover{border-color:var(--brand2);background:#faf8ff}
 .gcard{background:#fff;color:var(--ink);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgba(15,10,60,.18);border:1px solid var(--line);transition:transform .15s}
 .gcard:hover{transform:translateY(-3px)}
 .gcard{border-top:4px solid var(--gs,var(--line))}
+.gcover{display:block;margin:-16px -16px 2px;aspect-ratio:16/9;overflow:hidden;background:#15123a}
+.gcover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.gcard:hover .gcover img{transform:scale(1.04)}
+.gcard{overflow:hidden}
 .gcard.s-chinese{--gs:#e11d48}.gcard.s-math{--gs:#2563eb}.gcard.s-english{--gs:#7c3aed}.gcard.s-science{--gs:#16a34a}.gcard.s-general{--gs:#475569}
 .gtop{display:flex;align-items:center;gap:8px}
 .gsub{font-weight:800;font-size:13px}
