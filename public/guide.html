@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e0b26">
+<title>KaleidoQuest · 老师上手指南</title>
+<meta name="description" content="KaleidoQuest 老师上手指南：10 分钟学会建题包、AI 出题、投屏开局、布置作业、看报告和管理班级。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css?v=20261021">
+<style>
+header{display:flex;align-items:center;gap:12px;padding:16px 24px;max-width:1000px;margin:0 auto}
+header .sp{flex:1}
+.lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
+.g{max-width:860px;margin:0 auto;padding:10px 20px 60px}
+.g h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:clamp(30px,5vw,44px);line-height:1.15}
+.g .lead{color:#c9c3ea;font-size:17px;line-height:1.7;margin:10px 0 26px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.toc a{color:#f1efff;text-decoration:none;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 13px;font-size:14px;font-weight:700}
+.step{background:#fff;color:var(--ink);border-radius:20px;padding:22px 24px;margin-bottom:16px;display:grid;grid-template-columns:48px 1fr;gap:16px;scroll-margin-top:16px}
+.step .n{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font:700 24px "Fredoka",sans-serif;color:#fff}
+.step h2{font-size:20px;margin-bottom:6px}
+.step p,.step li{font-size:15px;line-height:1.75;color:#3f3a6b}
+.step ul{padding-left:20px;margin-top:6px}
+.step b{color:var(--ink)}
+.tip{margin-top:10px;background:#f6f4ff;border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.65;color:#4c4680}
+.tip .ic{color:var(--brand2)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.faq h2{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:28px;margin:36px 0 12px}
+.faq details{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 18px;margin-bottom:10px}
+.faq summary{font-weight:800;cursor:pointer}
+.faq details p{color:#c9c3ea;line-height:1.7;margin-top:8px;font-size:15px}
+@media (max-width:600px){.step{grid-template-columns:1fr;padding:20px 18px}.step .n{width:40px;height:40px;font-size:20px}}
+</style>
+</head>
+<body class="home">
+<header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
+<main class="g" id="g"></main>
+<script src="/js/common.js"></script>
+<script>
+const { tt, icon } = VA;
+// [颜色, 图标, 标题, 内容, 提示]
+const STEPS = () => [
+  ['#7c3aed', 'user-plus', tt('注册老师账号', 'Create a teacher account'), tt('在首页「我是老师」点<b>注册</b>，填名字、邮箱和密码就好，免费。学生<b>不用</b>注册。', 'On the home page, choose <b>Sign up</b> under “I’m a teacher”. It’s free. Students <b>don’t</b> need accounts.'), ''],
+  ['#2563eb', 'layers', tt('准备题目：四种方法', 'Get questions: four ways'), tt('<ul><li><b>游戏库</b>：25 个现成游戏，点「复制来改」放进自己的题包。</li><li><b>AI 出题</b>：写一个主题或贴一段课文，20–40 秒出一套题。</li><li><b>华文 / 数学快速出题</b>：输入生字或选运算范围，一键生成。</li><li><b>导入</b>：Kahoot、Blooket 导出的 Excel，或从表格直接粘贴。</li></ul>', '<ul><li><b>Gallery</b>: 25 ready-made games — “Copy & edit” puts one in your sets.</li><li><b>AI</b>: give a topic or paste lesson text; a quiz in 20–40 seconds.</li><li><b>Chinese / Math quick create</b>: enter characters or pick a number range.</li><li><b>Import</b>: Kahoot or Blooket spreadsheets, or paste rows from a sheet.</li></ul>'), tt('AI 出的题请先检查一遍：答案、难度、用词是不是适合你的学生。', 'Always check AI questions — answers, level and wording — before class.')],
+  ['#0891b2', 'presentation', tt('投屏开一局', 'Host a live game'), tt('在题包上点<b>开始游戏</b>，选模式：<ul><li><b>擂台抢答</b>：全班同一题，大屏倒计时，越快分越高，适合新课检查。</li><li><b>夺宝</b>：限时 5 / 7 / 10 分钟，各答各的，答对开宝箱（可能加分、翻倍、偷分），适合复习。</li></ul>', 'Click <b>Host game</b> on a set and pick a mode:<ul><li><b>Classic</b>: everyone answers the same question; faster answers score more.</li><li><b>Treasure Quest</b>: 5 / 7 / 10 minutes, each at their own pace; right answers open chests.</li></ul>'), tt('大屏上可以锁定房间、踢出捣乱的名字、关掉音乐。', 'On the big screen you can lock the room, remove names and mute music.')],
+  ['#16a34a', 'qr-code', tt('学生用手机加入', 'Students join on phones'), tt('学生用手机扫大屏上的二维码，或打开 <b>kaleido.quest/play</b> 输入 6 位房间码，填个昵称就进来了。学生到齐后点<b>开始</b>。', 'Students scan the QR code, or open <b>kaleido.quest/play</b> and type the 6-digit code plus a nickname. Click <b>Start</b> when everyone is in.'), ''],
+  ['#f59e0b', 'send', tt('布置成作业', 'Assign as homework'), tt('在题包上点<b>布置作业</b>，选截止时间和次数，把链接或二维码发到班级群。学生回家自己做，每题都在服务器判分；同一个名字取最好的一次。', 'Click <b>Assign</b>, choose a due date and attempts, and share the link or QR code. Every answer is marked on the server; the best attempt per name counts.'), ''],
+  ['#ea580c', 'chart-column', tt('看报告', 'Read the report'), tt('每一局、每份作业都有报告：每题的正确率、平均用时，每个学生每题对错。正确率低的题就是下节课要讲的。', 'Every game and assignment has a report: accuracy and time per question, and each student’s answers. Low-accuracy questions are what to reteach.'), ''],
+  ['#db2777', 'school', tt('建班级，收集卡存进账号（选用）', 'Classes and saved card books (optional)'), tt('在后台「班级」新建班级，贴上学生名字，每人会有一个 4 位密码，可以打印登录条发下去。学生在 <b>kaleido.quest/me</b> 登录后，玩游戏、做作业得到的收集卡会存进账号，换设备也不丢；你能看到全班的收集进度。', 'Under “Classes”, create a class and paste in names; each student gets a 4-digit PIN (print the sign-in slips). Students sign in at <b>kaleido.quest/me</b> so their cards are saved on any device, and you see the class’s progress.'), tt('学生不登录也照样能玩，只是卡册只存在那台设备上。', 'Students can play without signing in — their cards just stay on that device.')]
+];
+const FAQ = () => [
+  [tt('要收费吗？', 'Does it cost anything?'), tt('现在老师免费使用。学生永远不用注册、不用付费。', 'Free for teachers right now. Students never need to sign up or pay.')],
+  [tt('一局最多多少人？', 'How many players per game?'), tt('一局最多 60 人。', 'Up to 60 players per game.')],
+  [tt('学生的什么资料会被保存？', 'What student data is kept?'), tt('只有学生自己填的昵称和答题成绩。建班级时，只保存你填的名字和系统生成的密码。建议用名字或昵称，不要用全名。', 'Only the nickname a student types and their answers. For classes, only the names you enter and the generated PIN — first names or nicknames are best.')],
+  [tt('网络断了怎么办？', 'What if the connection drops?'), tt('学生和大屏都会自动重连，回到原来的题目和分数。', 'Students and the host screen reconnect automatically and pick up where they left off.')],
+  [tt('有问题找谁？', 'Who do I contact?'), tt('写信到 ask@visionchinese.com，文心书院 Vision Chinese Academy。', 'Email ask@visionchinese.com — Vision Chinese Academy.')]
+];
+function render() {
+  document.title = tt('KaleidoQuest · 老师上手指南', 'KaleidoQuest · Teacher guide');
+  const steps = STEPS();
+  document.getElementById('g').innerHTML = `<h1>${tt('10 分钟上手', 'Get started in 10 minutes')}</h1>
+    <p class="lead">${tt('KaleidoQuest 是全班一起玩的课堂答题游戏，华文、数学、英文、科学都能用。按下面 7 步，第一节课就能用起来。', 'KaleidoQuest is a live classroom quiz game for Chinese, Math, English and Science. Follow these 7 steps and use it in your next lesson.')}</p>
+    <nav class="toc">${steps.map((s, i) => `<a href="#s${i + 1}">${i + 1}. ${s[2]}</a>`).join('')}</nav>
+    ${steps.map(([c, ic, h, body, tip], i) => `<section class="step" id="s${i + 1}"><div class="n" style="background:${c}">${i + 1}</div><div><h2>${icon(ic)} ${h}</h2><p>${body}</p>${tip ? `<div class="tip">${icon('lightbulb')} ${tip}</div>` : ''}</div></section>`).join('')}
+    <div class="cta"><a class="btn go" href="/?signup=1">${icon('user-plus')} ${tt('免费注册', 'Sign up free')}</a><a class="btn ghost" href="/gallery" style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)">${icon('layout-grid')} ${tt('先去游戏库试玩', 'Try the Gallery first')}</a></div>
+    <section class="faq"><h2>${tt('常见问题', 'FAQ')}</h2>${FAQ().map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</section>`;
+}
+document.addEventListener('langchange', render);
+render();
+</script>
+</body>
+</html>

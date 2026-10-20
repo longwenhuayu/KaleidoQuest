@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261020b">
+<link rel="stylesheet" href="/css/app.css?v=20261021">
 <style>
 html,body{height:100%}
 body{display:flex;flex-direction:column}
@@ -61,6 +61,7 @@ body{display:flex;flex-direction:column}
   <input id="name" maxlength="20" autocomplete="name">
   <div class="err" id="iErr" style="color:var(--bad)"></div>
   <button class="btn go" id="startBtn" style="font-size:20px"></button>
+  <div id="stuNote" class="muted" style="font-size:13px;text-align:center"></div>
 </form></div></div>
 <div class="view" id="vQ">
   <div class="qhead"><span id="qN"></span><div class="tbar"><i id="tbar"></i></div></div>
@@ -95,6 +96,7 @@ function intro() {
   $('#name').placeholder = TRY ? tt('你的名字（可以不填）', 'Your name (optional)') : tt('你的名字（老师看得懂的）', 'Your name (so your teacher knows you)');
   $('#startBtn').textContent = tt('开始 ▶', 'Start ▶');
   try { $('#name').value = localStorage.getItem('kq_name') || ''; } catch (e) {}
+  VA.api('/api/student/me').then(s => { $('#name').value = s.name; $('#stuNote').innerHTML = `${icon('graduation-cap')} ${esc(tt(`已登录：${s.name}，得到的卡会存进账号`, `Signed in as ${s.name} — cards are saved to your account`))}`; }).catch(() => { $('#stuNote').innerHTML = `<a href="/me?next=${encodeURIComponent(location.pathname)}" style="color:var(--brand2);font-weight:700">${icon('graduation-cap')} ${tt('学生登录，卡册换设备也不丢', 'Student sign-in — keep your cards on any device')}</a>`; });
 }
 $('#startForm').onsubmit = async e => {
   e.preventDefault(); $('#iErr').textContent = ''; $('#startBtn').disabled = true;

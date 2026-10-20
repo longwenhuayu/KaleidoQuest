@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261020b">
+<link rel="stylesheet" href="/css/app.css?v=20261021">
 <style>
 html,body{height:100%}
 body{display:flex;flex-direction:column;overscroll-behavior:none}
@@ -83,6 +83,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
     <button class="btn go" id="joinBtn" style="font-size:20px"></button>
   </form>
   <a href="/cards" id="cardsLink" style="color:#fde68a;font-weight:800;text-decoration:none"></a>
+  <a href="/me" id="stuLink" style="color:#c4b5fd;font-weight:700;font-size:14px;text-decoration:none"></a>
 </div></div>
 
 <div class="view" id="vWait"><div class="mid"><div class="big-av" id="waitAv"></div><div class="h" id="waitName"></div><div class="sub" id="waitMsg"></div></div></div>
@@ -118,7 +119,12 @@ function renderStatic() {
   $('#endAgain').textContent = tt('加入下一局', 'Join another game');
   $('#msgBtn').textContent = tt('重新加入', 'Join again');
   $('#cardsLink').innerHTML = icon('layers') + ' ' + tt('我的卡册', 'My card book');
+  $('#stuLink').innerHTML = student ? `${icon('graduation-cap')} ${esc(tt(`已登录：${student.name}，得到的卡会存进账号`, `Signed in as ${student.name} — cards are saved to your account`))}` : `${icon('graduation-cap')} ${tt('学生登录，卡册换设备也不丢', 'Student sign-in — keep your cards on any device')}`;
+  $('#stuLink').href = student ? '/me' : `/me?next=${encodeURIComponent(location.pathname + location.search)}`;
 }
+// 登录了的学生：自动填上名字
+let student = null;
+VA.api('/api/student/me').then(s => { student = s; if (!$('#nameIn').value) $('#nameIn').value = s.name; renderStatic(); }).catch(() => {});
 document.addEventListener('langchange', renderStatic); renderStatic();
 $('#pinIn').value = pin; if (pin) setTimeout(() => $('#nameIn').focus(), 100);
 $('#pinIn').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };

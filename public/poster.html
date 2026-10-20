@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KaleidoQuest · 海报</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<style>
+/* A4 海报：屏幕上按 794×1123 显示，打印时正好一页 */
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#2a2550}
+body{display:grid;place-items:center;min-height:100vh;padding:20px;font-family:"Noto Sans SC",system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.p{width:794px;height:1123px;position:relative;overflow:hidden;color:#fff;padding:46px 58px 30px;display:flex;flex-direction:column;
+  background:radial-gradient(520px 420px at 8% -4%,rgba(124,58,237,.75),transparent 70%),radial-gradient(460px 380px at 104% 30%,rgba(8,145,178,.5),transparent 70%),radial-gradient(520px 360px at 60% 106%,rgba(219,39,119,.38),transparent 70%),#0e0b26}
+.top{display:flex;align-items:center;gap:12px}
+.top img{width:54px;height:54px;border-radius:16px}
+.top b{font:700 30px "Fredoka",sans-serif;letter-spacing:.5px}
+.top small{display:block;font-size:13px;opacity:.7;font-weight:600}
+.free{margin-left:auto;font-size:15px;font-weight:800;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 16px}
+h1{font:700 74px/1 "Fredoka",sans-serif;letter-spacing:-1px;margin-top:34px}
+h1 span{background:linear-gradient(90deg,#fbbf24,#fb7185 55%,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.zh{font-size:32px;font-weight:900;margin-top:14px;letter-spacing:1px}
+.sub{font-size:19px;color:#d6d0f5;margin-top:10px;line-height:1.6}
+.cards{display:flex;gap:16px;margin:28px 0 0;justify-content:center}
+.c{width:110px;border-radius:16px;padding:4px;background:linear-gradient(160deg,#67e8f9,#2563eb);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.c.e{background:conic-gradient(from 30deg,#7c3aed,#2563eb,#0891b2,#16a34a,#f59e0b,#ea580c,#db2777,#7c3aed)}
+.c.s{background:linear-gradient(160deg,#e2e8f0,#94a3b8)}
+.c div{border-radius:12px;overflow:hidden;background:#15123a}
+.c img{width:100%;display:block;aspect-ratio:1}
+.c p{font-size:13px;font-weight:800;text-align:center;padding:6px 0 8px}
+.c:nth-child(2),.c:nth-child(4){transform:translateY(16px)}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:34px}
+.f{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:13px 18px}
+.f b{font-size:20px;display:block}
+.f span{font-size:14px;color:#c9c3ea;line-height:1.55;display:block;margin-top:4px}
+.f i{font-style:normal;font-size:12px;color:#a39dc9;display:block;margin-top:4px}
+.bot{margin-top:24px;display:flex;gap:26px;align-items:center;background:#fff;color:#1e1b4b;border-radius:22px;padding:20px 24px}
+.qr{width:150px;height:150px;flex:none;line-height:0;padding:0}
+.qr img,.qr canvas{width:150px!important;height:150px!important}
+.bot h2{font-size:26px;font-weight:900}
+.bot p{font-size:15px;color:#4c4680;line-height:1.65;margin-top:6px}
+.bot .url{font:700 30px "Fredoka",sans-serif;color:#7c3aed;margin-top:6px}
+.by{text-align:center;font-size:12px;color:#a39dc9;margin-top:14px}
+@media print{html,body{background:#0e0b26}body{padding:0;display:block}.p{width:210mm;height:297mm}}
+</style>
+</head>
+<body>
+<div class="p">
+  <div class="top"><img src="/icon.svg" alt=""><div><b>KaleidoQuest</b><small>by Vision Chinese Academy 文心书院</small></div><span class="free">免费 · Free</span></div>
+  <h1>Every subject<br><span>is a quest.</span></h1>
+  <div class="zh">每一门课，都是一场闯关</div>
+  <div class="sub">全班一起玩的课堂答题游戏 · 华文、数学、英文、科学<br>A live classroom quiz game for every subject</div>
+  <div class="cards">
+    <div class="c e"><div><img src="/card-art/crown.webp" alt=""><p>冠军</p></div></div>
+    <div class="c"><div><img src="/card-art/owl.webp" alt=""><p>智慧猫头鹰</p></div></div>
+    <div class="c e"><div><img src="/card-art/pi.webp" alt=""><p>圆周率 π</p></div></div>
+    <div class="c"><div><img src="/card-art/photo.webp" alt=""><p>光合作用</p></div></div>
+    <div class="c s"><div><img src="/card-art/turtle.webp" alt=""><p>稳稳龟</p></div></div>
+  </div>
+  <div class="feat">
+    <div class="f"><b>⚔️ 擂台抢答</b><span>全班同一题，大屏倒计时，越快分越高</span><i>Classic — answer together, faster scores more</i></div>
+    <div class="f"><b>💎 夺宝模式</b><span>限时闯关，答对开宝箱，翻倍、偷分、换分</span><i>Treasure Quest — open chests, swap and steal</i></div>
+    <div class="f"><b>✨ AI 一键出题</b><span>写个主题或贴上课文，几十秒出一套题</span><i>AI questions from a topic or your lesson text</i></div>
+    <div class="f"><b>🃏 收集卡</b><span>44 张原创插画卡 + 每个汉字的「字灵」卡</span><i>Collect original illustrated cards</i></div>
+  </div>
+  <div class="bot">
+    <div class="qr" id="qr"></div>
+    <div><h2>扫码，马上免登录试玩</h2><p>老师免费注册，学生用手机扫码加入，不用注册<br>Scan to try a game — no sign-up for students</p><div class="url">kaleido.quest</div></div>
+  </div>
+  <div class="by">© Vision Chinese Academy 文心书院 · visionchinese.com</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>new QRCode(document.getElementById('qr'), { text: 'https://kaleido.quest/?from=poster', width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M });</script>
+</body>
+</html>

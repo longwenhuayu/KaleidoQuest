@@ -127,6 +127,9 @@ app.delete('/api/games/:id', A.requireTeacher, (req, res) => { q('DELETE FROM ga
 require('./lib/homework')(app);
 const GL = require('./lib/gallery');
 GL.routes(app);
+require('./lib/ai').routes(app);
+const S = require('./lib/students');
+S.routes(app);
 app.get(['/try/:id', '/hw/:code'], (req, res) => res.sendFile(path.join(__dirname, 'public', 'hw.html')));
 require('./lib/admin')(app, { sendReset, rooms: G.rooms });
 
@@ -192,6 +195,8 @@ wss.on('connection', (ws, req) => {
         const res = G.join(r, m.name, ws);
         if (res.error) return G.send(ws, { t: 'error', error: res.error });
         p = res.player;
+        // 登录了的学生：这一局得到的卡记到他的账号上
+        const stu = S.studentFrom(req); if (stu) p.studentId = stu.id;
       }
       room = r; player = p; r.touched = Date.now();
       G.send(ws, { t: 'joined', pin: r.pin, id: p.id, token: p.token, name: p.name, avatar: p.avatar, title: r.title, score: p.score, mode: r.mode });

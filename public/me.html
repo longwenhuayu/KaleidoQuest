@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0e0b26">
+<title>KaleidoQuest · 学生登录</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css?v=20261021">
+<style>
+body{min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:12px;padding:14px 20px}
+header .sp{flex:1}
+main{flex:1;display:grid;place-items:center;padding:16px}
+.box{width:min(420px,100%);background:#fff;color:var(--ink);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:12px;border-top:5px solid var(--accent);box-shadow:0 24px 60px rgba(5,3,30,.45)}
+.box h1{font-size:22px;display:flex;align-items:center;gap:8px}
+.box h1 .ic{color:var(--brand2)}
+.code{font-size:24px;font-weight:900;letter-spacing:4px;text-align:center;text-transform:lowercase}
+.pin{font-size:30px;font-weight:900;letter-spacing:14px;text-align:center}
+.names{display:flex;flex-wrap:wrap;gap:8px;max-height:260px;overflow:auto}
+.names button{border:1.5px solid var(--line);background:#faf9ff;border-radius:12px;padding:9px 14px;font-weight:800;font-size:16px;cursor:pointer}
+.names button.on{background:var(--brand2);border-color:var(--brand2);color:#fff}
+.hello{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+.hello .av{font-size:64px;line-height:1}
+.hello b{font-size:24px}
+.muted{font-size:14px;line-height:1.6}
+.lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
+</style>
+</head>
+<body class="home">
+<header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
+<main><div class="box" id="box"></div></main>
+<script src="/js/common.js"></script>
+<script>
+const { tt, $, esc, api, icon } = VA;
+const QS = new URLSearchParams(location.search);
+let me = null, cls = null, code = (QS.get('c') || '').toLowerCase(), picked = '';
+const ERR = { not_found: ['找不到这个班级码，请问老师', "Class code not found — ask your teacher"], wrong: ['密码不对，再试一次', 'Wrong PIN — try again'], locked: ['错太多次了，请让老师帮你重设密码', 'Too many tries — ask your teacher to reset your PIN'], too_many: ['操作太频繁，请稍后再试', 'Too many tries — wait a bit'] };
+const err = x => { const m = ERR[x.message]; return m ? tt(m[0], m[1]) : tt('出错了，请再试一次', 'Something went wrong'); };
+function render() {
+  const b = $('#box');
+  if (me) {
+    b.innerHTML = `<div class="hello"><div class="av">🎒</div><b>${esc(me.name)}</b><div class="muted">${esc(me.className)}</div>
+      <div class="muted">${tt('已经登录。在这台设备上玩游戏、做作业得到的卡，都会存进你的卡册，换设备登录也看得到。', "You're signed in. Cards you earn on this device are saved to your account — sign in on any device to see them.")}</div>
+      <a class="btn go" href="/play" style="width:100%">${icon('gamepad-2')} ${tt('加入游戏', 'Join a game')}</a>
+      <a class="btn main" href="/cards" style="width:100%">${icon('layers')} ${tt('我的卡册', 'My card book')}</a>
+      <button class="btn ghost sm" id="out">${icon('log-out')} ${tt('退出登录', 'Sign out')}</button></div>`;
+    $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); me = null; render(); };
+    return;
+  }
+  if (!cls) {
+    b.innerHTML = `<h1>${icon('graduation-cap')} ${tt('学生登录', 'Student sign-in')}</h1>
+      <div class="muted">${tt('登录后，你收集的卡会一直保存，换设备也不会丢。输入老师给的班级码：', 'Sign in so your cards are saved for good. Enter the class code from your teacher:')}</div>
+      <form id="f1" style="display:flex;flex-direction:column;gap:10px"><input class="in code" id="code" maxlength="6" autocomplete="off" autocapitalize="off" placeholder="abc234" value="${esc(code)}"><div class="err" id="e1"></div><button class="btn go">${tt('下一步', 'Next')} ${icon('arrow-right')}</button></form>
+      <a href="/play" class="muted" style="text-align:center">${tt('不登录，直接加入游戏', 'Just join a game without signing in')}</a>`;
+    $('#f1').onsubmit = async e => { e.preventDefault(); code = $('#code').value.trim().toLowerCase(); try { cls = await api(`/api/class/${encodeURIComponent(code)}`); render(); } catch (x) { $('#e1').textContent = err(x); } };
+    return;
+  }
+  b.innerHTML = `<h1>${icon('school')} ${esc(cls.name)}</h1>
+    <div class="muted">${tt('点你的名字：', 'Tap your name:')}</div>
+    <div class="names" id="names">${cls.students.map(n => `<button type="button"${n === picked ? ' class="on"' : ''}>${esc(n)}</button>`).join('') || `<span class="muted">${tt('这个班还没有学生，请问老师', 'No students yet — ask your teacher')}</span>`}</div>
+    <form id="f2" style="display:flex;flex-direction:column;gap:10px"${picked ? '' : ' hidden'}><div class="muted">${tt('输入你的 4 位密码：', 'Enter your 4-digit PIN:')}</div><input class="in pin" id="pin" inputmode="numeric" maxlength="4" autocomplete="off"><div class="err" id="e2"></div><button class="btn go">${tt('登录', 'Sign in')}</button></form>
+    <button class="btn ghost sm" id="back">${icon('arrow-left')} ${tt('换一个班级码', 'Use another code')}</button>`;
+  $('#names').onclick = e => { const x = e.target.closest('button'); if (!x) return; picked = x.textContent; render(); setTimeout(() => $('#pin').focus(), 30); };
+  $('#back').onclick = () => { cls = null; picked = ''; render(); };
+  $('#pin').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
+  $('#f2').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/login', { method: 'POST', body: { code, name: picked, pin: $('#pin').value } }); me = await api('/api/student/me'); try { localStorage.setItem('kq_name', me.name); } catch (x) {} if (QS.get('next')) location.href = QS.get('next').startsWith('/') ? QS.get('next') : '/'; else render(); } catch (x) { $('#e2').textContent = err(x); $('#pin').value = ''; } };
+}
+document.addEventListener('langchange', render);
+api('/api/student/me').then(d => { me = d; }).catch(() => {}).finally(() => { if (code && !me) api(`/api/class/${encodeURIComponent(code)}`).then(d => { cls = d; }).catch(() => {}).finally(render); else render(); });
+</script>
+</body>
+</html>
