@@ -11,6 +11,8 @@ const { q } = require('./lib/db');
 const A = require('./lib/auth');
 const Q = require('./lib/questions');
 const G = require('./lib/game');
+const mail = require('./lib/mail');
+const crypto = require('crypto');
 
 const app = express();
 app.disable('x-powered-by');
@@ -39,6 +41,45 @@ app.post('/api/login', (req, res) => {
   res.json({ id: t.id, email: t.email, name: t.name });
 });
 app.post('/api/logout', (req, res) => { A.endSession(req, res); res.json({ ok: true }); });
+// 忘记密码：发一个 1 小时内有效、只能用一次的链接（库里只存哈希）
+const resetHits = new Map();
+function resetLimited(key, max) {
+  const now = Date.now(), list = (resetHits.get(key) || []).filter(t => now - t < 3600e3);
+  if (list.length >= max) return true;
+  resetHits.set(key, [...list, now]);
+  return false;
+}
+const sha = s => crypto.createHash('sha256').update(s).digest('hex');
+app.post('/api/forgot', async (req, res) => {
+  if (process.env.NODE_ENV === 'production' && !mail.configured()) return res.status(503).json({ error: 'mail_off' });
+  const email = String(req.body.email || '').trim().toLowerCase();
+  if (!EMAIL.test(email)) return res.status(400).json({ error: 'email' });
+  if (resetLimited('ip:' + req.ip, 10) || resetLimited('em:' + email, 3)) return res.status(429).json({ error: 'too_many' });
+  // 不管邮箱有没有注册都回一样的结果，免得被人拿来探测
+  res.json({ ok: true });
+  const t = q('SELECT id, name, email FROM teachers WHERE email = ?').get(email);
+  if (!t) return;
+  const token = crypto.randomBytes(32).toString('base64url');
+  q('DELETE FROM resets WHERE teacher_id = ?').run(t.id);
+  q('INSERT INTO resets (token_hash, teacher_id, expires) VALUES (?, ?, ?)').run(sha(token), t.id, Date.now() + 3600e3);
+  const link = `${process.env.APP_URL || `${req.protocol}://${req.get('host')}`}/reset?token=${token}`;
+  mail.send({
+    to: t.email,
+    subject: '重设 KaleidoQuest 密码 / Reset your KaleidoQuest password',
+    text: `${t.name} 您好：\n\n请在 1 小时内点下面的链接重设密码：\n${link}\n\n如果不是您本人操作，忽略这封邮件即可，密码不会改变。\n\n---\n\nHi ${t.name},\n\nReset your password within 1 hour:\n${link}\n\nIf you didn't ask for this, just ignore this email.\n\nKaleidoQuest · kaleido.quest · by Vision Chinese Academy`
+  }).catch(e => console.error('reset mail failed', e.message));
+});
+app.post('/api/reset', (req, res) => {
+  const token = String(req.body.token || ''), pw = String(req.body.password || '');
+  if (pw.length < 8) return res.status(400).json({ error: 'password' });
+  const r = q('SELECT teacher_id FROM resets WHERE token_hash = ? AND expires > ?').get(sha(token), Date.now());
+  if (!r) return res.status(400).json({ error: 'expired' });
+  q('UPDATE teachers SET pw = ? WHERE id = ?').run(A.hash(pw), r.teacher_id);
+  q('DELETE FROM resets WHERE teacher_id = ?').run(r.teacher_id);
+  q('DELETE FROM sessions WHERE teacher_id = ?').run(r.teacher_id);
+  A.startSession(res, r.teacher_id);
+  res.json({ ok: true });
+});
 app.get('/api/me', (req, res) => { const t = A.teacherFrom(req); t ? res.json(t) : res.status(401).json({ error: 'login_required' }); });
 
 // ── 题包 ──

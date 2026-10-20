@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>KaleidoQuest · 重设密码</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100vh}
+main{flex:1;display:grid;place-items:center;padding:20px}
+.box{width:min(420px,100%);background:#fff;color:var(--ink);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.box h1{font-size:22px}
+.ok{color:var(--ok);font-weight:800}
+</style>
+</head>
+<body class="night">
+<header style="display:flex;align-items:center;padding:18px 24px"><a class="logo" href="/" style="font-size:22px"><i></i><span>KaleidoQuest</span></a><span style="flex:1"></span><button class="lang" type="button" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></header>
+<main>
+  <form class="box" id="form">
+    <h1 id="h"></h1>
+    <input class="in" id="pw" type="password" autocomplete="new-password" minlength="8" required>
+    <input class="in" id="pw2" type="password" autocomplete="new-password" minlength="8" required>
+    <div class="err" id="err"></div>
+    <button class="btn main" id="go"></button>
+  </form>
+</main>
+<script src="/js/common.js"></script>
+<script>
+const { tt, api, $ } = VA;
+const token = new URLSearchParams(location.search).get('token') || '';
+function text() {
+  $('#h').textContent = tt('设置新密码', 'Choose a new password');
+  $('#pw').placeholder = tt('新密码（至少 8 位）', 'New password (8+ characters)');
+  $('#pw2').placeholder = tt('再输入一次', 'Type it again');
+  $('#go').textContent = tt('保存并登录', 'Save and log in');
+}
+document.addEventListener('langchange', text); text();
+if (!token) $('#err').textContent = tt('链接不完整，请重新申请重设密码', 'This link is incomplete — please request a new one');
+$('#form').onsubmit = async e => {
+  e.preventDefault(); $('#err').textContent = '';
+  if ($('#pw').value !== $('#pw2').value) { $('#err').textContent = tt('两次输入的密码不一样', "Passwords don't match"); return; }
+  try {
+    await api('/api/reset', { method: 'POST', body: { token, password: $('#pw').value } });
+    location.href = '/teacher';
+  } catch (x) {
+    $('#err').textContent = x.message === 'expired' ? tt('链接已过期或已经用过，请回首页重新申请', 'This link has expired or was already used — request a new one from the home page')
+      : x.message === 'password' ? tt('密码至少 8 位', 'Password must be 8+ characters') : tt('出错了，请再试一次', 'Something went wrong — please try again');
+  }
+};
+</script>
+</body>
+</html>

@@ -30,6 +30,7 @@
 .tabs button{flex:1;border:0;border-radius:10px;padding:9px;font-weight:800;background:#f3f0ff;cursor:pointer}
 .tabs button.on{background:var(--brand2);color:#fff}
 .form{display:grid;gap:10px}
+.forgot{background:none;border:0;color:var(--brand2);font-weight:700;font-size:13px;cursor:pointer;justify-self:center}
 .foot{text-align:center;padding:16px;font-size:13px;opacity:.7}
 .foot a{color:#c4b5fd}
 .lang{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
@@ -60,6 +61,14 @@
           <input class="in" id="password" type="password" data-ip="password" autocomplete="current-password" required minlength="8">
           <div class="err" id="err"></div>
           <button class="btn main" id="authBtn" data-i="login"></button>
+          <button type="button" class="forgot" id="forgotLink"></button>
+        </form>
+        <form class="form" id="forgotForm" hidden>
+          <div class="muted" id="forgotHint" style="font-size:14px"></div>
+          <input class="in" id="fEmail" type="email" autocomplete="email" required>
+          <div class="err" id="fErr"></div>
+          <button class="btn main" id="fBtn"></button>
+          <button type="button" class="forgot" id="fBack"></button>
         </form>
       </div>
     </div>
@@ -74,6 +83,12 @@ function renderText() {
   $('#pitch2').textContent = tt('华文、数学、英文、科学都能用。贴上本课内容一键出题，学生用手机扫码加入，不用注册。', 'Chinese, Math, English, Science — paste your lesson, get a quiz in seconds. Students join by QR, no sign-up.');
   $('#subjects').innerHTML = [['🀄', tt('华文', 'Chinese')], ['➗', tt('数学', 'Math')], ['🔤', tt('英文', 'English')], ['🔬', tt('科学', 'Science')], ['🌴', tt('马来文', 'Malay')], ['🪔', tt('淡米尔文', 'Tamil')]].map(([i, n]) => `<span>${i} ${n}</span>`).join('');
   $('#authBtn').textContent = t(tab);
+  $('#forgotLink').textContent = tt('忘记密码？', 'Forgot password?');
+  $('#forgotLink').hidden = tab !== 'login';
+  $('#forgotHint').textContent = tt('输入注册时用的邮箱，我们会发一个重设密码的链接（1 小时内有效）。', "Enter your sign-up email and we'll send a reset link (valid for 1 hour).");
+  $('#fEmail').placeholder = t('email');
+  $('#fBtn').textContent = tt('发送重设链接', 'Send reset link');
+  $('#fBack').textContent = tt('← 返回登录', '← Back to log in');
 }
 document.addEventListener('langchange', renderText);
 document.addEventListener('DOMContentLoaded', renderText);
@@ -92,6 +107,19 @@ $('#authForm').onsubmit = async e => {
     await api('/api/' + tab, { method: 'POST', body: { email: $('#email').value, password: $('#password').value, name: $('#name').value } });
     location.href = '/teacher';
   } catch (x) { $('#err').textContent = t('err_' + x.message) !== 'err_' + x.message ? t('err_' + x.message) : t('err_generic'); }
+};
+const showForgot = on => { $('#forgotForm').hidden = !on; $('#authForm').hidden = on; document.querySelector('.tabs').hidden = on; if (on) { $('#fEmail').value = $('#email').value; $('#fErr').textContent = ''; $('#fEmail').focus(); } };
+$('#forgotLink').onclick = () => showForgot(true);
+$('#fBack').onclick = () => showForgot(false);
+$('#forgotForm').onsubmit = async e => {
+  e.preventDefault(); $('#fErr').textContent = ''; $('#fBtn').disabled = true;
+  try {
+    await api('/api/forgot', { method: 'POST', body: { email: $('#fEmail').value } });
+    $('#forgotHint').innerHTML = `<b style="color:var(--ok)">${tt('如果这个邮箱注册过，重设链接已经发出，请查收（也看看垃圾邮件）。', 'If that email is registered, a reset link is on its way (check spam too).')}</b>`;
+  } catch (x) {
+    $('#fErr').textContent = x.message === 'too_many' ? t('err_too_many') : x.message === 'mail_off' ? tt('暂时无法发送邮件，请联系 ask@visionchinese.com', "Email isn't available right now — contact ask@visionchinese.com") : x.message === 'email' ? t('err_email') : t('err_generic');
+  }
+  $('#fBtn').disabled = false;
 };
 api('/api/me').then(() => { $('#teacherPanel').innerHTML = `<h2>🧑‍🏫 ${t('teacher_title')}</h2><a class="btn main" href="/teacher" style="width:100%">${tt('进入老师后台 →', 'Go to dashboard →')}</a>`; }).catch(() => {});
 </script>

@@ -1,0 +1,2 @@
+# KaleidoQuest 数据库每日备份：服务器是 UTC，19:15 UTC = 新加坡时间凌晨 3:15
+15 19 * * * root /opt/kaleido/deploy/backup.sh >> /var/log/kaleido-backup.log 2>&1

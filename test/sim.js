@@ -1,4 +1,5 @@
 // 端到端模拟：注册老师 → 建题包 → 主持开房 → 30 个学生加入答题 → 检查计分、断线重连和报告
+process.env.NODE_ENV = 'test';
 process.env.DB_PATH = require('path').join(require('os').tmpdir(), `arena-test-${Date.now()}.db`);
 process.env.PORT = String(39000 + (Math.random() * 900 | 0));
 const assert = require('assert');
@@ -121,6 +122,26 @@ function client(cookie) {
   assert.equal((await host2.wait('end')).reportId, end.reportId);
   const list = await (await fetch(BASE + '/api/games', { headers: { cookie } })).json();
   assert.equal(list.length, 1, '只写一份报告');
-  console.log(`✅ 通过：${N} 人对局、4 种题型计分、重名、断线重连、防重复作答、答案不外泄、报告入库`);
+  // 忘记密码
+  const { outbox } = require('../lib/mail');
+  const post = (path, body, ck) => fetch(BASE + path, { method: 'POST', headers: { 'content-type': 'application/json', ...(ck ? { cookie: ck } : {}) }, body: JSON.stringify(body) });
+  assert.equal((await post('/api/forgot', { email: 'nobody@x.com' })).status, 200, '没注册的邮箱也回 200');
+  assert.equal((await post('/api/forgot', { email: 'T@X.com' })).status, 200);
+  await sleep(100);
+  assert.equal(outbox.length, 1, '只给注册过的邮箱发信');
+  assert.equal(outbox[0].to, 't@x.com');
+  const token = outbox[0].text.match(/token=([\w-]+)/)[1];
+  assert.equal((await post('/api/reset', { token, password: 'short' })).status, 400, '新密码太短');
+  r = await post('/api/reset', { token, password: 'newpass123' });
+  assert.equal(r.status, 200);
+  const cookie2 = r.headers.get('set-cookie').split(';')[0];
+  assert.equal((await fetch(BASE + '/api/me', { headers: { cookie } })).status, 401, '旧会话失效');
+  assert.equal((await fetch(BASE + '/api/me', { headers: { cookie: cookie2 } })).status, 200);
+  assert.equal((await post('/api/reset', { token, password: 'another123' })).status, 400, '链接只能用一次');
+  assert.equal((await post('/api/login', { email: 't@x.com', password: 'newpass123' })).status, 200);
+  assert.equal((await post('/api/login', { email: 't@x.com', password: 'secret123' })).status, 401, '旧密码不能用');
+  for (let i = 0; i < 3; i++) await post('/api/forgot', { email: 't@x.com' });
+  assert.equal((await post('/api/forgot', { email: 't@x.com' })).status, 429, '同一邮箱 1 小时最多 3 次');
+  console.log(`✅ 通过：${N} 人对局、4 种题型计分、重名、断线重连、防重复作答、答案不外泄、报告入库、找回密码`);
   process.exit(0);
 })().catch(e => { console.error('❌', e); process.exit(1); });

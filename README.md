@@ -38,4 +38,6 @@ node test/e2e.cjs    # 浏览器端到端（需要 Playwright + Chrome，截图�
 
 ## 部署
 
-见 `deploy/`：PM2 配置（进程名 `kaleido`、端口 3048、目录 `/opt/kaleido`）和 nginx 模板（含 WebSocket）。生产环境设 `COOKIE_SECURE=1`。
+部署：改完代码运行 `deploy/push.sh`（同步到 VPS 并重启，不动服务器上的 data / backups / .env）。数据库每天新加坡时间 3:15 备份到 `/opt/kaleido/backups/`，保留 14 天。
+
+配置见 `deploy/`：PM2 配置（进程名 `kaleido`、端口 3048、目录 `/opt/kaleido`）和 nginx 模板（含 WebSocket）。生产环境设 `COOKIE_SECURE=1`。
