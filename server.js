@@ -147,7 +147,7 @@ wss.on('connection', (ws, req) => {
       if (m.t === 'host') {
         const s = q('SELECT * FROM sets WHERE id = ? AND teacher_id = ?').get(+m.setId, teacher.id);
         if (!s) return G.send(ws, { t: 'error', error: 'set_not_found' });
-        room = G.createRoom(teacher, { id: s.id, title: s.title, questions: JSON.parse(s.questions) }, ws, { mode: m.mode, minutes: m.minutes, seconds: m.seconds });
+        room = G.createRoom(teacher, { id: s.id, title: s.title, subject: s.subject, questions: JSON.parse(s.questions) }, ws, { mode: m.mode, minutes: m.minutes, seconds: m.seconds });
         if (!room) return G.send(ws, { t: 'error', error: 'empty_set' });
       } else {
         const r = G.rooms.get(String(m.pin));

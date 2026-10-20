@@ -51,6 +51,7 @@
       <form class="panel" id="joinForm">
         <h2>🎮 <span data-i="join_title"></span></h2>
         <div class="pin"><input id="pin" inputmode="numeric" maxlength="6" autocomplete="off" data-ip="join_pin"><button class="btn go" data-i="join_btn"></button></div>
+        <a href="/cards" id="cardsLink" style="display:inline-block;margin-top:10px;font-weight:800;text-decoration:none"></a>
       </form>
       <div class="panel" id="teacherPanel">
         <h2>🧑‍🏫 <span data-i="teacher_title"></span></h2>
@@ -83,6 +84,7 @@ function renderText() {
   $('#pitch2').textContent = tt('华文、数学、英文、科学都能用。贴上本课内容一键出题，学生用手机扫码加入，不用注册。', 'Chinese, Math, English, Science — paste your lesson, get a quiz in seconds. Students join by QR, no sign-up.');
   $('#subjects').innerHTML = [['🀄', tt('华文', 'Chinese')], ['➗', tt('数学', 'Math')], ['🔤', tt('英文', 'English')], ['🔬', tt('科学', 'Science')], ['🌴', tt('马来文', 'Malay')], ['🪔', tt('淡米尔文', 'Tamil')]].map(([i, n]) => `<span>${i} ${n}</span>`).join('');
   $('#authBtn').textContent = t(tab);
+  $('#cardsLink').textContent = '🎴 ' + tt('我的卡册', 'My card book');
   $('#forgotLink').textContent = tt('忘记密码？', 'Forgot password?');
   $('#forgotLink').hidden = tab !== 'login';
   $('#forgotHint').textContent = tt('输入注册时用的邮箱，我们会发一个重设密码的链接（1 小时内有效）。', "Enter your sign-up email and we'll send a reset link (valid for 1 hour).");

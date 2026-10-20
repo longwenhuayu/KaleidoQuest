@@ -82,13 +82,19 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   }
   await T.waitForTimeout(2200);
   await shot(T, '11-host-podium');
-  await S[0].waitForSelector('#vEnd.on'); await shot(S[0], '12-student-end');
+  await S[0].waitForSelector('#vEnd.on'); await S[0].waitForTimeout(1500); await shot(S[0], '12-student-end');
+  const endCards = await S[0].locator('#endCards .kc').count();
+  await S[0].goto(BASE + '/cards'); await S[0].waitForSelector('.kc');
+  await shot(S[0], '14-card-book');
+  await S[0].locator('.kc').first().click(); await S[0].waitForSelector('.kb'); await S[0].waitForTimeout(1500);
+  await shot(S[0], '15-card-detail');
+  const book = await S[0].evaluate(() => Object.keys(KQC.all()));
   const reportHref = await T.getAttribute('#reportBtn', 'href');
   await T.goto(BASE + reportHref, { waitUntil: 'networkidle' });
   await T.waitForSelector('.qrow');
   await shot(T, '13-report');
   const rep = await T.evaluate(() => ({ players: G.report.players.length, q: G.report.questions.length, order: G.report.questions.at(-1) }));
   if (await T.isVisible('#reviewBtn')) { await T.click('#reviewBtn'); await T.waitForURL(/edit\?id=\d+/); rep.review = await T.locator('.qc').count(); }
-  console.log(JSON.stringify({ pin, rep, errs }, null, 1));
+  console.log(JSON.stringify({ pin, rep, endCards, book, errs }, null, 1));
   await b.close();
 })().catch(e => { console.error('❌', e); process.exit(1); });

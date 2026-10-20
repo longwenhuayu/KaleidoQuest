@@ -55,6 +55,7 @@ const until = async (fn, ms = 8000) => { const end = Date.now() + ms; while (!fn
   assert.ok(host.inbox.some(m => m.t === 'tboard' && m.events.length), '大屏收到排行榜和事件');
   await until(() => ps.every(p => p.inbox.some(m => m.t === 'end')));
   assert.equal(stealSum, stolenSum, '偷走的 = 被偷的');
+  ps.forEach(p => { const e = p.inbox.find(m => m.t === 'end'); assert.ok(e.reward && e.reward.cards.length >= 1 && e.reward.cards[0].set === 'explorer', '综合题包发探索者卡'); });
   const rep = await (await fetch(BASE + `/api/games/${end.reportId}`, { headers: { cookie } })).json();
   assert.equal(rep.mode, 'treasure');
   const tries = rep.report.players.reduce((a, p) => a + p.tries, 0), answered = rep.report.questions.reduce((a, q) => a + q.answered, 0);

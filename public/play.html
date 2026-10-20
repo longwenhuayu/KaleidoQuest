@@ -82,6 +82,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
     <div class="err" id="joinErr" style="color:var(--bad)"></div>
     <button class="btn go" id="joinBtn" style="font-size:20px"></button>
   </form>
+  <a href="/cards" id="cardsLink" style="color:#fde68a;font-weight:800;text-decoration:none"></a>
 </div></div>
 
 <div class="view" id="vWait"><div class="mid"><div class="big-av" id="waitAv"></div><div class="h" id="waitName"></div><div class="sub" id="waitMsg"></div></div></div>
@@ -97,10 +98,11 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 <div class="view" id="vChest"><div class="mid"><div class="h" id="chestH"></div><div class="chests" id="chests"><button>🎁</button><button>🎁</button><button>🎁</button></div></div></div>
 <div class="view" id="vOut"><div class="mid"><div class="outemoji" id="outE"></div><div class="h" id="outH"></div><div class="pts" id="outPts"></div><button class="btn go" id="outGo" style="font-size:20px"></button></div></div>
 <div class="view" id="vPick"><div class="mid"><div class="h" id="pickH"></div><div class="sub" id="pickSub"></div><div class="picklist" id="pickList"></div></div></div>
-<div class="view" id="vEnd"><div class="mid"><div class="medal" id="endMedal"></div><div class="h" id="endRank"></div><div class="pts" id="endScore"></div><div class="sub" id="endStats"></div><a class="btn ghost" href="/play" id="endAgain" style="margin-top:10px"></a></div></div>
+<div class="view" id="vEnd"><div class="mid"><div class="medal" id="endMedal"></div><div class="h" id="endRank"></div><div class="pts" id="endScore"></div><div class="sub" id="endStats"></div><div id="endCards"></div><a class="btn ghost" href="/play" id="endAgain" style="margin-top:10px"></a></div></div>
 <div class="view" id="vMsg"><div class="mid"><div class="h" id="msgText"></div><a class="btn go" href="/play" id="msgBtn"></a></div></div>
 
 <script src="/js/common.js"></script>
+<script src="/js/cards-ui.js"></script>
 <script>
 const { tt, $, esc, SHAPES, sfx } = VA;
 const qp = new URLSearchParams(location.search);
@@ -115,6 +117,7 @@ function renderStatic() {
   $('#joinBtn').textContent = tt('加入 ▶', 'Join ▶');
   $('#endAgain').textContent = tt('加入下一局', 'Join another game');
   $('#msgBtn').textContent = tt('重新加入', 'Join again');
+  $('#cardsLink').textContent = '🎴 ' + tt('我的卡册', 'My card book');
 }
 document.addEventListener('langchange', renderStatic); renderStatic();
 $('#pinIn').value = pin; if (pin) setTimeout(() => $('#nameIn').focus(), 100);
@@ -222,6 +225,7 @@ function end(m) {
   $('#endScore').textContent = m.score + (m.unit ? ' ' + m.unit : '');
   $('#endStats').textContent = m.mode === 'treasure' ? tt(`共答 ${m.total} 题，答对 ${m.correct} 题`, `${m.correct} correct out of ${m.total} answered`) : tt(`答对 ${m.correct} / ${m.total} 题 · 最多连对 ${m.best} 题`, `${m.correct} / ${m.total} correct · best streak ${m.best}`);
   if (m.rank <= 3) sfx.fanfare();
+  $('#endCards').innerHTML = KQC.rewardHtml(m.reward);
 }
 // ── 夺宝 ──
 const KIND = {

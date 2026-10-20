@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1e1b4b">
+<title>KaleidoQuest · 我的卡册</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+body{min-height:100vh}
+header{display:flex;align-items:center;gap:12px;padding:14px 20px}
+header .sp{flex:1}
+.wrap{max-width:980px}
+h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px}
+.sub{opacity:.8;margin-top:4px}
+.prog{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.prog button{border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:16px;padding:12px;text-align:left;cursor:pointer}
+.prog button.on{border-color:#fbbf24;background:rgba(251,191,36,.15)}
+.prog b{display:block;font-size:22px;font-family:"Fredoka",sans-serif}
+.prog span{font-size:13px;opacity:.85}
+.prog i{display:block;height:6px;border-radius:9px;background:rgba(255,255,255,.15);margin-top:8px;overflow:hidden;font-style:normal}
+.prog i em{display:block;height:100%;background:#fbbf24}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:14px;justify-items:center}
+.locked{width:96px;height:132px;border-radius:14px;border:2px dashed rgba(255,255,255,.25);display:grid;place-items:center;font-size:30px;opacity:.5}
+.empty{text-align:center;padding:50px 20px;opacity:.8;line-height:1.8}
+.detail{position:fixed;inset:0;z-index:100;background:rgba(10,8,40,.7);display:grid;place-items:center;padding:16px}
+.note{font-size:12px;opacity:.6;margin-top:30px;text-align:center}
+@media (max-width:640px){.prog{grid-template-columns:1fr 1fr}h1{font-size:26px}}
+</style>
+</head>
+<body class="night">
+<header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></header>
+<div class="wrap">
+  <h1 id="h"></h1><div class="sub" id="sub"></div>
+  <div class="prog" id="prog"></div>
+  <div class="grid" id="grid"></div>
+  <div class="note" id="note"></div>
+</div>
+<script src="/js/common.js"></script>
+<script src="/js/cards-ui.js"></script>
+<script src="/data/cards.js"></script>
+<script>
+const { tt, $, esc } = VA;
+let tab = null, pyReady = null;
+const loadPy = () => pyReady || (pyReady = new Promise(ok => { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js'; s.onload = s.onerror = ok; document.head.appendChild(s); }));
+function render() {
+  const book = KQC.all(), list = Object.values(book);
+  const by = set => list.filter(x => x.card.set === set);
+  $('#h').textContent = '🎴 ' + tt('我的卡册', 'My Card Book');
+  $('#sub').textContent = tt(`共收集 ${list.length} 张不同的卡。玩游戏、交作业都能得卡！`, `${list.length} different cards collected. Play games and finish homework to earn more!`);
+  const sets = [['zh', null], ['math', KQ_CARDS.SETS.math.cards.length], ['science', KQ_CARDS.SETS.science.cards.length], ['explorer', KQ_CARDS.SETS.explorer.cards.length]];
+  if (!tab) tab = (sets.find(([k]) => by(k).length) || sets[0])[0];
+  $('#prog').innerHTML = sets.map(([k, total]) => { const n = by(k).length; return `<button data-k="${k}"${tab === k ? ' class="on"' : ''}><b>${n}${total ? ` / ${total}` : ''}</b><span>${tt(KQC.SET_NAME[k][0], KQC.SET_NAME[k][1])}</span>${total ? `<i><em style="width:${n / total * 100}%"></em></i>` : ''}</button>`; }).join('');
+  const mine = by(tab).sort((a, b) => ({ e: 0, r: 1, c: 2 }[a.card.rarity] - { e: 0, r: 1, c: 2 }[b.card.rarity]) || a.first - b.first);
+  let html = mine.map(x => KQC.mini(x.card, { n: x.n })).join('');
+  // 固定卡池：没收集到的显示成「？」
+  if (tab !== 'zh') { const pool = KQ_CARDS.SETS[tab].cards; html += '<div class="locked">?</div>'.repeat(Math.max(0, pool.length - mine.length)); }
+  $('#grid').innerHTML = html || `<div class="empty">${tab === 'zh' ? tt('玩一局华文游戏，就能收集这一课的「字灵」——每个汉字的部首、结构和字源都藏在卡里。', 'Play a Chinese game to collect Hanzi Spirits — each card holds the radical, structure and origin of a character.') : tt('还没有这一套的卡，玩一局就有机会得到！', 'No cards from this set yet — play a game to earn some!')}</div>`;
+  $('#note').textContent = tt('卡册存在这台设备的浏览器里；换手机或清除浏览器数据会看不到。', 'Your card book is saved in this browser — it won’t follow you to another device.');
+}
+$('#prog').onclick = e => { const b = e.target.closest('[data-k]'); if (b) { tab = b.dataset.k; render(); } };
+$('#grid').onclick = async e => {
+  const b = e.target.closest('.kc'); if (!b) return;
+  const x = KQC.all()[b.dataset.id]; if (!x) return;
+  const d = document.createElement('div'); d.className = 'detail';
+  d.innerHTML = KQC.big(x.card, '');
+  d.onclick = () => d.remove();
+  document.body.appendChild(d);
+  if (x.card.set === 'zh') { await loadPy(); const el = d.querySelector('.kb-py'); if (el && window.pinyinPro) el.textContent = pinyinPro.pinyin(x.card.ch, { multiple: true }); }
+};
+document.addEventListener('langchange', render);
+render();
+</script>
+</body>
+</html>

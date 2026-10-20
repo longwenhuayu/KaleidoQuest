@@ -112,6 +112,11 @@ function client(cookie) {
   const e0 = await players[0].wait('end'), e4 = await players[4].wait('end');
   assert.equal(e0.correct, 4);
   assert.deepEqual([e0.rank, e4.rank].sort(), [1, 2]);
+  // 收集卡：前三名 2 张；华文题包抽到的是本局出现过的字
+  assert.equal(e0.reward.cards.length, 2);
+  assert.ok(e0.reward.cards.every(c => c.set === 'zh' && '熊猫我喜欢中文'.includes(c.ch)), '字灵来自本局：' + e0.reward.cards.map(c => c.ch));
+  const last = await players.find(p => p !== players[0] && p !== players[4]).wait('end');
+  assert.ok(last.reward.cards.length >= 1);
   // 报告
   const rep = await (await fetch(BASE + `/api/games/${end.reportId}`, { headers: { cookie } })).json();
   assert.equal(rep.report.players.length, N);

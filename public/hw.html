@@ -67,10 +67,11 @@ body{display:flex;flex-direction:column}
   <div id="qMedia" style="display:flex;flex-direction:column;gap:8px"></div>
   <div id="qAns" style="flex:1;display:flex;flex-direction:column;min-height:0"></div>
 </div>
-<div class="view" id="vDone"><div class="mid"><div class="medal" id="dMedal"></div><div class="h" id="dH"></div><div class="big" id="dScore"></div><div id="dStats" style="opacity:.85"></div><button class="btn go" id="retryBtn" hidden></button></div></div>
+<div class="view" id="vDone"><div class="mid"><div class="medal" id="dMedal"></div><div class="h" id="dH"></div><div class="big" id="dScore"></div><div id="dStats" style="opacity:.85"></div><div id="dCards"></div><button class="btn go" id="retryBtn" hidden></button></div></div>
 <div id="fb"></div>
 
 <script src="/js/common.js"></script>
+<script src="/js/cards-ui.js"></script>
 <script>
 const { tt, $, esc, SHAPES, sfx, speak } = VA;
 const CODE = location.pathname.split('/').filter(Boolean).pop().toLowerCase();
@@ -155,6 +156,7 @@ function finish(d) {
   $('#score').textContent = '';
   $('#retryBtn').hidden = !d.canRetry; $('#retryBtn').textContent = tt('↻ 再做一次（取最好成绩）', '↻ Try again (best score counts)');
   if (pct >= .8) sfx.fanfare();
+  $('#dCards').innerHTML = KQC.rewardHtml(d.reward);
 }
 $('#retryBtn').onclick = () => intro();
 document.addEventListener('langchange', () => { if (document.querySelector('#vIntro.on')) intro(); });

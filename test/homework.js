@@ -43,8 +43,10 @@ const post = (p, body, cookie) => fetch(BASE + p, { method: 'POST', headers: { '
   }
   let done = await run('小明', right, 1);
   assert.equal(done.correct, 3); assert.ok(done.score > 2900, '全对接近满分 ' + done.score); assert.equal(done.canRetry, true);
+  assert.equal(done.reward.cards.length, 2, '第一次全对得 2 张卡');
   done = await run('小明', wrong);
   assert.equal(done.correct, 0); assert.equal(done.canRetry, false, '2 次用完');
+  assert.equal(done.reward, null, '重做不发卡');
   assert.equal((await post(`/api/hw/${code}/start`, { name: '小明' })).status, 403, '超过次数不能再做');
   await run('Ali', { Q0: 0, Q1: '0', Q2: false });
   // 开始了没做完的不算进报告
