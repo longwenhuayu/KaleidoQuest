@@ -8,7 +8,8 @@ const ICONS = [
   'lightbulb', 'timer', 'triangle-alert', 'check', 'x', 'shield', 'mail', 'search', 'ban', 'zap', 'arrow-left', 'arrow-right', 'trophy',
   'flame', 'gem', 'swords', 'layers', 'sparkles', 'repeat', 'graduation-cap', 'presentation', 'gamepad-2', 'school', 'book-open',
   'languages', 'calculator', 'type', 'flask-conical', 'message-square-text', 'message-circle-more', 'plus', 'log-out', 'music', 'puzzle',
-  'sigma', 'percent', 'shapes', 'clock-3', 'award', 'hourglass', 'user', 'crown', 'medal', 'list-ordered', 'circle-help'
+  'sigma', 'percent', 'shapes', 'clock-3', 'award', 'hourglass', 'user', 'crown', 'medal', 'list-ordered', 'circle-help',
+  'layout-grid', 'user-plus'
 ];
 const dir = path.join(__dirname, '..', 'node_modules', 'lucide-static', 'icons');
 const symbols = ICONS.map(name => {

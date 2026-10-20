@@ -68,7 +68,7 @@ body{display:flex;flex-direction:column}
   <div id="qMedia" style="display:flex;flex-direction:column;gap:8px"></div>
   <div id="qAns" style="flex:1;display:flex;flex-direction:column;min-height:0"></div>
 </div>
-<div class="view" id="vDone"><div class="mid"><div class="medal" id="dMedal"></div><div class="h" id="dH"></div><div class="big" id="dScore"></div><div id="dStats" style="opacity:.85"></div><div id="dCards"></div><button class="btn go" id="retryBtn" hidden></button></div></div>
+<div class="view" id="vDone"><div class="mid"><div class="medal" id="dMedal"></div><div class="h" id="dH"></div><div class="big" id="dScore"></div><div id="dStats" style="opacity:.85"></div><div id="dCards"></div><button class="btn go" id="retryBtn" hidden></button><div id="dMore"></div></div></div>
 <div id="fb"></div>
 
 <script src="/js/common.js"></script>
@@ -76,19 +76,23 @@ body{display:flex;flex-direction:column}
 <script>
 const { tt, $, esc, SHAPES, sfx, speak, icon } = VA;
 const CODE = location.pathname.split('/').filter(Boolean).pop().toLowerCase();
-const KEY = 'kq_hw_' + CODE;
+// /try/:id 是 Gallery 免登录试玩，接口形状和作业一样
+const TRY = location.pathname.startsWith('/try/');
+const BASE = TRY ? `/api/try/${CODE}` : `/api/hw/${CODE}`;
+const KEY = (TRY ? 'kq_try_' : 'kq_hw_') + CODE;
 let info = null, token = null, cur = null, tEnd = 0, raf = 0;
 const view = id => document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id));
-const post = async (path, body) => { const r = await fetch(`/api/hw/${CODE}/${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const d = await r.json().catch(() => ({})); if (!r.ok) { const e = new Error(d.error || 'generic'); throw e; } return d; };
+const post = async (path, body) => { const r = await fetch(`${BASE}/${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const d = await r.json().catch(() => ({})); if (!r.ok) { const e = new Error(d.error || 'generic'); throw e; } return d; };
 const due = ms => new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' });
-const ERR = { name: () => tt('请输入你的名字', 'Please enter your name'), no_tries: () => tt('你的次数已经用完了', "You've used all your attempts"), due: () => tt('作业已经截止了', 'This homework is past its due date'), closed: () => tt('老师已经关闭了这份作业', 'Your teacher has closed this homework'), too_many: () => tt('操作太频繁，请稍后再试', 'Too many requests — try again later'), not_found: () => tt('找不到这份作业，请检查链接', 'Homework not found — check the link') };
+const ERR = { name: () => tt('请输入你的名字', 'Please enter your name'), no_tries: () => tt('你的次数已经用完了', "You've used all your attempts"), due: () => tt('作业已经截止了', 'This homework is past its due date'), closed: () => tt('老师已经关闭了这份作业', 'Your teacher has closed this homework'), too_many: () => tt('操作太频繁，请稍后再试', 'Too many requests — try again later'), not_found: () => TRY ? tt('找不到这个游戏', 'Game not found') : tt('找不到这份作业，请检查链接', 'Homework not found — check the link') };
 const errText = e => (ERR[e.message] || (() => tt('出错了，请再试一次', 'Something went wrong')))();
 
+const title = () => Array.isArray(info.title) ? tt(info.title[0], info.title[1]) : info.title;
 function intro() {
-  view('vIntro'); $('#topTitle').textContent = info.title;
-  $('#iTitle').innerHTML = icon('clipboard-list') + ' ' + esc(info.title);
-  $('#iMeta').innerHTML = `${info.teacher ? esc(tt(`${info.teacher}布置`, `From ${info.teacher}`)) + '<br>' : ''}${tt(`共 ${info.total} 题`, `${info.total} questions`)} · ${tt('截止', 'Due')} ${due(info.due)}${info.tries ? '<br>' + tt(`每人最多做 ${info.tries} 次`, `Up to ${info.tries} attempts`) : ''}`;
-  $('#name').placeholder = tt('你的名字（老师看得懂的）', 'Your name (so your teacher knows you)');
+  view('vIntro'); $('#topTitle').textContent = title();
+  $('#iTitle').innerHTML = icon(TRY ? 'gamepad-2' : 'clipboard-list') + ' ' + esc(title());
+  $('#iMeta').innerHTML = TRY ? `${esc(tt(info.desc[0], info.desc[1]))}<br>${tt(`共 ${info.total} 题 · 免登录试玩`, `${info.total} questions · no sign-up needed`)}` : `${info.teacher ? esc(tt(`${info.teacher}布置`, `From ${info.teacher}`)) + '<br>' : ''}${tt(`共 ${info.total} 题`, `${info.total} questions`)} · ${tt('截止', 'Due')} ${due(info.due)}${info.tries ? '<br>' + tt(`每人最多做 ${info.tries} 次`, `Up to ${info.tries} attempts`) : ''}`;
+  $('#name').placeholder = TRY ? tt('你的名字（可以不填）', 'Your name (optional)') : tt('你的名字（老师看得懂的）', 'Your name (so your teacher knows you)');
   $('#startBtn').textContent = tt('开始 ▶', 'Start ▶');
   try { $('#name').value = localStorage.getItem('kq_name') || ''; } catch (e) {}
 }
@@ -142,8 +146,9 @@ async function answer(ans) {
     r.correct ? sfx.ok() : sfx.bad();
     $('#fb').innerHTML = `<div class="fb ${r.correct ? 'ok' : 'bad'}"><b>${r.correct ? `${icon('check')} ${tt('答对了', 'Correct')} +${r.points}` : `${icon('x')} ${tt('答错了', 'Not quite')}`}</b><p>${r.correct ? '' : esc(tt(`正确答案：${r.answerText}`, `Answer: ${r.answerText}`))}${r.note ? `<br>${icon('lightbulb')} ${esc(r.note)}` : ''}</p><button class="btn ghost" id="nextBtn">${d.done ? tt('看成绩 ▶', 'See results ▶') : tt('下一题 ▶', 'Next ▶')}</button></div>`;
     const go = () => { $('#fb').innerHTML = ''; show(d); };
-    $('#nextBtn').onclick = go;
-    if (r.correct && !r.note) setTimeout(() => { if ($('#nextBtn')) go(); }, 1200);
+    const btn = $('#nextBtn'); btn.onclick = go;
+    // 自动下一题只认这一题的按钮：学生先手动点了下一题，就不能再跳一次
+    if (r.correct && !r.note) setTimeout(() => { if (btn.isConnected) go(); }, 1200);
   } catch (x) { toastErr(x); }
 }
 function toastErr(x) { VA.toast(errText(x)); if (x.message === 'not_found') { try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); } }
@@ -151,11 +156,12 @@ function finish(d) {
   view('vDone'); try { localStorage.removeItem(KEY); } catch (e) {}
   const pct = d.total ? d.correct / d.total : 0;
   $('#dMedal').textContent = pct === 1 ? '🏆' : pct >= .8 ? '🌟' : pct >= .5 ? '👍' : '💪';
-  $('#dH').textContent = pct === 1 ? tt('全对！太厉害了！', 'Perfect score!') : tt('作业完成！', 'Homework done!');
+  $('#dH').textContent = pct === 1 ? tt('全对！太厉害了！', 'Perfect score!') : TRY ? tt('挑战完成！', 'All done!') : tt('作业完成！', 'Homework done!');
   $('#dScore').textContent = d.score;
-  $('#dStats').textContent = tt(`答对 ${d.correct} / ${d.total} 题 · 成绩已经交给老师`, `${d.correct} / ${d.total} correct · sent to your teacher`);
+  $('#dStats').textContent = TRY ? tt(`答对 ${d.correct} / ${d.total} 题`, `${d.correct} / ${d.total} correct`) : tt(`答对 ${d.correct} / ${d.total} 题 · 成绩已经交给老师`, `${d.correct} / ${d.total} correct · sent to your teacher`);
   $('#score').textContent = '';
-  $('#retryBtn').hidden = !d.canRetry; $('#retryBtn').innerHTML = icon('rotate-ccw') + ' ' + tt('再做一次（取最好成绩）', 'Try again (best score counts)');
+  $('#retryBtn').hidden = !d.canRetry; $('#retryBtn').innerHTML = icon('rotate-ccw') + ' ' + (TRY ? tt('再玩一次', 'Play again') : tt('再做一次（取最好成绩）', 'Try again (best score counts)'));
+  $('#dMore').innerHTML = TRY ? `<div class="row" style="justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap"><a class="btn ghost" href="/gallery">${icon('layout-grid')} ${tt('更多游戏', 'More games')}</a><a class="btn ghost" href="/?signup=1">${icon('user-plus')} ${tt('老师免费注册，布置给全班', 'Teachers: sign up free to use with your class')}</a></div>` : '';
   if (pct >= .8) sfx.fanfare();
   $('#dCards').innerHTML = KQC.rewardHtml(d.reward);
 }
@@ -163,12 +169,12 @@ $('#retryBtn').onclick = () => intro();
 document.addEventListener('langchange', () => { if (document.querySelector('#vIntro.on')) intro(); });
 
 (async () => {
-  const r = await fetch(`/api/hw/${CODE}`);
+  const r = await fetch(BASE);
   if (!r.ok) { $('#loadMsg').textContent = ERR.not_found(); return; }
   info = await r.json();
   try { token = localStorage.getItem(KEY); } catch (e) {}
   if (token) { try { return show(await post('resume', { token })); } catch (e) { try { localStorage.removeItem(KEY); } catch (x) {} token = null; } }
-  if (info.status !== 'open') { $('#topTitle').textContent = info.title; $('#loadMsg').textContent = ERR[info.status](); return; }
+  if (info.status !== 'open') { $('#topTitle').textContent = title(); $('#loadMsg').textContent = ERR[info.status](); return; }
   intro();
 })();
 </script>

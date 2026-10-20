@@ -156,7 +156,13 @@ body{overflow:hidden}
 const { t, tt, $, esc, SHAPES, sfx, speak, icon } = VA;
 const QS = new URLSearchParams(location.search);
 const setId = +QS.get('set'), MODE = QS.get('mode') === 'treasure' ? 'treasure' : 'classic', MINUTES = +QS.get('min') || 7;
-const KEY = `va_host_${setId}_${MODE}`;
+// ?gallery=ID：Gallery 的现成游戏，不登录也能开局
+const GAL = QS.get('gallery');
+const SRC = GAL ? `gallery=${encodeURIComponent(GAL)}` : `set=${setId}`;
+const KEY = GAL ? `va_host_g_${GAL}_${MODE}` : `va_host_${setId}_${MODE}`;
+let guest = false;
+const hostMsg = () => GAL ? { t: 'host', gallery: GAL, mode: MODE, minutes: MINUTES, lang: VA.lang } : { t: 'host', setId, mode: MODE, minutes: MINUTES };
+const savedRoom = () => { const v = sessionStorage.getItem(KEY); if (!v) return null; try { const o = JSON.parse(v); return o && typeof o === 'object' ? o : { pin: v }; } catch (e) { return { pin: v }; } };
 let tqEnds = 0, tqSkew = 0, tqTick = 0, lastScores = {}, lastEvAt = 0;
 const seen = new Set(); // 已经播过加入动画的学生
 let ws = null, pin = null, total = 0, cur = null, state = 'conn', timerRaf = 0, music = 0, players = [], locked = false, retry = 0, endMsg = null;
@@ -172,12 +178,13 @@ function renderStatic() {
   $('#skipBtn').innerHTML = tt('结束本题', 'End question') + ' ' + icon('skip-forward');
   $('#toBoard').innerHTML = tt('排行榜', 'Leaderboard') + ' ' + icon('arrow-right');
   $('#ansLabel').textContent = tt('已作答', 'answers');
-  $('#toDash').textContent = tt('回后台', 'Dashboard');
+  $('#toDash').textContent = guest ? tt('更多游戏', 'More games') : tt('回后台', 'Dashboard');
+  $('#toDash').href = guest ? '/gallery' : '/teacher';
   $('#tqEnd').innerHTML = icon('square') + ' ' + tt('结束游戏', 'End game');
   $('#tqFeedH').textContent = tt('实时战况', 'LIVE');
   $('#endTitle').innerHTML = icon('trophy') + ' ' + tt('冠军诞生！', 'And the winner is…');
   $('#againBtn').innerHTML = icon('rotate-ccw') + ' ' + tt('再玩一次', 'Play again');
-  $('#againBtn').href = `/host?set=${setId}&mode=${MODE}&min=${MINUTES}&new=1`;
+  $('#againBtn').href = `/host?${SRC}&mode=${MODE}&min=${MINUTES}&new=1`;
   renderPlayers();
 }
 function renderPlayers() {
@@ -196,7 +203,7 @@ function stopMusic() { clearInterval(music); music = 0; }
 
 function connect() {
   ws = new WebSocket(VA.wsUrl());
-  ws.onopen = () => { retry = 0; const saved = sessionStorage.getItem(KEY); ws.send(JSON.stringify(saved && !QS.get('new') ? { t: 'host_resume', pin: saved } : { t: 'host', setId, mode: MODE, minutes: MINUTES })); };
+  ws.onopen = () => { retry = 0; const saved = savedRoom(); ws.send(JSON.stringify(saved && !QS.get('new') ? { t: 'host_resume', pin: saved.pin, hostToken: saved.hostToken } : hostMsg())); };
   ws.onmessage = e => handle(JSON.parse(e.data));
   ws.onclose = () => { if (state === 'sEnd') return; $('#connMsg').textContent = tt('连接中断，正在重连…', 'Reconnecting…'); if (state === 'conn') show('sConn'); setTimeout(connect, Math.min(5000, 800 * ++retry)); };
 }
@@ -204,14 +211,14 @@ const send = m => ws && ws.readyState === 1 && ws.send(JSON.stringify(m));
 
 function handle(m) {
   if (m.t === 'error') {
-    if (m.error === 'room_not_found') { sessionStorage.removeItem(KEY); send({ t: 'host', setId, mode: MODE, minutes: MINUTES }); return; }
+    if (m.error === 'room_not_found') { sessionStorage.removeItem(KEY); send(hostMsg()); return; }
     if (m.error === 'login_required') { location.href = '/'; return; }
-    $('#connMsg').textContent = m.error === 'empty_set' ? tt('这个题包还没有题目', 'This set has no questions') : tt('找不到题包', 'Question set not found');
+    $('#connMsg').textContent = m.error === 'too_many' ? tt('开局太频繁了，请稍后再试，或免费注册老师账号', 'Too many games — try later, or sign up free') : m.error === 'empty_set' ? tt('这个题包还没有题目', 'This set has no questions') : tt('找不到题包', 'Question set not found');
     show('sConn'); return;
   }
   if (m.t === 'room') {
-    pin = m.pin; total = m.total; sessionStorage.setItem(KEY, pin);
-    if (QS.get('new')) history.replaceState(null, '', `/host?set=${setId}&mode=${MODE}&min=${MINUTES}`);
+    pin = m.pin; total = m.total; guest = !!m.guest; sessionStorage.setItem(KEY, JSON.stringify({ pin, hostToken: m.hostToken }));
+    if (QS.get('new')) history.replaceState(null, '', `/host?${SRC}&mode=${MODE}&min=${MINUTES}`);
     $('#pin').textContent = pin.replace(/(\d{3})(\d{3})/, '$1 $2');
     $('#lTitle').innerHTML = (m.mode === 'treasure' ? `${icon('gem')} ${tt('夺宝', 'Treasure Quest')} · ${m.minutes} ${tt('分钟', 'min')} · ` : icon('swords') + ' ') + esc(m.title);
     $('#tqTitle').textContent = m.title;
@@ -298,8 +305,9 @@ function end(m) {
   stopMusic(); show('sEnd'); sfx.fanfare(); sessionStorage.removeItem(KEY); endMsg = m;
   const order = [1, 0, 2];
   $('#podium').innerHTML = order.map(i => m.podium[i] ? `<div class="pod p${i + 1}"><div class="av">${m.podium[i].avatar}</div><div class="nm">${esc(m.podium[i].name)}</div><div class="blk">${i + 1}<small>${m.podium[i].score}${m.unit ? ' ' + m.unit : ''}</small></div></div>` : '').join('');
-  $('#reportBtn').innerHTML = icon('chart-column') + ' ' + tt('查看报告', 'View report');
-  $('#reportBtn').href = m.reportId ? `/report?id=${m.reportId}` : '/teacher#reports';
+  // 访客开的局不保存报告：换成注册入口
+  $('#reportBtn').innerHTML = guest ? icon('user-plus') + ' ' + tt('免费注册，保存每次的报告', 'Sign up free to save reports') : icon('chart-column') + ' ' + tt('查看报告', 'View report');
+  $('#reportBtn').href = guest ? '/?signup=1' : m.reportId ? `/report?id=${m.reportId}` : '/teacher#reports';
   for (let i = 0; i < 90; i++) { const c = document.createElement('div'); c.className = 'confetti'; c.style.left = Math.random() * 100 + 'vw'; c.style.background = ['#f59e0b', '#7c3aed', '#16a34a', '#e11d48', '#2563eb'][i % 5]; c.style.animationDuration = 2 + Math.random() * 2.5 + 's'; c.style.animationDelay = Math.random() * 1.5 + 's'; document.body.appendChild(c); setTimeout(() => c.remove(), 6000); }
 }
 
@@ -342,7 +350,7 @@ document.addEventListener('keydown', e => {
   else if (['sReveal', 'sBoard'].includes(state)) send({ t: 'next' });
 });
 document.addEventListener('langchange', renderStatic);
-if (!setId) { $('#connMsg').textContent = tt('缺少题包', 'No question set'); } else { $('#connMsg').textContent = tt('正在开房…', 'Creating game…'); connect(); }
+if (!setId && !GAL) { $('#connMsg').textContent = tt('缺少题包', 'No question set'); } else { $('#connMsg').textContent = tt('正在开房…', 'Creating game…'); connect(); }
 </script>
 </body>
 </html>

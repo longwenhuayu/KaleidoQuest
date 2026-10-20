@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1e1b4b">
+<title>KaleidoQuest · 游戏库 Gallery</title>
+<meta name="description" content="KaleidoQuest 游戏库：华文、数学、英文、科学、综合常识 25 个现成课堂游戏，免登录单人试玩，也可以直接投屏全班一起玩。">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+body{min-height:100vh}
+header{display:flex;align-items:center;gap:12px;padding:14px 20px}
+header .sp{flex:1}
+.wrap{max-width:1120px}
+h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px;display:flex;align-items:center;gap:10px}
+.sub{opacity:.82;margin:6px 0 18px;line-height:1.6}
+.gchips{margin-bottom:18px}
+.note{font-size:13px;opacity:.65;margin:30px 0 10px;text-align:center}
+@media (max-width:640px){h1{font-size:26px}}
+</style>
+</head>
+<body class="night">
+<header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><a class="btn ghost sm" id="me" href="/" style="background:rgba(255,255,255,.12);color:#fff"></a><button class="lang" type="button" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></header>
+<div class="wrap">
+  <h1 id="h"></h1><div class="sub" id="sub"></div>
+  <div class="gchips" id="chips"></div>
+  <div class="ggrid" id="grid"></div>
+  <div class="note" id="note"></div>
+</div>
+<script src="/js/common.js"></script>
+<script src="/js/gallery-ui.js"></script>
+<script>
+const { tt, $, icon } = VA;
+let list = [], subj = new URLSearchParams(location.search).get('s') || 'all', me = null;
+function render() {
+  $('#h').innerHTML = icon('layout-grid') + ' ' + tt('游戏库', 'Game Gallery');
+  $('#sub').textContent = tt(`${list.length} 个现成的课堂游戏。学生可以免登录单人试玩；老师可以直接投屏，全班用手机扫码一起玩。`, `${list.length} ready-made classroom games. Students can try them solo with no sign-up; teachers can host one for the whole class right away.`);
+  $('#me').innerHTML = me ? icon('presentation') + ' ' + tt('老师后台', 'Dashboard') : icon('user-plus') + ' ' + tt('老师免费注册', 'Teacher sign-up');
+  $('#me').href = me ? '/teacher' : '/?signup=1';
+  $('#chips').innerHTML = KQG.filters(subj);
+  $('#grid').innerHTML = list.filter(g => subj === 'all' || g.subject === subj).map(KQG.card).join('');
+  $('#note').textContent = tt('访客投屏开的局不保存报告。免费注册后，可以复制任何一个游戏到自己的题包里修改，每一局都会留下成绩报告。', "Games hosted without an account don't save reports. Sign up free to copy any game into your own sets, edit it, and keep a report for every game.");
+}
+$('#chips').onclick = e => { const b = e.target.closest('[data-s]'); if (!b) return; subj = b.dataset.s; history.replaceState(null, '', subj === 'all' ? '/gallery' : `/gallery?s=${subj}`); render(); };
+$('#grid').onclick = KQG.onClick;
+document.addEventListener('langchange', render);
+(async () => {
+  try { me = await VA.api('/api/me'); } catch (e) {}
+  list = await VA.api('/api/gallery'); render();
+})();
+</script>
+</body>
+</html>

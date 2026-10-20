@@ -31,6 +31,11 @@
 .tabs button.on{background:var(--brand2);color:#fff}
 .form{display:grid;gap:10px}
 .forgot{background:none;border:0;color:var(--brand2);font-weight:700;font-size:13px;cursor:pointer;justify-self:center}
+.gal{max-width:1120px;margin:0 auto;padding:10px 24px 50px}
+.gal h2{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:32px;display:flex;align-items:center;gap:10px}
+.gal .sub{opacity:.82;margin:6px 0 18px;line-height:1.6}
+.gal .more{text-align:center;margin-top:20px}
+.tryme{display:inline-flex;margin-top:22px}
 .foot{text-align:center;padding:16px;font-size:13px;opacity:.7}
 .foot a{color:#c4b5fd}
 .lang{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
@@ -46,6 +51,7 @@
       <p data-i="tagline"></p>
       <p id="pitch2" style="font-size:16px"></p>
       <div class="subjects" id="subjects"></div>
+      <a class="btn go tryme" href="#gallery" id="tryLink"></a>
     </div>
     <div class="panels">
       <form class="panel" id="joinForm">
@@ -74,9 +80,17 @@
       </div>
     </div>
   </main>
+</div>
+<section class="gal" id="gallery">
+  <h2 id="galH"></h2><div class="sub" id="galSub"></div>
+  <div class="ggrid" id="galGrid"></div>
+  <div class="more"><a class="btn ghost" href="/gallery" id="galAll" style="background:rgba(255,255,255,.12);color:#fff"></a></div>
+</section>
+<div>
   <div class="foot">© Vision Chinese Academy 文心书院 · <a href="https://visionchinese.com" target="_blank" rel="noopener">visionchinese.com</a></div>
 </div>
 <script src="/js/common.js"></script>
+<script src="/js/gallery-ui.js"></script>
 <script>
 const { t, tt, api, $ } = VA;
 let tab = 'login';
@@ -91,7 +105,16 @@ function renderText() {
   $('#fEmail').placeholder = t('email');
   $('#fBtn').textContent = tt('发送重设链接', 'Send reset link');
   $('#fBack').innerHTML = VA.icon('arrow-left') + ' ' + tt('返回登录', 'Back to log in');
+  $('#tryLink').innerHTML = VA.icon('play') + ' ' + tt('先免登录试玩一个游戏', 'Try a game — no sign-up');
+  $('#galH').innerHTML = VA.icon('layout-grid') + ' ' + tt('游戏库：直接开玩', 'Gallery: play right now');
+  $('#galSub').textContent = tt('每个学科挑一个给你先试试。学生免登录单人试玩，老师可以直接投屏全班一起玩。', 'One pick from each subject. Students try them solo, no sign-up; teachers can host one for the whole class.');
+  $('#galAll').innerHTML = tt(`查看全部 ${gallery.length || 25} 个游戏`, `See all ${gallery.length || 25} games`) + ' ' + VA.icon('arrow-right');
+  // 每个学科挑第一个
+  $('#galGrid').innerHTML = gallery.filter((g, i) => gallery.findIndex(x => x.subject === g.subject) === i).map(KQG.card).join('');
 }
+let gallery = [];
+VA.api('/api/gallery').then(d => { gallery = d; renderText(); }).catch(() => {});
+$('#galGrid').onclick = KQG.onClick;
 document.addEventListener('langchange', renderText);
 document.addEventListener('DOMContentLoaded', renderText);
 document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
@@ -101,6 +124,8 @@ document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
   $('#password').autocomplete = tab === 'register' ? 'new-password' : 'current-password';
   $('#err').textContent = ''; renderText();
 });
+// ?signup=1：从 Gallery 过来注册
+if (new URLSearchParams(location.search).get('signup')) document.addEventListener('DOMContentLoaded', () => { const b = document.querySelector('[data-tab=register]'); if (b) { b.click(); $('#teacherPanel').scrollIntoView({ block: 'center' }); } });
 $('#pin').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
 $('#joinForm').onsubmit = e => { e.preventDefault(); const p = $('#pin').value; if (p.length === 6) location.href = '/play?pin=' + p; else $('#pin').focus(); };
 $('#authForm').onsubmit = async e => {

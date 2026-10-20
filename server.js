@@ -125,8 +125,10 @@ app.get('/api/games/:id', A.requireTeacher, (req, res) => {
 app.delete('/api/games/:id', A.requireTeacher, (req, res) => { q('DELETE FROM games WHERE id = ? AND teacher_id = ?').run(+req.params.id, req.teacher.id); res.json({ ok: true }); });
 
 require('./lib/homework')(app);
+const GL = require('./lib/gallery');
+GL.routes(app);
+app.get(['/try/:id', '/hw/:code'], (req, res) => res.sendFile(path.join(__dirname, 'public', 'hw.html')));
 require('./lib/admin')(app, { sendReset, rooms: G.rooms });
-app.get('/hw/:code', (req, res) => res.sendFile(path.join(__dirname, 'public', 'hw.html')));
 
 app.get('/api/health', (req, res) => res.json({ ok: true, rooms: G.rooms.size }));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h' }));
@@ -134,6 +136,8 @@ app.use('/api', (req, res) => res.status(404).json({ error: 'not_found' }));
 
 // ── WebSocket：主持人和学生都走这里 ──
 const server = http.createServer(app);
+// 真实 IP：nginx 转发时在 X-Forwarded-For 里（只信本机代理）
+const clientIp = req => { const a = req.socket.remoteAddress || ''; return (a === '127.0.0.1' || a === '::1' || a === '::ffff:127.0.0.1') && req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : a; };
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 8 * 1024 });
 wss.on('connection', (ws, req) => {
   let room = null, player = null, isHost = false, count = 0, windowStart = Date.now();
@@ -148,19 +152,30 @@ wss.on('connection', (ws, req) => {
 
     if (m.t === 'host' || m.t === 'host_resume') {
       const teacher = A.teacherFrom(req);
-      if (!teacher) return G.send(ws, { t: 'error', error: 'login_required' });
+      const opts = { mode: m.mode, minutes: m.minutes, seconds: m.seconds };
       if (m.t === 'host') {
-        const s = q('SELECT * FROM sets WHERE id = ? AND teacher_id = ?').get(+m.setId, teacher.id);
-        if (!s) return G.send(ws, { t: 'error', error: 'set_not_found' });
-        room = G.createRoom(teacher, { id: s.id, title: s.title, subject: s.subject, questions: JSON.parse(s.questions) }, ws, { mode: m.mode, minutes: m.minutes, seconds: m.seconds });
+        if (m.gallery) {
+          // Gallery 的游戏：不登录也能开局（限次数），访客开的局不保存报告
+          const g = GL.byId.get(String(m.gallery));
+          if (!g) return G.send(ws, { t: 'error', error: 'set_not_found' });
+          if (!teacher && !GL.guestRoomAllowed(clientIp(req))) return G.send(ws, { t: 'error', error: 'too_many' });
+          room = G.createRoom(teacher || { id: 0 }, { id: null, title: m.lang === 'en' ? g.title[1] : g.title[0], subject: g.subject, questions: g.questions }, ws, opts);
+        } else {
+          if (!teacher) return G.send(ws, { t: 'error', error: 'login_required' });
+          const s = q('SELECT * FROM sets WHERE id = ? AND teacher_id = ?').get(+m.setId, teacher.id);
+          if (!s) return G.send(ws, { t: 'error', error: 'set_not_found' });
+          room = G.createRoom(teacher, { id: s.id, title: s.title, subject: s.subject, questions: JSON.parse(s.questions) }, ws, opts);
+        }
         if (!room) return G.send(ws, { t: 'error', error: 'empty_set' });
       } else {
+        // 重连：本人（登录）或者拿着开局时发的主持令牌（访客）
         const r = G.rooms.get(String(m.pin));
-        if (!r || r.teacherId !== teacher.id) return G.send(ws, { t: 'error', error: 'room_not_found' });
+        const ok = r && ((teacher && r.teacherId && r.teacherId === teacher.id) || (m.hostToken && m.hostToken === r.hostToken));
+        if (!ok) return G.send(ws, { t: 'error', error: 'room_not_found' });
         room = r; room.host = ws;
       }
       isHost = true;
-      G.send(ws, { t: 'room', pin: room.pin, title: room.title, total: room.questions.length, mode: room.mode, minutes: room.minutes });
+      G.send(ws, { t: 'room', pin: room.pin, title: room.title, total: room.questions.length, mode: room.mode, minutes: room.minutes, hostToken: room.hostToken, guest: !room.teacherId });
       return m.t === 'host' ? G.lobby(room) : G.resyncHost(room);
     }
     if (m.t === 'join' || m.t === 'rejoin') {
