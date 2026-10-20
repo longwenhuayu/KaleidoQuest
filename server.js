@@ -156,7 +156,7 @@ wss.on('connection', (ws, req) => {
 
     if (m.t === 'host' || m.t === 'host_resume') {
       const teacher = A.teacherFrom(req);
-      const opts = { mode: m.mode, minutes: m.minutes, seconds: m.seconds };
+      const opts = { mode: m.mode, minutes: m.minutes, seconds: m.seconds, accuracy: m.accuracy === true };
       if (m.t === 'host') {
         if (m.gallery) {
           // Gallery 的游戏：不登录也能开局（限次数），访客开的局不保存报告
@@ -179,7 +179,7 @@ wss.on('connection', (ws, req) => {
         room = r; room.host = ws;
       }
       isHost = true;
-      G.send(ws, { t: 'room', pin: room.pin, title: room.title, total: room.questions.length, mode: room.mode, minutes: room.minutes, hostToken: room.hostToken, guest: !room.teacherId });
+      G.send(ws, { t: 'room', pin: room.pin, title: room.title, total: room.questions.length, mode: room.mode, minutes: room.minutes, accuracy: room.accuracy, hostToken: room.hostToken, guest: !room.teacherId });
       return m.t === 'host' ? G.lobby(room) : G.resyncHost(room);
     }
     if (m.t === 'join' || m.t === 'rejoin') {

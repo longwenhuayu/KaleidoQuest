@@ -73,7 +73,8 @@
     const d = document.createElement('div');
     d.className = 'modepick';
     d.innerHTML = `<div class="mp-box"><h2>${tt('选一种玩法', 'Choose a game mode')}</h2>
-      <a class="mp-card" href="/host?${q}&mode=classic"><b>${icon('swords')} ${tt('擂台抢答', 'Classic')}</b><span>${tt('全班同一题，大屏倒计时，越快分越高。适合新课检查。', 'Everyone answers the same question together — faster answers score more.')}</span></a>
+      <div class="mp-card"><b>${icon('swords')} ${tt('擂台抢答', 'Classic')}</b><span>${tt('全班同一题，大屏倒计时。适合新课检查。', 'Everyone answers the same question together on the big screen.')}</span>
+        <div class="mp-min"><a class="btn go sm" href="/host?${q}&mode=classic">${icon('zap')} ${tt('越快分越高', 'Speed counts')}</a><a class="btn ghost sm" href="/host?${q}&mode=classic&acc=1" title="${tt('答对就是 1000 分，不比快慢，照顾答得慢的学生', 'Every right answer is 1000 points — no rush, kinder to slower students')}">${icon('check')} ${tt('不计速度，只算对错', 'Accuracy only')}</a></div></div>
       <div class="mp-card"><b>${icon('gem')} ${tt('夺宝', 'Treasure Quest')}</b><span>${tt('各答各的，答对开宝箱：可能翻倍、偷别人的宝石，后面的也能翻盘。适合复习。', 'Self-paced. Correct answers open chests — double up, steal, or swap gems. Anyone can come back.')}</span>
         <div class="mp-min">${[5, 7, 10].map(m => `<a class="btn go sm" href="/host?${q}&mode=treasure&min=${m}">${m} ${tt('分钟', 'min')}</a>`).join('')}</div></div>
       <button class="btn ghost sm mp-x" type="button">${tt('取消', 'Cancel')}</button></div>`;

@@ -45,7 +45,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   await H.goto(BASE + '/gallery'); await H.waitForSelector('.gcard');
   await H.locator('.gcard[data-id="sci-living"] [data-g=host]').click();
   await H.waitForSelector('.mp-card'); await shot(H, '66-gallery-mode');
-  await H.locator('.mp-card').first().click();
+  await H.locator('a[href*="mode=classic"]').first().click();
   await H.waitForSelector('#sLobby.on'); const pin = (await H.textContent('#pin')).replace(/\s/g, '');
   const S = await (await b.newContext({ viewport: { width: 390, height: 780 }, isMobile: true, hasTouch: true })).newPage(); watch(S, 'student');
   await S.goto(`${BASE}/play?pin=${pin}`); await S.fill('#nameIn', '小明'); await S.click('#joinBtn'); await S.waitForSelector('#vWait.on');

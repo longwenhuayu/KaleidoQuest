@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021c">
+<link rel="stylesheet" href="/css/app.css?v=20261021d">
 <style>
 header{display:flex;align-items:center;gap:12px;padding:16px 24px;max-width:1000px;margin:0 auto}
 header .sp{flex:1}
@@ -38,7 +38,7 @@ header .sp{flex:1}
 <body class="home">
 <header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
 <main class="g" id="g"></main>
-<script src="/js/common.js?v=20261021c"></script>
+<script src="/js/common.js?v=20261021d"></script>
 <script>
 const { tt, icon } = VA;
 // [颜色, 图标, 标题, 内容, 提示]
@@ -56,7 +56,7 @@ const FAQ = () => [
   [tt('一局最多多少人？', 'How many players per game?'), tt('一局最多 60 人。', 'Up to 60 players per game.')],
   [tt('学生的什么资料会被保存？', 'What student data is kept?'), tt('只有学生自己填的昵称和答题成绩。建班级时，只保存你填的名字和系统生成的密码。建议用名字或昵称，不要用全名。', 'Only the nickname a student types and their answers. For classes, only the names you enter and the generated PIN — first names or nicknames are best.')],
   [tt('网络断了怎么办？', 'What if the connection drops?'), tt('学生和大屏都会自动重连，回到原来的题目和分数。', 'Students and the host screen reconnect automatically and pick up where they left off.')],
-  [tt('有问题找谁？', 'Who do I contact?'), tt('写信到 ask@visionchinese.com，文心书院 Vision Chinese Academy。', 'Email ask@visionchinese.com — Vision Chinese Academy.')]
+  [tt('有问题找谁？', 'Who do I contact?'), tt('写信到 longwenhuayu@gmail.com', 'Email longwenhuayu@gmail.com')]
 ];
 function render() {
   document.title = tt('KaleidoQuest · 老师上手指南', 'KaleidoQuest · Teacher guide');

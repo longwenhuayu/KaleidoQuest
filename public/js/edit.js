@@ -161,6 +161,7 @@ document.addEventListener('langchange', () => { renderStatic(); render(); render
   } else {
     $('#subject').value = params.get('subject') || 'chinese';
   }
-  activePlugin = PLUGINS.some(p => p.id === $('#subject').value) ? $('#subject').value : (PLUGINS[0] || {}).id;
+  // ?p=ai：从后台的「AI 出题」入口进来，直接打开那个面板
+  activePlugin = PLUGINS.some(p => p.id === params.get('p')) ? params.get('p') : PLUGINS.some(p => p.id === $('#subject').value) ? $('#subject').value : (PLUGINS[0] || {}).id;
   render(); renderPanel(); showPlay();
 })();

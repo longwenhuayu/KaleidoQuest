@@ -17,7 +17,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   await T.goto(`${BASE}/teacher`);
   await T.click('[data-act=play]');
   await shot(T, '30-mode-picker');
-  await T.click('.mp-min a:first-child');
+  await T.locator('a[href*="mode=treasure"]').first().click();
   await T.waitForSelector('#sLobby.on');
   const pin = (await T.textContent('#pin')).replace(/\s/g, '');
   const S = [];

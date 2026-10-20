@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021c">
+<link rel="stylesheet" href="/css/app.css?v=20261021d">
 <style>
 html,body{height:100%}
 body{overflow:hidden}
@@ -150,18 +150,20 @@ body{overflow:hidden}
   <div class="foot" style="justify-content:center"><a class="btn go" id="reportBtn"></a><a class="btn ghost" id="againBtn"></a></div>
 </section>
 
-<script src="/js/common.js?v=20261021c"></script>
+<script src="/js/common.js?v=20261021d"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const { t, tt, $, esc, SHAPES, sfx, speak, icon } = VA;
 const QS = new URLSearchParams(location.search);
 const setId = +QS.get('set'), MODE = QS.get('mode') === 'treasure' ? 'treasure' : 'classic', MINUTES = +QS.get('min') || 7;
+// 擂台的「不计速度」：答对一律 1000 分
+const ACC = MODE === 'classic' && QS.get('acc') === '1';
 // ?gallery=ID：Gallery 的现成游戏，不登录也能开局
 const GAL = QS.get('gallery');
 const SRC = GAL ? `gallery=${encodeURIComponent(GAL)}` : `set=${setId}`;
 const KEY = GAL ? `va_host_g_${GAL}_${MODE}` : `va_host_${setId}_${MODE}`;
 let guest = false;
-const hostMsg = () => GAL ? { t: 'host', gallery: GAL, mode: MODE, minutes: MINUTES, lang: VA.lang } : { t: 'host', setId, mode: MODE, minutes: MINUTES };
+const hostMsg = () => GAL ? { t: 'host', gallery: GAL, mode: MODE, minutes: MINUTES, accuracy: ACC, lang: VA.lang } : { t: 'host', setId, mode: MODE, minutes: MINUTES, accuracy: ACC };
 const savedRoom = () => { const v = sessionStorage.getItem(KEY); if (!v) return null; try { const o = JSON.parse(v); return o && typeof o === 'object' ? o : { pin: v }; } catch (e) { return { pin: v }; } };
 let tqEnds = 0, tqSkew = 0, tqTick = 0, lastScores = {}, lastEvAt = 0;
 const seen = new Set(); // 已经播过加入动画的学生
@@ -184,7 +186,7 @@ function renderStatic() {
   $('#tqFeedH').textContent = tt('实时战况', 'LIVE');
   $('#endTitle').innerHTML = icon('trophy') + ' ' + tt('冠军诞生！', 'And the winner is…');
   $('#againBtn').innerHTML = icon('rotate-ccw') + ' ' + tt('再玩一次', 'Play again');
-  $('#againBtn').href = `/host?${SRC}&mode=${MODE}&min=${MINUTES}&new=1`;
+  $('#againBtn').href = `/host?${SRC}&mode=${MODE}&min=${MINUTES}${ACC ? '&acc=1' : ''}&new=1`;
   renderPlayers();
 }
 function renderPlayers() {
@@ -218,9 +220,9 @@ function handle(m) {
   }
   if (m.t === 'room') {
     pin = m.pin; total = m.total; guest = !!m.guest; sessionStorage.setItem(KEY, JSON.stringify({ pin, hostToken: m.hostToken }));
-    if (QS.get('new')) history.replaceState(null, '', `/host?${SRC}&mode=${MODE}&min=${MINUTES}`);
+    if (QS.get('new')) history.replaceState(null, '', `/host?${SRC}&mode=${MODE}&min=${MINUTES}${ACC ? '&acc=1' : ''}`);
     $('#pin').textContent = pin.replace(/(\d{3})(\d{3})/, '$1 $2');
-    $('#lTitle').innerHTML = (m.mode === 'treasure' ? `${icon('gem')} ${tt('夺宝', 'Treasure Quest')} · ${m.minutes} ${tt('分钟', 'min')} · ` : icon('swords') + ' ') + esc(m.title);
+    $('#lTitle').innerHTML = (m.mode === 'treasure' ? `${icon('gem')} ${tt('夺宝', 'Treasure Quest')} · ${m.minutes} ${tt('分钟', 'min')} · ` : icon('swords') + ' ' + (m.accuracy ? `${tt('不计速度', 'Accuracy only')} · ` : '')) + esc(m.title);
     $('#tqTitle').textContent = m.title;
     $('#qr').innerHTML = ''; new QRCode($('#qr'), { text: `${location.origin}/play?pin=${pin}`, width: 380, height: 380, correctLevel: QRCode.CorrectLevel.M });
     renderStatic();

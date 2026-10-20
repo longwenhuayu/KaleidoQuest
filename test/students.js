@@ -110,9 +110,22 @@ const count = book => Object.values(book).reduce((s, x) => s + x.n, 0);
   assert.equal((await json('/api/classes', { cookie: T })).length, 0);
   const { q } = require('../lib/db');
   assert.equal(q('SELECT count(*) n FROM student_cards').get().n, 0, '卡册连带删除');
+  // 擂台「不计速度」：快慢都是 1000 分
+  const T3 = cookieOf(await req('/api/register', { body: { email: 's3@x.com', name: '速度', password: 'secret123' } }));
+  const set3 = await json('/api/gallery/m-order/copy', { body: {}, cookie: T3 });
+  const h3 = await open(T3); h3.sendj({ t: 'host', setId: set3.id, mode: 'classic', accuracy: true });
+  const room3 = await wait(h3, 'room'); assert.equal(room3.accuracy, true);
+  const fast = await open(); fast.sendj({ t: 'join', pin: room3.pin, name: '快' }); await wait(fast, 'joined');
+  const slow = await open(); slow.sendj({ t: 'join', pin: room3.pin, name: '慢' }); await wait(slow, 'joined');
+  h3.sendj({ t: 'start' });
+  const q3 = await wait(fast, 'q'); await wait(slow, 'q');
+  fast.sendj({ t: 'answer', qi: q3.qi, ans: solve('m-order', q3.q) }); await sleep(1500); slow.sendj({ t: 'answer', qi: q3.qi, ans: solve('m-order', q3.q) });
+  const [rf, rs] = [await wait(fast, 'result'), await wait(slow, 'result')];
+  assert.equal(rf.points, 1000); assert.equal(rs.points, 1000, '慢也是 1000');
+  [h3, fast, slow].forEach(w => w.close());
   // AI 出题：没配 key 时返回 ai_off；要登录
   assert.equal((await req('/api/ai/questions', { body: { topic: 'x' } })).status, 401);
   assert.equal((await req('/api/ai/questions', { body: { topic: 'x' }, cookie: T })).status, 503);
-  console.log('✅ 班级与学生通过：建班去重、PIN 登录、权限隔离、试玩 / 课堂 / 作业得卡入账号且不重复、老师看进度、重设密码使旧登录失效、错 8 次锁定、删除连带清理、AI 出题权限、卡片头像校验');
+  console.log('✅ 班级与学生通过：建班去重、PIN 登录、权限隔离、试玩 / 课堂 / 作业得卡入账号且不重复、老师看进度、重设密码使旧登录失效、错 8 次锁定、删除连带清理、AI 出题权限、卡片头像校验、不计速度模式');
   process.exit(0);
 })().catch(e => { console.error('❌', e); process.exit(1); });
