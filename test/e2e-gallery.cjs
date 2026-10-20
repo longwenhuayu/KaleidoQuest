@@ -22,7 +22,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
     if (await P.isVisible('#vDone')) break;
     if (k === 0) await shot(P, '62-try-question');
     const type = await P.evaluate(() => cur.q.type);
-    if (type === 'input') { await P.fill('#typeIn', '1'); await P.click('.typebox button'); }
+    if (type === 'input') { if (await P.evaluate(() => getComputedStyle(document.querySelector('#typeIn')).color) === 'rgb(255, 255, 255)') errs.push('答题输入框是白字'); await P.fill('#typeIn', '1'); await P.click('.typebox button'); }
     else if (type === 'order') { const items = await P.evaluate(() => cur.q.items.map(x => x.i)); for (const v of items) await P.click(`.ord-pick button[data-i="${v}"]`); await P.click('#ordGo'); }
     else await P.locator('.choice').first().click();
     // 答对且没有讲解时 1.2 秒后自动下一题
