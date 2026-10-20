@@ -51,6 +51,7 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-ava
 - 图片资源：`public/card-art/`（44 张卡）、`gallery-covers/`（37 张）、`mascot/`（hello/think/cheer/point/wait）、`loops/`（首页动图）、`icons.svg`（Lucide，`scripts/build-icons.js` 生成，加图标改那里）
 - 生成脚本：`scripts/gen-card-art.js`、`gen-gallery-covers.js`（Qwen-Image；key 从环境变量传，不写进仓库）、`record-loops.js`（录首页动图）
 - 海报：`poster/kaleidoquest-poster.png / .pdf`，网页版 `/poster`
+- 推广：`docs/KaleidoQuest-推广策略书.docx`（2026-10 至 2027-04 四阶段计划，北极星指标「每周活跃老师」）、`docs/推广文案.md`（四个版本）
 
 - **隐私说明 `/privacy` 写的都是实际做法**：改了数据收集、保存期限、第三方服务、cookie 或锁定规则时，要同步更新这一页和它的日期。
 
