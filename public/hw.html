@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#1e1b4b">
+<meta name="robots" content="noindex">
+<title>KaleidoQuest · 作业</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+html,body{height:100%}
+body{display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:10px;padding:10px 14px;font-weight:800;white-space:nowrap}
+.top .t{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.top .sp{flex:1 0 0}
+.top .score{font-family:"Fredoka",sans-serif;font-size:18px}
+.view{flex:1;display:none;flex-direction:column;padding:14px;gap:12px;min-height:0}
+.view.on{display:flex}
+.mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.box{width:min(420px,100%);background:#fff;color:var(--ink);border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:12px;text-align:left}
+.box h1{font-size:22px;line-height:1.35}
+.box .meta{font-size:14px;color:var(--muted);line-height:1.7}
+.box input{font-size:20px;font-weight:800;padding:12px;border:2px solid var(--line);border-radius:14px;text-align:center}
+.qhead{display:flex;align-items:center;gap:10px;font-weight:800}
+.tbar{flex:1;height:10px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--accent);width:100%}
+.qtext{background:#fff;color:var(--ink);border-radius:16px;padding:12px 16px;font-size:20px;font-weight:800;text-align:center}
+.qimg{max-height:24vh;max-width:100%;border-radius:12px;align-self:center;background:#fff}
+.spk{align-self:center;border:0;background:#fff;border-radius:50%;width:64px;height:64px;font-size:30px;cursor:pointer}
+.choices{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0}
+.choices.one{grid-template-columns:1fr}
+.choice{border:0;border-radius:18px;color:#fff;font-size:22px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;box-shadow:0 6px 0 rgba(0,0,0,.25);cursor:pointer;min-height:70px;word-break:break-word}
+.choice .shape{font-size:30px}
+.typebox{display:flex;flex-direction:column;gap:10px}
+.typebox input{font-size:24px;font-weight:800;padding:14px;border-radius:14px;border:0;text-align:center}
+.ord-pick{display:flex;flex-direction:column;gap:8px}
+.ord-pick button{border:0;border-radius:14px;padding:14px;font-size:20px;font-weight:800;background:#fff;color:var(--ink);cursor:pointer}
+.ord-pick button.used{opacity:.25}
+.ord-seq{min-height:56px;background:rgba(255,255,255,.1);border:2px dashed rgba(255,255,255,.35);border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ord-seq span{background:var(--accent);color:#3b2603;border-radius:10px;padding:6px 10px;font-weight:900}
+.fb{position:fixed;left:0;right:0;bottom:0;padding:18px 18px 24px;border-radius:22px 22px 0 0;color:#fff;animation:up .25s;z-index:20}
+.fb.ok{background:#15803d}.fb.bad{background:#b91c1c}
+.fb b{font-size:24px;display:block}
+.fb p{margin:4px 0 12px;opacity:.95}
+.fb .btn{width:100%;font-size:18px}
+@keyframes up{from{transform:translateY(100%)}}
+.big{font-family:"Fredoka",sans-serif;font-size:56px;line-height:1}
+.medal{font-size:90px;line-height:1}
+</style>
+</head>
+<body class="night">
+<div class="top"><span class="logo"><i></i></span><span class="t" id="topTitle">KaleidoQuest</span><span class="sp"></span><span class="score" id="score"></span><button class="lang" type="button" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></div>
+
+<div class="view on" id="vLoad"><div class="mid"><div class="h" id="loadMsg">…</div></div></div>
+<div class="view" id="vIntro"><div class="mid"><form class="box" id="startForm">
+  <h1 id="iTitle"></h1><div class="meta" id="iMeta"></div>
+  <input id="name" maxlength="20" autocomplete="name">
+  <div class="err" id="iErr" style="color:var(--bad)"></div>
+  <button class="btn go" id="startBtn" style="font-size:20px"></button>
+</form></div></div>
+<div class="view" id="vQ">
+  <div class="qhead"><span id="qN"></span><div class="tbar"><i id="tbar"></i></div></div>
+  <div class="qtext" id="qText"></div>
+  <div id="qMedia" style="display:flex;flex-direction:column;gap:8px"></div>
+  <div id="qAns" style="flex:1;display:flex;flex-direction:column;min-height:0"></div>
+</div>
+<div class="view" id="vDone"><div class="mid"><div class="medal" id="dMedal"></div><div class="h" id="dH"></div><div class="big" id="dScore"></div><div id="dStats" style="opacity:.85"></div><button class="btn go" id="retryBtn" hidden></button></div></div>
+<div id="fb"></div>
+
+<script src="/js/common.js"></script>
+<script>
+const { tt, $, esc, SHAPES, sfx, speak } = VA;
+const CODE = location.pathname.split('/').filter(Boolean).pop().toLowerCase();
+const KEY = 'kq_hw_' + CODE;
+let info = null, token = null, cur = null, tEnd = 0, raf = 0;
+const view = id => document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === id));
+const post = async (path, body) => { const r = await fetch(`/api/hw/${CODE}/${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }); const d = await r.json().catch(() => ({})); if (!r.ok) { const e = new Error(d.error || 'generic'); throw e; } return d; };
+const due = ms => new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' });
+const ERR = { name: () => tt('请输入你的名字', 'Please enter your name'), no_tries: () => tt('你的次数已经用完了', "You've used all your attempts"), due: () => tt('作业已经截止了', 'This homework is past its due date'), closed: () => tt('老师已经关闭了这份作业', 'Your teacher has closed this homework'), too_many: () => tt('操作太频繁，请稍后再试', 'Too many requests — try again later'), not_found: () => tt('找不到这份作业，请检查链接', 'Homework not found — check the link') };
+const errText = e => (ERR[e.message] || (() => tt('出错了，请再试一次', 'Something went wrong')))();
+
+function intro() {
+  view('vIntro'); $('#topTitle').textContent = info.title;
+  $('#iTitle').textContent = '📝 ' + info.title;
+  $('#iMeta').innerHTML = `${info.teacher ? esc(tt(`${info.teacher}布置`, `From ${info.teacher}`)) + '<br>' : ''}${tt(`共 ${info.total} 题`, `${info.total} questions`)} · ${tt('截止', 'Due')} ${due(info.due)}${info.tries ? '<br>' + tt(`每人最多做 ${info.tries} 次`, `Up to ${info.tries} attempts`) : ''}`;
+  $('#name').placeholder = tt('你的名字（老师看得懂的）', 'Your name (so your teacher knows you)');
+  $('#startBtn').textContent = tt('开始 ▶', 'Start ▶');
+  try { $('#name').value = localStorage.getItem('kq_name') || ''; } catch (e) {}
+}
+$('#startForm').onsubmit = async e => {
+  e.preventDefault(); $('#iErr').textContent = ''; $('#startBtn').disabled = true;
+  try { const name = $('#name').value.trim(); const d = await post('start', { name }); token = d.token; try { localStorage.setItem(KEY, token); localStorage.setItem('kq_name', name); } catch (x) {} show(d); }
+  catch (x) { $('#iErr').textContent = errText(x); }
+  $('#startBtn').disabled = false;
+};
+
+function show(d) {
+  if (d.done) return finish(d);
+  cur = d; view('vQ');
+  $('#score').textContent = d.score ? d.score : '';
+  $('#qN').textContent = `${d.pos + 1}/${d.total}`;
+  const q = d.q;
+  $('#qText').textContent = q.prompt || tt('🔊 听一听，选出答案', '🔊 Listen and answer');
+  $('#qMedia').innerHTML = (q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '') + (q.speak ? '<button class="spk" id="spk">🔊</button>' : '');
+  if (q.speak) { $('#spk').onclick = () => speak(q.speak, q.lang); setTimeout(() => speak(q.speak, q.lang), 300); }
+  const box = $('#qAns');
+  if (q.type === 'mcq') {
+    box.innerHTML = `<div class="choices${q.options.some(o => [...o].length > 14) ? ' one' : ''}">${q.options.map((o, i) => `<button class="choice opt${i}" data-v="${i}"><span class="shape">${SHAPES[i]}</span>${esc(o)}</button>`).join('')}</div>`;
+    box.querySelectorAll('.choice').forEach(b => b.onclick = () => answer(+b.dataset.v));
+  } else if (q.type === 'tf') {
+    box.innerHTML = `<div class="choices"><button class="choice opt1"><span class="shape">${SHAPES[1]}</span>✔ ${tt('对', 'True')}</button><button class="choice opt0"><span class="shape">${SHAPES[0]}</span>✘ ${tt('错', 'False')}</button></div>`;
+    const [t, f] = box.querySelectorAll('.choice'); t.onclick = () => answer(true); f.onclick = () => answer(false);
+  } else if (q.type === 'input') {
+    box.innerHTML = `<form class="typebox"><input id="typeIn" maxlength="80" autocomplete="off" autocapitalize="off" placeholder="${tt('输入答案', 'Your answer')}"><button class="btn go" style="font-size:20px">${tt('提交', 'Submit')}</button></form>`;
+    box.querySelector('form').onsubmit = e => { e.preventDefault(); const v = $('#typeIn').value.trim(); if (v) answer(v); };
+    setTimeout(() => $('#typeIn').focus(), 50);
+  } else {
+    const seq = [];
+    box.innerHTML = `<div style="opacity:.8;margin-bottom:6px">${tt('按正确顺序依次点：', 'Tap in the correct order:')}</div><div class="ord-seq" id="seq"></div><div class="ord-pick" style="margin-top:10px">${q.items.map(x => `<button data-i="${x.i}">${esc(x.text)}</button>`).join('')}</div><div class="row" style="margin-top:10px"><button class="btn ghost" id="undo">↶ ${tt('撤销', 'Undo')}</button><button class="btn go" id="ordGo" style="flex:1" disabled>${tt('提交', 'Submit')}</button></div>`;
+    const draw = () => { $('#seq').innerHTML = seq.map(i => `<span>${esc(q.items.find(x => x.i === i).text)}</span>`).join(''); box.querySelectorAll('.ord-pick button').forEach(b => b.classList.toggle('used', seq.includes(+b.dataset.i))); $('#ordGo').disabled = seq.length !== q.items.length; };
+    box.querySelectorAll('.ord-pick button').forEach(b => b.onclick = () => { const i = +b.dataset.i; if (!seq.includes(i)) { seq.push(i); draw(); } });
+    $('#undo').onclick = () => { seq.pop(); draw(); }; $('#ordGo').onclick = () => answer([...seq]);
+  }
+  // 时间条只提示快慢（越快分越高），到时间也能继续作答
+  cancelAnimationFrame(raf); tEnd = performance.now() + q.time * 1000;
+  const tick = () => { const left = Math.max(0, tEnd - performance.now()); $('#tbar').style.width = `${left / (q.time * 1000) * 100}%`; if (left > 0) raf = requestAnimationFrame(tick); };
+  tick();
+}
+async function answer(ans) {
+  if (!cur) return;
+  document.querySelectorAll('#qAns button, #qAns input').forEach(x => x.disabled = true);
+  cancelAnimationFrame(raf);
+  try {
+    const d = await post('answer', { token, pos: cur.pos, ans });
+    const r = d.result; cur = null;
+    if (!r) return show(d);
+    r.correct ? sfx.ok() : sfx.bad();
+    $('#fb').innerHTML = `<div class="fb ${r.correct ? 'ok' : 'bad'}"><b>${r.correct ? `✅ ${tt('答对了', 'Correct')} +${r.points}` : `❌ ${tt('答错了', 'Not quite')}`}</b><p>${r.correct ? '' : esc(tt(`正确答案：${r.answerText}`, `Answer: ${r.answerText}`))}${r.note ? `<br>💡 ${esc(r.note)}` : ''}</p><button class="btn ghost" id="nextBtn">${d.done ? tt('看成绩 ▶', 'See results ▶') : tt('下一题 ▶', 'Next ▶')}</button></div>`;
+    const go = () => { $('#fb').innerHTML = ''; show(d); };
+    $('#nextBtn').onclick = go;
+    if (r.correct && !r.note) setTimeout(() => { if ($('#nextBtn')) go(); }, 1200);
+  } catch (x) { toastErr(x); }
+}
+function toastErr(x) { VA.toast(errText(x)); if (x.message === 'not_found') { try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); } }
+function finish(d) {
+  view('vDone'); try { localStorage.removeItem(KEY); } catch (e) {}
+  const pct = d.total ? d.correct / d.total : 0;
+  $('#dMedal').textContent = pct === 1 ? '🏆' : pct >= .8 ? '🌟' : pct >= .5 ? '👍' : '💪';
+  $('#dH').textContent = pct === 1 ? tt('全对！太厉害了！', 'Perfect score!') : tt('作业完成！', 'Homework done!');
+  $('#dScore').textContent = d.score;
+  $('#dStats').textContent = tt(`答对 ${d.correct} / ${d.total} 题 · 成绩已经交给老师`, `${d.correct} / ${d.total} correct · sent to your teacher`);
+  $('#score').textContent = '';
+  $('#retryBtn').hidden = !d.canRetry; $('#retryBtn').textContent = tt('↻ 再做一次（取最好成绩）', '↻ Try again (best score counts)');
+  if (pct >= .8) sfx.fanfare();
+}
+$('#retryBtn').onclick = () => intro();
+document.addEventListener('langchange', () => { if (document.querySelector('#vIntro.on')) intro(); });
+
+(async () => {
+  const r = await fetch(`/api/hw/${CODE}`);
+  if (!r.ok) { $('#loadMsg').textContent = ERR.not_found(); return; }
+  info = await r.json();
+  try { token = localStorage.getItem(KEY); } catch (e) {}
+  if (token) { try { return show(await post('resume', { token })); } catch (e) { try { localStorage.removeItem(KEY); } catch (x) {} token = null; } }
+  if (info.status !== 'open') { $('#topTitle').textContent = info.title; $('#loadMsg').textContent = ERR[info.status](); return; }
+  intro();
+})();
+</script>
+</body>
+</html>

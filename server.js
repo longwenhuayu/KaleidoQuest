@@ -120,6 +120,9 @@ app.get('/api/games/:id', A.requireTeacher, (req, res) => {
 });
 app.delete('/api/games/:id', A.requireTeacher, (req, res) => { q('DELETE FROM games WHERE id = ? AND teacher_id = ?').run(+req.params.id, req.teacher.id); res.json({ ok: true }); });
 
+require('./lib/homework')(app);
+app.get('/hw/:code', (req, res) => res.sendFile(path.join(__dirname, 'public', 'hw.html')));
+
 app.get('/api/health', (req, res) => res.json({ ok: true, rooms: G.rooms.size }));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h' }));
 app.use('/api', (req, res) => res.status(404).json({ error: 'not_found' }));

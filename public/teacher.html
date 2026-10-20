@@ -25,15 +25,29 @@
 .rep b{font-size:16px}
 .rep .sp{flex:1}
 .rep:hover{border-color:var(--brand2)}
+.hw{display:flex;align-items:center;gap:12px;padding:14px 18px;margin-bottom:10px;flex-wrap:wrap}
+.hw .info{flex:1;min-width:200px}
+.hw .info b{font-size:16px}
+.hw .info div{font-size:13px;color:var(--muted);margin-top:3px}
+.st{font-size:12px;font-weight:800;padding:2px 9px;border-radius:999px}
+.st.open{background:#dcfce7;color:#166534}.st.due,.st.closed{background:#f1f5f9;color:#475569}
+.share{display:flex;gap:14px;align-items:center;margin-top:6px}
+.share .qr{background:#fff;padding:6px;border:1px solid var(--line);border-radius:12px;line-height:0}
+.share .qr img,.share .qr canvas{width:150px!important;height:150px!important}
+.share input{flex:1;min-width:0;font-weight:700}
 </style>
 </head>
 <body>
 <div class="topbar"><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><span class="muted" id="who"></span><button class="lang" type="button">EN</button><button class="btn ghost sm" id="logout" data-i="logout"></button></div>
 <div class="wrap">
-  <div class="ttabs"><button data-v="sets" class="on" data-i="my_sets"></button><button data-v="reports" data-i="reports"></button></div>
+  <div class="ttabs"><button data-v="sets" class="on" data-i="my_sets"></button><button data-v="hw" id="hwTab"></button><button data-v="reports" data-i="reports"></button></div>
   <section id="vSets">
     <div class="head"><h1 data-i="my_sets"></h1><a class="btn main" href="/edit" id="newBtn">＋ <span data-i="new_set"></span></a></div>
     <div class="sets" id="sets"></div>
+  </section>
+  <section id="vHw" hidden>
+    <div class="head"><h1 id="hwH"></h1></div>
+    <div id="hws"></div>
   </section>
   <section id="vReports" hidden>
     <div class="head"><h1 data-i="reports"></h1></div>
@@ -43,13 +57,13 @@
 <script src="/js/common.js"></script>
 <script>
 const { t, tt, api, $, esc, toast, SUBJECT_ICON } = VA;
-let sets = [], reports = [];
+let sets = [], reports = [], hws = [];
 const when = ms => new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 function renderSets() {
   $('#sets').innerHTML = sets.length ? sets.map(s => `<div class="card set" data-id="${s.id}">
     <h3><i>${SUBJECT_ICON[s.subject] || '📚'}</i>${esc(s.title)}</h3>
     <div class="meta"><span class="tag">${t('s_' + s.subject)}</span>${s.grade ? `<span>${esc(s.grade)}</span>` : ''}<span>${s.n} ${t('questions')}</span><span>· ${when(s.updated)}</span></div>
-    <div class="acts"><button class="btn go sm" data-act="play"${s.n ? '' : ' disabled'}>▶ ${t('play')}</button><a class="btn ghost sm" href="/edit?id=${s.id}">✏️ ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
+    <div class="acts"><button class="btn go sm" data-act="play"${s.n ? '' : ' disabled'}>▶ ${t('play')}</button><button class="btn ghost sm" data-act="hw"${s.n ? '' : ' disabled'}>📮 ${tt('布置作业', 'Assign')}</button><a class="btn ghost sm" href="/edit?id=${s.id}">✏️ ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
   </div>`).join('') : `<div class="empty">${t('empty_sets')}</div>`;
 }
 function renderReports() {
@@ -59,6 +73,7 @@ $('#sets').onclick = async e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const id = b.closest('.set').dataset.id;
   if (b.dataset.act === 'play') return VA.pickMode(id);
+  if (b.dataset.act === 'hw') return assign(sets.find(x => x.id == id));
   if (b.dataset.act === 'copy') { await api(`/api/sets/${id}/copy`, { method: 'POST' }); await load(); toast(tt('已复制', 'Duplicated')); }
   if (b.dataset.act === 'del') {
     if (!b.dataset.armed) { b.dataset.armed = 1; b.textContent = t('confirm_del'); setTimeout(() => { delete b.dataset.armed; b.textContent = t('del'); }, 3000); return; }
@@ -67,16 +82,68 @@ $('#sets').onclick = async e => {
 };
 document.querySelectorAll('.ttabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.ttabs button').forEach(x => x.classList.toggle('on', x === b));
-  $('#vSets').hidden = b.dataset.v !== 'sets'; $('#vReports').hidden = b.dataset.v !== 'reports';
-  history.replaceState(null, '', b.dataset.v === 'reports' ? '#reports' : '#');
+  $('#vSets').hidden = b.dataset.v !== 'sets'; $('#vReports').hidden = b.dataset.v !== 'reports'; $('#vHw').hidden = b.dataset.v !== 'hw';
+  history.replaceState(null, '', b.dataset.v === 'sets' ? '#' : '#' + b.dataset.v);
 });
+// ── 作业 ──
+const hwLink = code => `${location.origin}/hw/${code}`;
+function renderHw() {
+  $('#hwTab').textContent = tt('作业', 'Homework'); $('#hwH').textContent = tt('布置的作业', 'Homework');
+  const ST = { open: tt('进行中', 'Open'), due: tt('已截止', 'Past due'), closed: tt('已关闭', 'Closed') };
+  $('#hws').innerHTML = hws.length ? hws.map(h => `<div class="card hw" data-id="${h.id}">
+    <span style="font-size:24px">📝</span>
+    <div class="info"><b>${esc(h.title)}</b> <span class="st ${h.status}">${ST[h.status]}</span><div>${tt(`${h.done} 人完成`, `${h.done} done`)} · ${h.n} ${t('questions')} · ${tt('截止', 'Due')} ${when(h.due)} · <code>${h.code}</code></div></div>
+    <button class="btn ghost sm" data-hw="share">🔗 ${tt('链接 / 二维码', 'Link / QR')}</button>
+    <a class="btn go sm" href="/report?hw=${h.id}">📊 ${tt('看成绩', 'Results')}</a>
+    <button class="btn ghost sm" data-hw="close">${h.status === 'closed' ? tt('重新开放', 'Reopen') : tt('关闭', 'Close')}</button>
+    <button class="btn ghost sm danger" data-hw="del">${t('del')}</button></div>`).join('')
+    : `<div class="empty">${tt('还没有布置作业。在题包上点「📮 布置作业」就能生成链接。', 'No homework yet. Click “📮 Assign” on a question set to get a link.')}</div>`;
+}
+$('#hws').onclick = async e => {
+  const b = e.target.closest('[data-hw]'); if (!b) return;
+  const h = hws.find(x => x.id == b.closest('.hw').dataset.id);
+  if (b.dataset.hw === 'share') return shareBox(h.title, h.code);
+  if (b.dataset.hw === 'close') { await api(`/api/assignments/${h.id}/close`, { method: 'POST', body: { closed: h.status !== 'closed' } }); return load(); }
+  if (b.dataset.hw === 'del') {
+    if (!b.dataset.armed) { b.dataset.armed = 1; b.textContent = t('confirm_del'); setTimeout(() => { delete b.dataset.armed; b.textContent = t('del'); }, 3000); return; }
+    await api(`/api/assignments/${h.id}`, { method: 'DELETE' }); load();
+  }
+};
+function modal(html) { const d = document.createElement('div'); d.className = 'modepick'; d.innerHTML = `<div class="mp-box">${html}</div>`; d.onclick = e => { if (e.target === d || e.target.closest('.mp-x')) d.remove(); }; document.body.appendChild(d); return d; }
+function assign(set) {
+  const days = [[1, tt('明天', 'Tomorrow')], [3, tt('3 天后', 'In 3 days')], [7, tt('1 周后', 'In 1 week')], [14, tt('2 周后', 'In 2 weeks')]];
+  const d = modal(`<h2>📮 ${tt('布置作业', 'Assign homework')}</h2>
+    <label class="field">${tt('作业名称', 'Title')}<input class="in" id="hwTitle" maxlength="80" value="${esc(set.title)}"></label>
+    <div class="row"><label class="field" style="flex:1">${tt('截止', 'Due')}<select class="in" id="hwDue">${days.map(([n, l]) => `<option value="${n}"${n === 7 ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
+    <label class="field" style="flex:1">${tt('每人可以做几次', 'Attempts')}<select class="in" id="hwTries"><option value="0">${tt('不限（取最好）', 'Unlimited (best counts)')}</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label></div>
+    <div class="muted" style="font-size:13px">${tt('布置时会保存一份题目快照，之后改题包不影响这份作业。学生不用注册，填名字就能做。', 'Questions are saved as a snapshot. Students just type their name — no sign-up.')}</div>
+    <div class="err" id="hwErr"></div>
+    <div class="row" style="justify-content:flex-end"><button class="btn ghost sm mp-x" type="button">${tt('取消', 'Cancel')}</button><button class="btn main" id="hwGo">${tt('生成作业链接', 'Create link')}</button></div>`);
+  d.querySelector('#hwGo').onclick = async () => {
+    try {
+      // 截止时间定在那天晚上 23:59
+      const due = new Date(); due.setDate(due.getDate() + +d.querySelector('#hwDue').value); due.setHours(23, 59, 0, 0);
+      const r = await api('/api/assignments', { method: 'POST', body: { setId: set.id, title: d.querySelector('#hwTitle').value, due: due.getTime(), tries: +d.querySelector('#hwTries').value } });
+      d.remove(); await load(); document.querySelector('[data-v=hw]').click(); shareBox(d.querySelector('#hwTitle').value, r.code);
+    } catch (x) { d.querySelector('#hwErr').textContent = t('err_generic'); }
+  };
+}
+async function shareBox(title, code) {
+  const link = hwLink(code);
+  const d = modal(`<h2>🔗 ${esc(title)}</h2><div class="muted">${tt('把链接发到班级群，或投屏让学生扫码。', 'Share the link with your class or project the QR code.')}</div>
+    <div class="share"><div class="qr" id="hwQr"></div><div style="flex:1;display:flex;flex-direction:column;gap:8px"><input class="in" readonly value="${link}"><button class="btn main" id="copyBtn">📋 ${tt('复制链接', 'Copy link')}</button></div></div>
+    <button class="btn ghost sm mp-x" type="button" style="align-self:flex-end">${tt('关闭', 'Close')}</button>`);
+  d.querySelector('#copyBtn').onclick = async e => { try { await navigator.clipboard.writeText(link); } catch (x) { d.querySelector('input').select(); document.execCommand('copy'); } e.target.textContent = '✓ ' + tt('已复制', 'Copied'); };
+  if (!window.QRCode) await new Promise(ok => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; s.onload = s.onerror = ok; document.head.appendChild(s); });
+  if (window.QRCode) new QRCode(d.querySelector('#hwQr'), { text: link, width: 300, height: 300, correctLevel: QRCode.CorrectLevel.M });
+}
 $('#logout').onclick = async () => { await api('/api/logout', { method: 'POST' }); location.href = '/'; };
 async function load() {
-  [sets, reports] = await Promise.all([api('/api/sets'), api('/api/games')]);
-  renderSets(); renderReports();
+  [sets, reports, hws] = await Promise.all([api('/api/sets'), api('/api/games'), api('/api/assignments')]);
+  renderSets(); renderReports(); renderHw();
 }
-document.addEventListener('langchange', () => { renderSets(); renderReports(); });
-api('/api/me').then(me => { $('#who').textContent = me.name; load(); if (location.hash === '#reports') document.querySelector('[data-v=reports]').click(); }).catch(() => { location.href = '/'; });
+document.addEventListener('langchange', () => { renderSets(); renderReports(); renderHw(); });
+api('/api/me').then(me => { $('#who').textContent = me.name; load(); if (['#reports', '#hw'].includes(location.hash)) document.querySelector(`[data-v=${location.hash.slice(1)}]`).click(); }).catch(() => { location.href = '/'; });
 </script>
 </body>
 </html>
