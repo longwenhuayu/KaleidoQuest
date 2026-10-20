@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vision Arena · 课堂实时答题游戏</title>
+<meta name="description" content="Vision Arena：全班一起玩的课堂实时答题游戏。华文、数学、英文、科学都能用，输入本课内容一键出题。by Vision Chinese Academy.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+.hero{min-height:100vh;display:flex;flex-direction:column}
+.hero header{display:flex;align-items:center;padding:18px 24px}
+.hero header .sp{flex:1}
+.hero .logo{font-size:24px}
+.hero main{flex:1;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;max-width:1120px;margin:0 auto;padding:20px 24px 60px;width:100%}
+.pitch h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:clamp(40px,6vw,72px);line-height:1.02;letter-spacing:-1px}
+.pitch h1 span{background:linear-gradient(90deg,#fbbf24,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pitch p{font-size:19px;opacity:.85;margin-top:16px;line-height:1.6;max-width:520px}
+.subjects{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.subjects span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+.panels{display:flex;flex-direction:column;gap:16px}
+.panel{background:#fff;color:var(--ink);border-radius:22px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.panel h2{font-size:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.pin{display:flex;gap:10px}
+.pin input{flex:1;font-size:26px;font-weight:900;letter-spacing:6px;text-align:center;padding:12px;border:2px solid var(--line);border-radius:14px;min-width:0}
+.pin input:focus{outline:none;border-color:var(--accent)}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tabs button{flex:1;border:0;border-radius:10px;padding:9px;font-weight:800;background:#f3f0ff;cursor:pointer}
+.tabs button.on{background:var(--brand2);color:#fff}
+.form{display:grid;gap:10px}
+.foot{text-align:center;padding:16px;font-size:13px;opacity:.7}
+.foot a{color:#c4b5fd}
+.lang{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
+@media (max-width:860px){.hero main{grid-template-columns:1fr;gap:26px}.pitch{text-align:center}.pitch p{margin:14px auto 0}.subjects{justify-content:center}}
+</style>
+</head>
+<body class="night">
+<div class="hero">
+  <header><a class="logo" href="/"><i>⚡</i><span>Vision Arena<small>by Vision Chinese Academy</small></span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
+  <main>
+    <div class="pitch">
+      <h1>Learn it.<br><span>Battle it.</span></h1>
+      <p data-i="tagline"></p>
+      <p id="pitch2" style="font-size:16px"></p>
+      <div class="subjects" id="subjects"></div>
+    </div>
+    <div class="panels">
+      <form class="panel" id="joinForm">
+        <h2>🎮 <span data-i="join_title"></span></h2>
+        <div class="pin"><input id="pin" inputmode="numeric" maxlength="6" autocomplete="off" data-ip="join_pin"><button class="btn go" data-i="join_btn"></button></div>
+      </form>
+      <div class="panel" id="teacherPanel">
+        <h2>🧑‍🏫 <span data-i="teacher_title"></span></h2>
+        <div class="tabs"><button type="button" data-tab="login" class="on" data-i="login"></button><button type="button" data-tab="register" data-i="register"></button></div>
+        <form class="form" id="authForm">
+          <input class="in" id="name" data-ip="your_name" autocomplete="name" hidden>
+          <input class="in" id="email" type="email" data-ip="email" autocomplete="email" required>
+          <input class="in" id="password" type="password" data-ip="password" autocomplete="current-password" required minlength="8">
+          <div class="err" id="err"></div>
+          <button class="btn main" id="authBtn" data-i="login"></button>
+        </form>
+      </div>
+    </div>
+  </main>
+  <div class="foot">© Vision Chinese Academy 文心书院 · <a href="https://visionchinese.com" target="_blank" rel="noopener">visionchinese.com</a></div>
+</div>
+<script src="/js/common.js"></script>
+<script>
+const { t, tt, api, $ } = VA;
+let tab = 'login';
+function renderText() {
+  $('#pitch2').textContent = tt('华文、数学、英文、科学都能用。贴上本课内容一键出题，学生用手机扫码加入，不用注册。', 'Chinese, Math, English, Science — paste your lesson, get a quiz in seconds. Students join by QR, no sign-up.');
+  $('#subjects').innerHTML = [['🀄', tt('华文', 'Chinese')], ['➗', tt('数学', 'Math')], ['🔤', tt('英文', 'English')], ['🔬', tt('科学', 'Science')], ['🌴', tt('马来文', 'Malay')], ['🪔', tt('淡米尔文', 'Tamil')]].map(([i, n]) => `<span>${i} ${n}</span>`).join('');
+  $('#authBtn').textContent = t(tab);
+}
+document.addEventListener('langchange', renderText);
+document.addEventListener('DOMContentLoaded', renderText);
+document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => {
+  tab = b.dataset.tab;
+  document.querySelectorAll('[data-tab]').forEach(x => x.classList.toggle('on', x === b));
+  $('#name').hidden = tab !== 'register'; $('#name').required = tab === 'register';
+  $('#password').autocomplete = tab === 'register' ? 'new-password' : 'current-password';
+  $('#err').textContent = ''; renderText();
+});
+$('#pin').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
+$('#joinForm').onsubmit = e => { e.preventDefault(); const p = $('#pin').value; if (p.length === 6) location.href = '/play?pin=' + p; else $('#pin').focus(); };
+$('#authForm').onsubmit = async e => {
+  e.preventDefault(); $('#err').textContent = '';
+  try {
+    await api('/api/' + tab, { method: 'POST', body: { email: $('#email').value, password: $('#password').value, name: $('#name').value } });
+    location.href = '/teacher';
+  } catch (x) { $('#err').textContent = t('err_' + x.message) !== 'err_' + x.message ? t('err_' + x.message) : t('err_generic'); }
+};
+api('/api/me').then(() => { $('#teacherPanel').innerHTML = `<h2>🧑‍🏫 ${t('teacher_title')}</h2><a class="btn main" href="/teacher" style="width:100%">${tt('进入老师后台 →', 'Go to dashboard →')}</a>`; }).catch(() => {});
+</script>
+</body>
+</html>

@@ -6,11 +6,16 @@
   "main": "server.js",
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning server.js",
-    "test": "node --disable-warning=ExperimentalWarning test/sim.js"
+    "test": "node --disable-warning=ExperimentalWarning test/sim.js && node test/plugins.js"
   },
-  "engines": { "node": ">=22.5" },
+  "engines": {
+    "node": ">=22.5"
+  },
   "dependencies": {
     "express": "^4.21.2",
     "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "pinyin-pro": "^3.26.0"
   }
 }

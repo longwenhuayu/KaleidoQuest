@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vision Arena · 老师后台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+.head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.head h1{font-size:24px;margin-right:auto}
+.ttabs{display:flex;gap:8px;margin-bottom:18px}
+.ttabs button{border:0;background:transparent;font-weight:800;font-size:16px;padding:8px 4px;border-bottom:3px solid transparent;cursor:pointer;color:var(--muted)}
+.ttabs button.on{color:var(--ink);border-color:var(--brand2)}
+.sets{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.set{display:flex;flex-direction:column;gap:10px}
+.set h3{font-size:17px;line-height:1.35;display:flex;gap:8px;align-items:flex-start}
+.set h3 i{font-style:normal;font-size:22px}
+.set .meta{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.set .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.empty{text-align:center;padding:50px 20px;color:var(--muted);font-size:16px}
+.rep{display:flex;align-items:center;gap:14px;padding:14px 18px;text-decoration:none;color:inherit;margin-bottom:10px}
+.rep b{font-size:16px}
+.rep .sp{flex:1}
+.rep:hover{border-color:var(--brand2)}
+</style>
+</head>
+<body>
+<div class="topbar"><a class="logo" href="/"><i>⚡</i><span>Vision Arena</span></a><span class="sp"></span><span class="muted" id="who"></span><button class="lang" type="button">EN</button><button class="btn ghost sm" id="logout" data-i="logout"></button></div>
+<div class="wrap">
+  <div class="ttabs"><button data-v="sets" class="on" data-i="my_sets"></button><button data-v="reports" data-i="reports"></button></div>
+  <section id="vSets">
+    <div class="head"><h1 data-i="my_sets"></h1><a class="btn main" href="/edit" id="newBtn">＋ <span data-i="new_set"></span></a></div>
+    <div class="sets" id="sets"></div>
+  </section>
+  <section id="vReports" hidden>
+    <div class="head"><h1 data-i="reports"></h1></div>
+    <div id="reports"></div>
+  </section>
+</div>
+<script src="/js/common.js"></script>
+<script>
+const { t, tt, api, $, esc, toast, SUBJECT_ICON } = VA;
+let sets = [], reports = [];
+const when = ms => new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+function renderSets() {
+  $('#sets').innerHTML = sets.length ? sets.map(s => `<div class="card set" data-id="${s.id}">
+    <h3><i>${SUBJECT_ICON[s.subject] || '📚'}</i>${esc(s.title)}</h3>
+    <div class="meta"><span class="tag">${t('s_' + s.subject)}</span>${s.grade ? `<span>${esc(s.grade)}</span>` : ''}<span>${s.n} ${t('questions')}</span><span>· ${when(s.updated)}</span></div>
+    <div class="acts"><a class="btn go sm" href="/host?set=${s.id}"${s.n ? '' : ' aria-disabled="true" style="pointer-events:none;opacity:.45"'}>▶ ${t('play')}</a><a class="btn ghost sm" href="/edit?id=${s.id}">✏️ ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
+  </div>`).join('') : `<div class="empty">${t('empty_sets')}</div>`;
+}
+function renderReports() {
+  $('#reports').innerHTML = reports.length ? reports.map(r => `<a class="card rep" href="/report?id=${r.id}"><span style="font-size:24px">📊</span><b>${esc(r.title)}</b><span class="sp"></span><span class="muted">${r.players} ${t('players')} · ${when(r.ended)}</span></a>`).join('') : `<div class="empty">${t('empty_reports')}</div>`;
+}
+$('#sets').onclick = async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const id = b.closest('.set').dataset.id;
+  if (b.dataset.act === 'copy') { await api(`/api/sets/${id}/copy`, { method: 'POST' }); await load(); toast(tt('已复制', 'Duplicated')); }
+  if (b.dataset.act === 'del') {
+    if (!b.dataset.armed) { b.dataset.armed = 1; b.textContent = t('confirm_del'); setTimeout(() => { delete b.dataset.armed; b.textContent = t('del'); }, 3000); return; }
+    await api(`/api/sets/${id}`, { method: 'DELETE' }); await load();
+  }
+};
+document.querySelectorAll('.ttabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.ttabs button').forEach(x => x.classList.toggle('on', x === b));
+  $('#vSets').hidden = b.dataset.v !== 'sets'; $('#vReports').hidden = b.dataset.v !== 'reports';
+  history.replaceState(null, '', b.dataset.v === 'reports' ? '#reports' : '#');
+});
+$('#logout').onclick = async () => { await api('/api/logout', { method: 'POST' }); location.href = '/'; };
+async function load() {
+  [sets, reports] = await Promise.all([api('/api/sets'), api('/api/games')]);
+  renderSets(); renderReports();
+}
+document.addEventListener('langchange', () => { renderSets(); renderReports(); });
+api('/api/me').then(me => { $('#who').textContent = me.name; load(); if (location.hash === '#reports') document.querySelector('[data-v=reports]').click(); }).catch(() => { location.href = '/'; });
+</script>
+</body>
+</html>

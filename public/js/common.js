@@ -1,0 +1,65 @@
+// 共用：中英文、接口、小工具
+(function () {
+  const DICT = {
+    tagline: ['全班一起玩的课堂答题游戏', 'Live quiz games your whole class plays together'],
+    join_title: ['我是学生', "I'm a student"], join_pin: ['输入房间码', 'Game PIN'], join_btn: ['加入游戏', 'Join'],
+    teacher_title: ['我是老师', "I'm a teacher"], login: ['登录', 'Log in'], register: ['注册', 'Sign up'], logout: ['退出', 'Log out'],
+    email: ['邮箱', 'Email'], password: ['密码（至少 8 位）', 'Password (8+ characters)'], your_name: ['怎么称呼您', 'Your name'],
+    my_sets: ['我的题包', 'My question sets'], reports: ['赛后报告', 'Reports'], new_set: ['新建题包', 'New set'],
+    play: ['开始游戏', 'Host game'], edit: ['编辑', 'Edit'], copy: ['复制', 'Duplicate'], del: ['删除', 'Delete'],
+    questions: ['题', 'questions'], confirm_del: ['确定删除？再点一次', 'Click again to delete'], empty_sets: ['还没有题包，先新建一个吧！', 'No sets yet — create your first one!'],
+    empty_reports: ['开过一局游戏后，报告会出现在这里。', 'Reports appear here after you host a game.'],
+    players: ['人', 'players'], save: ['保存', 'Save'], saved: ['已保存', 'Saved'], back: ['返回', 'Back'],
+    s_chinese: ['华文', 'Chinese'], s_math: ['数学', 'Math'], s_english: ['英文', 'English'], s_science: ['科学', 'Science'], s_general: ['综合', 'General'], s_malay: ['马来文', 'Malay'], s_tamil: ['淡米尔文', 'Tamil'],
+    err_email: ['邮箱格式不对', 'Invalid email'], err_password: ['密码至少 8 位', 'Password must be 8+ characters'], err_name: ['请填写称呼', 'Please enter your name'],
+    err_exists: ['这个邮箱已经注册过，请直接登录', 'Email already registered — please log in'], err_wrong: ['邮箱或密码不对', 'Wrong email or password'], err_too_many: ['尝试太多次，请 15 分钟后再试', 'Too many attempts. Try again in 15 minutes'],
+    err_room_not_found: ['找不到这个房间，请检查房间码', 'Game not found — check the PIN'], err_locked: ['房间已锁定，请让老师解锁', 'This game is locked'], err_full: ['房间满了', 'Game is full'],
+    err_name_req: ['请输入昵称', 'Please enter a nickname'], err_login_required: ['请先登录', 'Please log in first'], err_generic: ['出错了，请再试一次', 'Something went wrong — please try again']
+  };
+  let lang = 'zh';
+  try { lang = localStorage.getItem('va_lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en'); } catch (e) {}
+  const t = k => (DICT[k] || [k, k])[lang === 'en' ? 1 : 0];
+  const tt = (zh, en) => lang === 'en' ? en : zh;
+  function setLang(l) { lang = l; try { localStorage.setItem('va_lang', l); } catch (e) {} document.documentElement.lang = l === 'en' ? 'en' : 'zh-CN'; applyI18n(); document.dispatchEvent(new Event('langchange')); }
+  function applyI18n(root = document) {
+    root.querySelectorAll('[data-i]').forEach(e => { e.textContent = t(e.dataset.i); });
+    root.querySelectorAll('[data-ip]').forEach(e => { e.placeholder = t(e.dataset.ip); });
+    root.querySelectorAll('.lang').forEach(b => { b.textContent = lang === 'en' ? '中文' : 'EN'; });
+  }
+  document.addEventListener('click', e => { if (e.target.closest('.lang')) setLang(lang === 'en' ? 'zh' : 'en'); });
+
+  async function api(path, opts = {}) {
+    const r = await fetch(path, { method: opts.method || 'GET', headers: opts.body ? { 'content-type': 'application/json' } : {}, body: opts.body ? JSON.stringify(opts.body) : undefined, credentials: 'same-origin' });
+    let data = null; try { data = await r.json(); } catch (e) {}
+    if (!r.ok) { const err = new Error((data && data.error) || 'generic'); err.status = r.status; throw err; }
+    return data;
+  }
+  const $ = (s, root = document) => root.querySelector(s);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  function toast(msg) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = msg; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
+  const SHAPES = ['▲', '◆', '●', '■', '★', '⬟'];
+  const SUBJECT_ICON = { chinese: '🀄', math: '➗', english: '🔤', science: '🔬', general: '📚', malay: '🌴', tamil: '🪔' };
+  const wsUrl = () => (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host + '/ws';
+
+  // 声音：WebAudio 合成，免下载
+  let actx = null, muted = false;
+  try { muted = localStorage.getItem('va_muted') === '1'; } catch (e) {}
+  function tone(f, d, type = 'triangle', v = .12, when = 0) {
+    if (muted) return;
+    try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); const t0 = actx.currentTime + when, o = actx.createOscillator(), g = actx.createGain(); o.type = type; o.frequency.setValueAtTime(f, t0); g.gain.setValueAtTime(v, t0); g.gain.exponentialRampToValueAtTime(.001, t0 + d); o.connect(g).connect(actx.destination); o.start(t0); o.stop(t0 + d); } catch (e) {}
+  }
+  const sfx = {
+    join: () => tone(880, .12, 'sine', .08),
+    tick: () => tone(1200, .05, 'square', .04),
+    go: () => [523, 784].forEach((f, i) => tone(f, .15, 'triangle', .12, i * .1)),
+    ok: () => [660, 990].forEach((f, i) => tone(f, .16, 'triangle', .12, i * .08)),
+    bad: () => tone(160, .3, 'sawtooth', .08),
+    reveal: () => [523, 659, 784].forEach((f, i) => tone(f, .2, 'triangle', .1, i * .08)),
+    fanfare: () => [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, .28, 'triangle', .12, i * .14))
+  };
+  const setMuted = m => { muted = m; try { localStorage.setItem('va_muted', m ? '1' : '0'); } catch (e) {} };
+  function speak(text, l) { if (!('speechSynthesis' in window) || !text) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = l || 'zh-CN'; u.rate = .9; const v = speechSynthesis.getVoices().find(v => v.lang.replace('_', '-').startsWith(u.lang)); if (v) u.voice = v; speechSynthesis.speak(u); }
+
+  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
+  document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); });
+})();

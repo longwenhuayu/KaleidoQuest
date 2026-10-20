@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vision Arena · 主持</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+html,body{height:100%}
+body{overflow:hidden}
+.screen{position:fixed;inset:0;display:none;flex-direction:column;padding:20px 28px}
+.screen.on{display:flex}
+.bar{display:flex;align-items:center;gap:12px}
+.bar .sp{flex:1}
+.bar .pill{background:rgba(255,255,255,.14);border-radius:999px;padding:6px 14px;font-weight:800}
+.ib{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer}
+/* 大厅 */
+.lobby-top{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:#fff;color:var(--ink);border-radius:24px;padding:22px 28px;margin-top:14px}
+.join-url{font-size:clamp(18px,2.4vw,28px);font-weight:700}
+.join-url b{color:var(--brand2)}
+.pinbig{font-family:"Fredoka",sans-serif;font-size:clamp(56px,9vw,120px);font-weight:700;letter-spacing:6px;line-height:1}
+.qr{background:#fff;padding:8px;border-radius:14px;line-height:0}
+.qr img,.qr canvas{width:min(22vh,190px)!important;height:auto!important}
+.players{flex:1;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;justify-content:center;padding:20px 0;overflow:auto}
+.pl{background:rgba(255,255,255,.14);border-radius:999px;padding:8px 16px 8px 10px;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;animation:pop .3s;cursor:pointer}
+.pl span{font-size:26px}
+.pl.old{animation:none}
+.pl.off{opacity:.4}
+.pl:hover{background:rgba(220,38,38,.6)}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.lobby-foot{display:flex;align-items:center;gap:14px}
+.lobby-foot .count{font-size:22px;font-weight:900}
+.waiting{font-size:20px;opacity:.7;text-align:center;width:100%;margin-top:40px}
+/* 准备 */
+.ready{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.ready .n{font-size:28px;font-weight:800;opacity:.85}
+.ready .big{font-family:"Fredoka",sans-serif;font-size:clamp(90px,16vw,200px);line-height:1;animation:pop .5s}
+/* 题目 */
+.prompt{background:#fff;color:var(--ink);border-radius:20px;padding:18px 26px;text-align:center;font-size:clamp(26px,4vw,52px);font-weight:900;line-height:1.3;margin-top:14px}
+.qmid{flex:1;display:flex;align-items:center;justify-content:center;gap:28px;min-height:0}
+.timer{width:clamp(90px,12vw,150px);height:clamp(90px,12vw,150px);border-radius:50%;display:grid;place-items:center;font-family:"Fredoka",sans-serif;font-size:clamp(36px,5vw,60px);background:conic-gradient(var(--accent) var(--p,100%),rgba(255,255,255,.15) 0)}
+.timer span{width:78%;height:78%;border-radius:50%;background:var(--night);display:grid;place-items:center}
+.qimg{max-height:34vh;max-width:46vw;border-radius:16px;object-fit:contain;background:#fff}
+.answered{text-align:center;font-weight:800}
+.answered b{display:block;font-family:"Fredoka",sans-serif;font-size:clamp(40px,5vw,64px)}
+.speak{background:#fff;color:var(--ink);border:0;border-radius:50%;width:84px;height:84px;font-size:38px;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.2)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;font-size:clamp(20px,2.8vw,36px);font-weight:800;color:#fff;min-height:84px;position:relative;transition:opacity .3s}
+.opt .shape{font-size:1.2em;opacity:.95}
+.opt .cnt{margin-left:auto;font-family:"Fredoka",sans-serif;font-size:1.1em}
+.opt.dim{opacity:.28}
+.opt.right::after{content:"✔";position:absolute;right:-10px;top:-12px;background:#fff;color:var(--ok);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.items{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.items span{background:#fff;color:var(--ink);border-radius:12px;padding:10px 18px;font-size:clamp(20px,2.6vw,32px);font-weight:800}
+.typein{text-align:center;font-size:clamp(22px,3vw,36px);font-weight:800;opacity:.9}
+.bars{display:flex;align-items:flex-end;justify-content:center;gap:18px;height:30vh}
+.bars div{width:clamp(60px,10vw,120px);border-radius:12px 12px 0 0;display:flex;align-items:flex-start;justify-content:center;color:#fff;font-weight:900;font-size:26px;padding-top:6px;transition:height .6s cubic-bezier(.2,.8,.2,1)}
+.ans-box{background:#fff;color:var(--ink);border-radius:18px;padding:16px 26px;text-align:center;font-size:clamp(24px,3.4vw,44px);font-weight:900}
+.ans-box small{display:block;font-size:16px;color:var(--muted);font-weight:700;margin-top:4px}
+.note{text-align:center;font-size:20px;opacity:.9;margin-top:8px}
+.foot{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+/* 排行榜 */
+.board{flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px;max-width:900px;width:100%;margin:0 auto}
+.board h2{text-align:center;font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:44px;margin-bottom:8px}
+.brow{display:flex;align-items:center;gap:14px;background:#fff;color:var(--ink);border-radius:16px;padding:12px 20px;font-size:26px;font-weight:900;animation:slide .45s backwards}
+.brow:nth-child(3){animation-delay:.08s}.brow:nth-child(4){animation-delay:.16s}.brow:nth-child(5){animation-delay:.24s}.brow:nth-child(6){animation-delay:.32s}
+@keyframes slide{from{transform:translateX(-40px);opacity:0}}
+.brow .av{font-size:34px}
+.brow .sc{margin-left:auto;font-family:"Fredoka",sans-serif}
+.brow .st{font-size:16px;color:#ea580c}
+/* 领奖台 */
+.podium{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:16px;padding-bottom:10px}
+.pod{width:min(26vw,240px);text-align:center;animation:rise .8s backwards}
+.pod .av{font-size:clamp(50px,7vw,90px);animation:bounce 1.2s infinite alternate}
+.pod .nm{font-size:clamp(20px,2.6vw,32px);font-weight:900;margin:6px 0}
+.pod .blk{border-radius:16px 16px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:14px;font-family:"Fredoka",sans-serif;font-size:clamp(28px,4vw,52px);color:#fff}
+.pod .blk small{font-size:.45em;opacity:.9}
+.pod.p1 .blk{height:38vh;background:linear-gradient(#fbbf24,#d97706)}.pod.p2 .blk{height:28vh;background:linear-gradient(#cbd5e1,#64748b)}.pod.p3 .blk{height:20vh;background:linear-gradient(#fdba74,#c2410c)}
+.pod.p1{animation-delay:1.2s}.pod.p2{animation-delay:.6s}
+@keyframes rise{from{transform:translateY(60px);opacity:0}}
+@keyframes bounce{to{transform:translateY(-10px)}}
+.confetti{position:fixed;top:-20px;width:10px;height:16px;animation:fall linear forwards;z-index:5}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.center-msg{flex:1;display:grid;place-items:center;font-size:24px;text-align:center}
+@media (max-width:760px){.lobby-top{grid-template-columns:1fr}.qr{justify-self:center}.opts{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="night">
+<section class="screen on" id="sConn"><div class="center-msg" id="connMsg">…</div></section>
+
+<section class="screen" id="sLobby">
+  <div class="bar"><span class="logo"><i>⚡</i><span>Vision Arena</span></span><span class="pill" id="lTitle"></span><span class="sp"></span><button class="ib" id="muteBtn"></button><button class="ib lang" type="button">EN</button></div>
+  <div class="lobby-top">
+    <div><div class="join-url" id="joinUrl"></div><div class="pinbig" id="pin"></div></div>
+    <div class="qr" id="qr"></div>
+  </div>
+  <div class="players" id="players"></div>
+  <div class="lobby-foot"><span class="count" id="count"></span><span class="sp" style="flex:1"></span><button class="ib" id="lockBtn"></button><button class="btn go" id="startBtn" disabled></button></div>
+</section>
+
+<section class="screen" id="sReady"><div class="ready"><div class="n" id="rN"></div><div class="big" id="rBig">3</div></div></section>
+
+<section class="screen" id="sQ">
+  <div class="bar"><span class="pill" id="qN"></span><span class="sp"></span><button class="ib" id="muteBtn2"></button><button class="ib" id="skipBtn"></button></div>
+  <div class="prompt" id="qPrompt"></div>
+  <div class="qmid"><div class="timer" id="timer"><span id="timerN"></span></div><div id="qMedia"></div><div class="answered"><b id="ansN">0</b><span id="ansLabel"></span></div></div>
+  <div id="qBody"></div>
+</section>
+
+<section class="screen" id="sReveal">
+  <div class="bar"><span class="pill" id="vN"></span><span class="sp"></span></div>
+  <div class="prompt" id="vPrompt"></div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px" id="vBody"></div>
+  <div class="foot"><button class="btn go" id="toBoard"></button></div>
+</section>
+
+<section class="screen" id="sBoard">
+  <div class="board" id="board"></div>
+  <div class="foot"><button class="btn go" id="nextBtn"></button></div>
+</section>
+
+<section class="screen" id="sEnd">
+  <div class="bar"><span class="logo"><i>⚡</i><span>Vision Arena</span></span><span class="sp"></span><a class="ib" href="/teacher" id="toDash" style="text-decoration:none"></a></div>
+  <h2 style="text-align:center;font-family:Fredoka,'Noto Sans SC',sans-serif;font-size:46px;margin-top:6px" id="endTitle"></h2>
+  <div class="podium" id="podium"></div>
+  <div class="foot" style="justify-content:center"><a class="btn go" id="reportBtn"></a><a class="btn ghost" id="againBtn"></a></div>
+</section>
+
+<script src="/js/common.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const { t, tt, $, esc, SHAPES, sfx, speak } = VA;
+const setId = +new URLSearchParams(location.search).get('set');
+const KEY = 'va_host_' + setId;
+const seen = new Set(); // 已经播过加入动画的学生
+let ws = null, pin = null, total = 0, cur = null, state = 'conn', timerRaf = 0, music = 0, players = [], locked = false, retry = 0, endMsg = null;
+
+function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id)); state = id; }
+const joinHost = () => location.host;
+
+function renderStatic() {
+  $('#joinUrl').innerHTML = `${tt('用手机打开', 'Join at')} <b>${esc(joinHost())}/play</b> ${tt('输入房间码', 'with PIN')}`;
+  $('#startBtn').textContent = '▶ ' + tt('开始', 'Start');
+  $('#lockBtn').textContent = locked ? '🔒 ' + tt('已锁定', 'Locked') : '🔓 ' + tt('锁定房间', 'Lock');
+  ['#muteBtn', '#muteBtn2'].forEach(s => $(s).textContent = VA.muted ? '🔇' : '🔊');
+  $('#skipBtn').textContent = tt('结束本题 ⏭', 'End question ⏭');
+  $('#toBoard').textContent = tt('排行榜 →', 'Leaderboard →');
+  $('#ansLabel').textContent = tt('已作答', 'answers');
+  $('#toDash').textContent = tt('回后台', 'Dashboard');
+  $('#endTitle').textContent = tt('🏆 冠军诞生！', '🏆 And the winner is…');
+  $('#againBtn').textContent = '↻ ' + tt('再玩一次', 'Play again');
+  $('#againBtn').href = `/host?set=${setId}&new=1`;
+  renderPlayers();
+}
+function renderPlayers() {
+  $('#players').innerHTML = players.length ? players.map(p => `<div class="pl${p.online ? '' : ' off'}${seen.has(p.id) ? ' old' : ''}" data-id="${p.id}" title="${tt('点一下踢出', 'Click to remove')}"><span>${p.avatar}</span>${esc(p.name)}</div>`).join('') : `<div class="waiting">${tt('等待学生加入…', 'Waiting for players…')}</div>`;
+  players.forEach(p => seen.add(p.id));
+  $('#count').textContent = `👥 ${players.length}`;
+  $('#startBtn').disabled = !players.length;
+}
+
+// 背景音乐：简单的 8 拍循环，最后 5 秒换成读秒
+function startMusic() {
+  stopMusic(); let i = 0; const seq = [262, 330, 392, 330, 294, 349, 440, 349];
+  music = setInterval(() => { VA.tone(seq[i++ % 8], .12, 'square', .025); }, 230);
+}
+function stopMusic() { clearInterval(music); music = 0; }
+
+function connect() {
+  ws = new WebSocket(VA.wsUrl());
+  ws.onopen = () => { retry = 0; const saved = sessionStorage.getItem(KEY); ws.send(JSON.stringify(saved && !new URLSearchParams(location.search).get('new') ? { t: 'host_resume', pin: saved } : { t: 'host', setId })); };
+  ws.onmessage = e => handle(JSON.parse(e.data));
+  ws.onclose = () => { if (state === 'sEnd') return; $('#connMsg').textContent = tt('连接中断，正在重连…', 'Reconnecting…'); if (state === 'conn') show('sConn'); setTimeout(connect, Math.min(5000, 800 * ++retry)); };
+}
+const send = m => ws && ws.readyState === 1 && ws.send(JSON.stringify(m));
+
+function handle(m) {
+  if (m.t === 'error') {
+    if (m.error === 'room_not_found') { sessionStorage.removeItem(KEY); send({ t: 'host', setId }); return; }
+    if (m.error === 'login_required') { location.href = '/'; return; }
+    $('#connMsg').textContent = m.error === 'empty_set' ? tt('这个题包还没有题目', 'This set has no questions') : tt('找不到题包', 'Question set not found');
+    show('sConn'); return;
+  }
+  if (m.t === 'room') {
+    pin = m.pin; total = m.total; sessionStorage.setItem(KEY, pin);
+    if (new URLSearchParams(location.search).get('new')) history.replaceState(null, '', `/host?set=${setId}`);
+    $('#pin').textContent = pin.replace(/(\d{3})(\d{3})/, '$1 $2');
+    $('#lTitle').textContent = m.title;
+    $('#qr').innerHTML = ''; new QRCode($('#qr'), { text: `${location.origin}/play?pin=${pin}`, width: 380, height: 380, correctLevel: QRCode.CorrectLevel.M });
+    renderStatic();
+  }
+  if (m.t === 'lobby') {
+    const before = players.length; players = m.players; locked = m.locked;
+    if (players.length > before && state === 'sLobby') sfx.join();
+    renderStatic(); if (state === 'conn' || state === 'sConn') show('sLobby');
+  }
+  if (m.t === 'q') return question(m);
+  if (m.t === 'progress') { $('#ansN').textContent = m.answered; return; }
+  if (m.t === 'reveal') return reveal(m);
+  if (m.t === 'board') return board(m);
+  if (m.t === 'end') return end(m);
+}
+
+function question(m) {
+  cur = m; stopMusic(); cancelAnimationFrame(timerRaf);
+  const label = tt(`第 ${m.qi + 1} / ${m.total} 题`, `Question ${m.qi + 1} / ${m.total}`);
+  const go = () => {
+    show('sQ'); $('#qN').textContent = label;
+    const q = m.q;
+    $('#qPrompt').textContent = q.prompt || tt('🔊 听一听', '🔊 Listen');
+    $('#qMedia').innerHTML = (q.image ? `<img class="qimg" src="${esc(q.image)}" alt="">` : '') + (q.speak ? `<button class="speak" id="spk">🔊</button>` : '');
+    if (q.speak) { $('#spk').onclick = () => speak(q.speak, q.lang); setTimeout(() => speak(q.speak, q.lang), 300); }
+    $('#ansN').textContent = '0';
+    let body = '';
+    if (q.type === 'mcq') body = `<div class="opts">${q.options.map((o, i) => `<div class="opt opt${i}"><span class="shape">${SHAPES[i]}</span>${esc(o)}</div>`).join('')}</div>`;
+    else if (q.type === 'tf') body = `<div class="opts"><div class="opt opt1"><span class="shape">${SHAPES[1]}</span>✔ ${tt('对', 'True')}</div><div class="opt opt0"><span class="shape">${SHAPES[0]}</span>✘ ${tt('错', 'False')}</div></div>`;
+    else if (q.type === 'order') body = `<div class="typein">${tt('在设备上按正确顺序排列：', 'Put these in order on your device:')}</div><div class="items" style="margin-top:12px">${q.items.map(x => `<span>${esc(x.text)}</span>`).join('')}</div>`;
+    else body = `<div class="typein">⌨️ ${tt('在设备上输入答案', 'Type your answer on your device')}</div>`;
+    $('#qBody').innerHTML = body;
+    const end = performance.now() + (m.left != null && m.resumed ? m.left : q.time * 1000), totalMs = q.time * 1000;
+    let lastSec = -1;
+    const tick = () => {
+      const left = Math.max(0, end - performance.now()), sec = Math.ceil(left / 1000);
+      $('#timerN').textContent = sec; $('#timer').style.setProperty('--p', `${left / totalMs * 100}%`);
+      if (sec !== lastSec && sec <= 5 && sec > 0) { sfx.tick(); if (sec === 5) stopMusic(); }
+      lastSec = sec;
+      if (left > 0) timerRaf = requestAnimationFrame(tick);
+    };
+    tick(); if (!q.speak) startMusic();
+  };
+  if (m.startIn > 0) {
+    show('sReady'); $('#rN').textContent = label;
+    let n = Math.ceil(m.startIn / 1000);
+    const step = () => { $('#rBig').textContent = n; $('#rBig').style.animation = 'none'; void $('#rBig').offsetWidth; $('#rBig').style.animation = ''; sfx.tick(); if (--n > 0) setTimeout(step, 830); };
+    step(); setTimeout(() => { sfx.go(); go(); }, m.startIn);
+  } else go();
+}
+
+function reveal(m) {
+  stopMusic(); cancelAnimationFrame(timerRaf); sfx.reveal(); show('sReveal');
+  const q = cur.q;
+  $('#vN').textContent = tt(`${m.correct} / ${m.answered} 人答对`, `${m.correct} of ${m.answered} correct`);
+  $('#vPrompt').textContent = q.prompt || q.speak || '';
+  let html = '';
+  if (q.type === 'mcq' || q.type === 'tf') {
+    const labels = q.type === 'mcq' ? q.options : [tt('✔ 对', '✔ True'), tt('✘ 错', '✘ False')];
+    const colors = q.type === 'mcq' ? labels.map((_, i) => i) : [1, 0];
+    const right = q.type === 'mcq' ? m.answer : [m.answer ? 0 : 1];
+    const maxN = Math.max(1, ...m.dist);
+    html += `<div class="bars">${m.dist.map((n, i) => `<div class="opt${colors[i]}" style="height:${8 + n / maxN * 92}%;${right.includes(i) ? '' : 'opacity:.35'}">${n}</div>`).join('')}</div>`;
+    html += `<div class="opts">${labels.map((o, i) => `<div class="opt opt${colors[i]}${right.includes(i) ? ' right' : ' dim'}"><span class="shape">${SHAPES[colors[i]]}</span>${esc(o)}</div>`).join('')}</div>`;
+  } else {
+    html += `<div class="ans-box">${esc(m.answerText)}<small>${tt('正确答案', 'Correct answer')}</small></div>`;
+  }
+  if (m.note) html += `<div class="note">💡 ${esc(m.note)}</div>`;
+  $('#vBody').innerHTML = html;
+}
+
+function board(m) {
+  show('sBoard');
+  $('#board').innerHTML = `<h2>🏅 ${tt('排行榜', 'Leaderboard')}</h2>` + (m.top.length ? m.top.map((p, i) => `<div class="brow"><span>${i + 1}</span><span class="av">${p.avatar}</span>${esc(p.name)}${p.streak >= 2 ? `<span class="st">🔥${p.streak}</span>` : ''}<span class="sc">${p.score}</span></div>`).join('') : `<div class="center-msg">${tt('还没有人得分', 'No scores yet')}</div>`);
+  $('#nextBtn').textContent = m.last ? tt('🏆 看最终结果', '🏆 Final results') : tt('下一题 →', 'Next question →');
+}
+
+function end(m) {
+  stopMusic(); show('sEnd'); sfx.fanfare(); sessionStorage.removeItem(KEY); endMsg = m;
+  const order = [1, 0, 2];
+  $('#podium').innerHTML = order.map(i => m.podium[i] ? `<div class="pod p${i + 1}"><div class="av">${m.podium[i].avatar}</div><div class="nm">${esc(m.podium[i].name)}</div><div class="blk">${i + 1}<small>${m.podium[i].score}</small></div></div>` : '').join('');
+  $('#reportBtn').textContent = '📊 ' + tt('查看报告', 'View report');
+  $('#reportBtn').href = m.reportId ? `/report?id=${m.reportId}` : '/teacher#reports';
+  for (let i = 0; i < 90; i++) { const c = document.createElement('div'); c.className = 'confetti'; c.style.left = Math.random() * 100 + 'vw'; c.style.background = ['#f59e0b', '#7c3aed', '#16a34a', '#e11d48', '#2563eb'][i % 5]; c.style.animationDuration = 2 + Math.random() * 2.5 + 's'; c.style.animationDelay = Math.random() * 1.5 + 's'; document.body.appendChild(c); setTimeout(() => c.remove(), 6000); }
+}
+
+$('#startBtn').onclick = () => send({ t: 'start' });
+$('#lockBtn').onclick = () => send({ t: 'lock', on: !locked });
+$('#players').onclick = e => { const p = e.target.closest('.pl'); if (!p) return; if (p.dataset.armed) send({ t: 'kick', id: p.dataset.id }); else { p.dataset.armed = 1; p.style.background = 'rgba(220,38,38,.7)'; p.title = tt('再点一次踢出', 'Click again to remove'); setTimeout(() => { delete p.dataset.armed; p.style.background = ''; }, 2500); } };
+$('#skipBtn').onclick = () => send({ t: 'next' });
+$('#toBoard').onclick = () => send({ t: 'next' });
+$('#nextBtn').onclick = () => send({ t: 'next' });
+['#muteBtn', '#muteBtn2'].forEach(s => $(s).onclick = () => { VA.setMuted(!VA.muted); if (VA.muted) stopMusic(); renderStatic(); });
+document.addEventListener('keydown', e => {
+  if (e.code !== 'Space' && e.key !== 'Enter') return;
+  if (e.target.closest('button,a,input')) return;
+  e.preventDefault();
+  if (state === 'sLobby' && players.length) send({ t: 'start' });
+  else if (['sReveal', 'sBoard'].includes(state)) send({ t: 'next' });
+});
+document.addEventListener('langchange', renderStatic);
+if (!setId) { $('#connMsg').textContent = tt('缺少题包', 'No question set'); } else { $('#connMsg').textContent = tt('正在开房…', 'Creating game…'); connect(); }
+</script>
+</body>
+</html>

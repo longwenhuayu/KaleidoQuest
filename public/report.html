@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vision Arena · 赛后报告</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/app.css">
+<style>
+h1{font-size:26px}
+.sum{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.sum .card{text-align:center;padding:16px}
+.sum b{display:block;font-family:"Fredoka",sans-serif;font-size:34px;color:var(--brand2)}
+.sum span{font-size:13px;color:var(--muted);font-weight:700}
+h2{font-size:18px;margin:22px 0 10px}
+.qrow{display:grid;grid-template-columns:34px minmax(0,1fr) 180px 70px;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.qrow:last-child{border:0}
+.qrow .p{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qrow .p small{display:block;color:var(--muted);font-weight:500}
+.meter{height:12px;border-radius:99px;background:#f1effb;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:99px}
+.pct{font-weight:900;text-align:right}
+.hard{display:flex;gap:10px;flex-wrap:wrap}
+.hard .card{padding:12px 16px;flex:1;min-width:220px;border-left:5px solid var(--bad)}
+.hard b{color:var(--bad)}
+.tbl{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;background:#fff}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:center;white-space:nowrap}
+th{background:#f6f4ff;position:sticky;top:0}
+td.n{text-align:left;font-weight:700}
+td.y{background:#dcfce7;color:#166534}td.x{background:#fee2e2;color:#991b1b}td.z{color:#bbb}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+@media (max-width:700px){.sum{grid-template-columns:1fr 1fr}.qrow{grid-template-columns:28px minmax(0,1fr) 60px}.qrow .meter{display:none}}
+</style>
+</head>
+<body>
+<div class="topbar"><a class="logo" href="/teacher"><i>⚡</i><span>Vision Arena</span></a><span class="sp"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher#reports" data-i="back"></a></div>
+<div class="wrap" id="root"></div>
+<script src="/js/common.js"></script>
+<script>
+const { t, tt, api, $, esc, toast } = VA;
+const id = +new URLSearchParams(location.search).get('id');
+let G = null;
+const pctColor = p => p >= 80 ? 'var(--ok)' : p >= 50 ? 'var(--accent)' : 'var(--bad)';
+function render() {
+  const r = G.report, n = r.players.length, qs = r.questions;
+  const acc = qs.map(q => q.answered ? Math.round(q.correct / q.answered * 100) : 0);
+  const avg = Math.round(acc.reduce((a, b) => a + b, 0) / (acc.length || 1));
+  const avgScore = Math.round(r.players.reduce((a, p) => a + p.score, 0) / (n || 1));
+  const hard = qs.map((q, i) => ({ ...q, i, pct: acc[i] })).filter(q => q.answered).sort((a, b) => a.pct - b.pct).slice(0, 3);
+  const weak = qs.map((_, i) => i).filter(i => acc[i] < 60);
+  $('#root').innerHTML = `
+    <h1>📊 ${esc(G.title)}</h1>
+    <div class="muted">${new Date(G.ended).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN')}</div>
+    <div class="sum">
+      <div class="card"><b>${n}</b><span>${tt('参加人数', 'Players')}</span></div>
+      <div class="card"><b>${avg}%</b><span>${tt('平均正确率', 'Avg accuracy')}</span></div>
+      <div class="card"><b>${avgScore}</b><span>${tt('平均分', 'Avg score')}</span></div>
+      <div class="card"><b>${qs.length}</b><span>${tt('题数', 'Questions')}</span></div>
+    </div>
+    ${hard.length ? `<h2>⚠️ ${tt('最需要讲评的题', 'Questions to review')}</h2><div class="hard">${hard.map(q => `<div class="card"><b>${q.pct}%</b> · ${tt('第', 'Q')}${q.i + 1}${tt('题', '')}<div style="margin-top:4px;font-weight:700">${esc(q.prompt)}</div><div class="muted" style="font-size:13px">${tt('正确答案', 'Answer')}：${esc(q.answerText)}</div></div>`).join('')}</div>` : ''}
+    <div class="acts">
+      ${weak.length && G.setId ? `<button class="btn main" id="reviewBtn">🔁 ${tt(`用 ${weak.length} 道错题生成复习题包`, `Make a review set from ${weak.length} weak questions`)}</button>` : ''}
+      <button class="btn ghost" id="csvBtn">⬇️ ${tt('导出 CSV', 'Export CSV')}</button>
+    </div>
+    <h2>📋 ${tt('每道题', 'By question')}</h2>
+    <div class="card" style="padding:4px 0">${qs.map((q, i) => `<div class="qrow"><span class="muted">${i + 1}</span><span class="p">${esc(q.prompt)}<small>${esc(q.answerText)} · ${(q.avgMs / 1000).toFixed(1)}s</small></span><span class="meter"><i style="width:${acc[i]}%;background:${pctColor(acc[i])}"></i></span><span class="pct" style="color:${pctColor(acc[i])}">${acc[i]}%</span></div>`).join('')}</div>
+    <h2>🧑‍🎓 ${tt('每位学生', 'By student')}</h2>
+    <div class="tbl"><table><tr><th>#</th><th>${tt('学生', 'Student')}</th><th>${tt('得分', 'Score')}</th><th>${tt('答对', 'Correct')}</th>${qs.map((_, i) => `<th>${i + 1}</th>`).join('')}</tr>
+      ${r.players.map(p => `<tr><td>${p.rank}</td><td class="n">${p.avatar} ${esc(p.name)}</td><td>${p.score}</td><td>${p.correct}/${qs.length}</td>${p.answers.map(a => a === 1 ? '<td class="y">✔</td>' : a === 0 ? '<td class="x">✘</td>' : '<td class="z">–</td>').join('')}</tr>`).join('')}</table></div>`;
+  $('#csvBtn').onclick = () => {
+    const rows = [[tt('名次', 'Rank'), tt('学生', 'Student'), tt('得分', 'Score'), tt('答对', 'Correct'), ...qs.map((_, i) => `Q${i + 1}`)], ...r.players.map(p => [p.rank, p.name, p.score, p.correct, ...p.answers.map(a => a === 1 ? 1 : a === 0 ? 0 : '')])];
+    rows.push([], [tt('题目', 'Question'), tt('正确率', 'Accuracy'), tt('正确答案', 'Answer')], ...qs.map((q, i) => [q.prompt, acc[i] + '%', q.answerText]));
+    const csv = '﻿' + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\r\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `${G.title}-report.csv`; a.click();
+  };
+  if ($('#reviewBtn')) $('#reviewBtn').onclick = async () => {
+    try {
+      const set = await api(`/api/sets/${G.setId}`);
+      // 报告里的题和题包里的题按顺序一一对应；题包后来改过的话，按题目文字找
+      const pick = weak.map(i => set.questions[i] && (set.questions[i].prompt || set.questions[i].speak) === qs[i].prompt ? set.questions[i] : set.questions.find(q => (q.prompt || q.speak) === qs[i].prompt)).filter(Boolean);
+      if (!pick.length) return toast(tt('原题包已经改过，找不到这些题', 'The original set has changed'));
+      const { id: nid } = await api('/api/sets', { method: 'POST', body: { title: `${tt('复习', 'Review')}：${set.title}`.slice(0, 80), subject: set.subject, grade: set.grade, questions: pick } });
+      location.href = `/edit?id=${nid}`;
+    } catch (e) { toast(tt('原题包已被删除', 'The original set was deleted')); }
+  };
+}
+document.addEventListener('langchange', () => G && render());
+api(`/api/games/${id}`).then(g => { G = g; render(); }).catch(e => { if (e.status === 401) location.href = '/'; else $('#root').innerHTML = `<div class="card">${tt('找不到这份报告', 'Report not found')}</div>`; });
+</script>
+</body>
+</html>
