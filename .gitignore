@@ -1,6 +1,6 @@
 *.log
 .env
 backups/
-data/
+/data/
 node_modules/
 test/shots/

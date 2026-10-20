@@ -1,0 +1,3003 @@
+[
+ {
+  "id": "zh-animals",
+  "subject": "chinese",
+  "grade": [
+   "小一 – 小二",
+   "P1 – P2"
+  ],
+  "title": [
+   "动物认读",
+   "Animal words"
+  ],
+  "desc": [
+   "听音选字、看拼音选字，认识 12 种动物",
+   "Listen or read pinyin to find the animal"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "听一听，选出你听到的字词",
+    "time": 20,
+    "speak": "熊猫",
+    "lang": "zh-CN",
+    "options": [
+     "猴子",
+     "熊猫",
+     "狮子",
+     "海豚"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "听一听，选出你听到的字词",
+    "time": 20,
+    "speak": "老虎",
+    "lang": "zh-CN",
+    "options": [
+     "熊猫",
+     "兔子",
+     "长颈鹿",
+     "老虎"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "听一听，选出你听到的字词",
+    "time": 20,
+    "speak": "蝴蝶",
+    "lang": "zh-CN",
+    "options": [
+     "蝴蝶",
+     "猴子",
+     "大象",
+     "长颈鹿"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "听一听，选出你听到的字词",
+    "time": 20,
+    "speak": "海豚",
+    "lang": "zh-CN",
+    "options": [
+     "乌龟",
+     "海豚",
+     "长颈鹿",
+     "企鹅"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "hǎi tún",
+    "time": 20,
+    "note": "海豚 hǎi tún",
+    "options": [
+     "熊猫",
+     "兔子",
+     "海豚",
+     "大象"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "hóu zi",
+    "time": 20,
+    "note": "猴子 hóu zi",
+    "options": [
+     "长颈鹿",
+     "猴子",
+     "兔子",
+     "老虎"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "cháng jǐng lù",
+    "time": 20,
+    "note": "长颈鹿 cháng jǐng lù",
+    "options": [
+     "狮子",
+     "大象",
+     "长颈鹿",
+     "兔子"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "qīng wā",
+    "time": 20,
+    "note": "青蛙 qīng wā",
+    "options": [
+     "海豚",
+     "青蛙",
+     "熊猫",
+     "企鹅"
+    ],
+    "answer": [
+     1
+    ]
+   }
+  ]
+ },
+ {
+  "id": "zh-parts",
+  "subject": "chinese",
+  "grade": [
+   "小一 – 小三",
+   "P1 – P3"
+  ],
+  "title": [
+   "部件拼字",
+   "Build the character"
+  ],
+  "desc": [
+   "两个部件拼成一个字：女 + 子 = 好",
+   "Two parts make one character"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "女 + 子 = ?",
+    "time": 15,
+    "note": "女 + 子 = 好（hǎo）",
+    "options": [
+     "河",
+     "好",
+     "江",
+     "妈"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "日 + 月 = ?",
+    "time": 15,
+    "note": "日 + 月 = 明（míng）",
+    "options": [
+     "明",
+     "江",
+     "安",
+     "男"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "木 + 木 = ?",
+    "time": 15,
+    "note": "木 + 木 = 林（lín）",
+    "options": [
+     "休",
+     "字",
+     "好",
+     "林"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "亻 + 木 = ?",
+    "time": 15,
+    "note": "亻 + 木 = 休（xiū）",
+    "options": [
+     "想",
+     "明",
+     "休",
+     "男"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "女 + 马 = ?",
+    "time": 15,
+    "note": "女 + 马 = 妈（mā）",
+    "options": [
+     "安",
+     "好",
+     "妈",
+     "河"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "口 + 马 = ?",
+    "time": 15,
+    "note": "口 + 马 = 吗（ma）",
+    "options": [
+     "林",
+     "好",
+     "吗",
+     "明"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "田 + 力 = ?",
+    "time": 15,
+    "note": "田 + 力 = 男（nán）",
+    "options": [
+     "吗",
+     "林",
+     "男",
+     "想"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "宀 + 子 = ?",
+    "time": 15,
+    "note": "宀 + 子 = 字（zì）",
+    "options": [
+     "字",
+     "吗",
+     "休",
+     "河"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "zh-tones",
+  "subject": "chinese",
+  "grade": [
+   "小二 – 小四",
+   "P2 – P4"
+  ],
+  "title": [
+   "声调大挑战",
+   "Tone challenge"
+  ],
+  "desc": [
+   "听一听、想一想：这个字读第几声？",
+   "Which tone is it?"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "「熊猫」的「熊」读第几声？",
+    "time": 15,
+    "speak": "熊猫",
+    "lang": "zh-CN",
+    "note": "熊猫 xióng māo",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「学校」的「学」读第几声？",
+    "time": 15,
+    "speak": "学校",
+    "lang": "zh-CN",
+    "note": "学校 xué xiào",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「老师」的「老」读第几声？",
+    "time": 15,
+    "speak": "老师",
+    "lang": "zh-CN",
+    "note": "老师 lǎo shī",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「朋友」的「朋」读第几声？",
+    "time": 15,
+    "speak": "朋友",
+    "lang": "zh-CN",
+    "note": "朋友 péng yǒu",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「爸爸」的「爸」读第几声？",
+    "time": 15,
+    "speak": "爸爸",
+    "lang": "zh-CN",
+    "note": "爸爸 bà ba",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「天空」的「天」读第几声？",
+    "time": 15,
+    "speak": "天空",
+    "lang": "zh-CN",
+    "note": "天空 tiān kōng",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「下雨」的「下」读第几声？",
+    "time": 15,
+    "speak": "下雨",
+    "lang": "zh-CN",
+    "note": "下雨 xià yǔ",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「水果」的「水」读第几声？",
+    "time": 15,
+    "speak": "水果",
+    "lang": "zh-CN",
+    "note": "水果 shuǐ guǒ",
+    "options": [
+     "第一声 ā",
+     "第二声 á",
+     "第三声 ǎ",
+     "第四声 à"
+    ],
+    "answer": [
+     2
+    ]
+   }
+  ]
+ },
+ {
+  "id": "zh-idioms",
+  "subject": "chinese",
+  "grade": [
+   "小四 – 小六",
+   "P4 – P6"
+  ],
+  "title": [
+   "成语小达人",
+   "Idiom master"
+  ],
+  "desc": [
+   "8 个常用成语，选出正确的意思",
+   "Match common idioms to their meanings"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "「一心一意」是什么意思？",
+    "time": 20,
+    "note": "一心一意（yì xīn yí yì）：专心，只想着一件事",
+    "options": [
+     "不努力，只想等好运",
+     "事情做到一半就放弃",
+     "不专心，想这想那",
+     "专心，只想着一件事"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「三心二意」是什么意思？",
+    "time": 20,
+    "note": "三心二意（sān xīn èr yì）：不专心，想这想那",
+    "options": [
+     "多做了不必要的事，反而不好",
+     "说话不看对象",
+     "不专心，想这想那",
+     "出了问题以后赶快补救"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「半途而废」是什么意思？",
+    "time": 20,
+    "note": "半途而废（bàn tú ér fèi）：事情做到一半就放弃",
+    "options": [
+     "说话不看对象",
+     "不专心，想这想那",
+     "多做了不必要的事，反而不好",
+     "事情做到一半就放弃"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「画蛇添足」是什么意思？",
+    "time": 20,
+    "note": "画蛇添足（huà shé tiān zú）：多做了不必要的事，反而不好",
+    "options": [
+     "事情做到一半就放弃",
+     "出了问题以后赶快补救",
+     "多做了不必要的事，反而不好",
+     "不专心，想这想那"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「守株待兔」是什么意思？",
+    "time": 20,
+    "note": "守株待兔（shǒu zhū dài tù）：不努力，只想等好运",
+    "options": [
+     "说话不看对象",
+     "出了问题以后赶快补救",
+     "事情做到一半就放弃",
+     "不努力，只想等好运"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「亡羊补牢」是什么意思？",
+    "time": 20,
+    "note": "亡羊补牢（wáng yáng bǔ láo）：出了问题以后赶快补救",
+    "options": [
+     "多做了不必要的事，反而不好",
+     "专心，只想着一件事",
+     "出了问题以后赶快补救",
+     "见识很少的人"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「井底之蛙」是什么意思？",
+    "time": 20,
+    "note": "井底之蛙（jǐng dǐ zhī wā）：见识很少的人",
+    "options": [
+     "见识很少的人",
+     "事情做到一半就放弃",
+     "说话不看对象",
+     "多做了不必要的事，反而不好"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「对牛弹琴」是什么意思？",
+    "time": 20,
+    "note": "对牛弹琴（duì niú tán qín）：说话不看对象",
+    "options": [
+     "事情做到一半就放弃",
+     "不专心，想这想那",
+     "说话不看对象",
+     "见识很少的人"
+    ],
+    "answer": [
+     2
+    ]
+   }
+  ]
+ },
+ {
+  "id": "zh-measure",
+  "subject": "chinese",
+  "grade": [
+   "小二 – 小四",
+   "P2 – P4"
+  ],
+  "title": [
+   "量词小超市",
+   "Measure words"
+  ],
+  "desc": [
+   "一只猫、一本书……选出正确的量词",
+   "Pick the right measure word"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 猫",
+    "time": 20,
+    "note": "一只猫",
+    "options": [
+     "把",
+     "条",
+     "双",
+     "只"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 书",
+    "time": 20,
+    "note": "一本书",
+    "options": [
+     "条",
+     "本",
+     "辆",
+     "只"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 鱼",
+    "time": 20,
+    "note": "一条鱼",
+    "options": [
+     "张",
+     "双",
+     "条",
+     "把"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 纸",
+    "time": 20,
+    "note": "一张纸",
+    "options": [
+     "双",
+     "棵",
+     "辆",
+     "张"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 车",
+    "time": 20,
+    "note": "一辆车",
+    "options": [
+     "把",
+     "辆",
+     "棵",
+     "本"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 树",
+    "time": 20,
+    "note": "一棵树",
+    "options": [
+     "张",
+     "双",
+     "棵",
+     "把"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 鞋",
+    "time": 20,
+    "note": "一双鞋",
+    "options": [
+     "棵",
+     "双",
+     "把",
+     "本"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一 ___ 伞",
+    "time": 20,
+    "note": "一把伞",
+    "options": [
+     "条",
+     "张",
+     "棵",
+     "把"
+    ],
+    "answer": [
+     3
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m-20",
+  "subject": "math",
+  "grade": [
+   "小一",
+   "P1"
+  ],
+  "title": [
+   "20 以内加减",
+   "Add & subtract within 20"
+  ],
+  "desc": [
+   "口算 8 题，输入答案，越快分越高",
+   "Mental maths — type the answer"
+  ],
+  "questions": [
+   {
+    "type": "input",
+    "prompt": "5 − 4 = ?",
+    "time": 20,
+    "answer": [
+     "1"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "15 + 2 = ?",
+    "time": 20,
+    "answer": [
+     "17"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "4 + 12 = ?",
+    "time": 20,
+    "answer": [
+     "16"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "10 + 6 = ?",
+    "time": 20,
+    "answer": [
+     "16"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "13 − 1 = ?",
+    "time": 20,
+    "answer": [
+     "12"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "10 − 9 = ?",
+    "time": 20,
+    "answer": [
+     "1"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "3 + 2 = ?",
+    "time": 20,
+    "answer": [
+     "5"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "9 + 7 = ?",
+    "time": 20,
+    "answer": [
+     "16"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m-times",
+  "subject": "math",
+  "grade": [
+   "小二 – 小三",
+   "P2 – P3"
+  ],
+  "title": [
+   "乘法口诀",
+   "Times tables"
+  ],
+  "desc": [
+   "填空和判断，熟练乘法口诀",
+   "Know your times tables"
+  ],
+  "questions": [
+   {
+    "type": "input",
+    "prompt": "7 × 8 = ?",
+    "time": 15,
+    "answer": [
+     "56"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "8 × 8 = 63",
+    "time": 10,
+    "answer": false
+   },
+   {
+    "type": "tf",
+    "prompt": "6 × 7 = 42",
+    "time": 10,
+    "answer": true
+   },
+   {
+    "type": "tf",
+    "prompt": "9 × 4 = 36",
+    "time": 10,
+    "answer": true
+   },
+   {
+    "type": "input",
+    "prompt": "9 × 9 = ?",
+    "time": 15,
+    "answer": [
+     "81"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "6 × 9 = ?",
+    "time": 15,
+    "answer": [
+     "54"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "8 × 4 = ?",
+    "time": 15,
+    "answer": [
+     "32"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "7 × 7 = 48",
+    "time": 10,
+    "answer": false
+   }
+  ]
+ },
+ {
+  "id": "m-fractions",
+  "subject": "math",
+  "grade": [
+   "小三 – 小五",
+   "P3 – P5"
+  ],
+  "title": [
+   "分数闯关",
+   "Fractions"
+  ],
+  "desc": [
+   "比较、约分、加减，小数和分数都算对",
+   "Compare, simplify, add and subtract"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "哪个分数比较大？",
+    "time": 20,
+    "options": [
+     "1/5",
+     "1/4",
+     "1/3",
+     "1/2"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "哪个分数和 1/2 相等？",
+    "time": 20,
+    "options": [
+     "3/4",
+     "2/3",
+     "1/4",
+     "2/4"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "1/4 + 2/4 = ?",
+    "time": 30,
+    "note": "分数和小数都算对",
+    "answer": [
+     "3/4",
+     "0.75"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "5/6 − 1/6 = ?",
+    "time": 30,
+    "note": "分数和小数都算对",
+    "answer": [
+     "2/3",
+     "4/6"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "1/2 + 1/4 = ?",
+    "time": 30,
+    "note": "分数和小数都算对",
+    "answer": [
+     "3/4",
+     "0.75"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "把 6/8 化成最简分数",
+    "time": 20,
+    "options": [
+     "2/3",
+     "6/8",
+     "1/2",
+     "3/4"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "3/5 比 1/2 大",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "input",
+    "prompt": "12 的 1/3 是多少？",
+    "time": 30,
+    "note": "分数和小数都算对",
+    "answer": [
+     "4"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m-order",
+  "subject": "math",
+  "grade": [
+   "小四 – 小六",
+   "P4 – P6"
+  ],
+  "title": [
+   "四则运算顺序",
+   "Order of operations"
+  ],
+  "desc": [
+   "先乘除后加减，有括号先算括号",
+   "Brackets, then × ÷, then + −"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "2 + 3 × 4 = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "16",
+     "28",
+     "14",
+     "13"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "(2 + 3) × 4 = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "20",
+     "19",
+     "40",
+     "22"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "18 ÷ 3 + 2 = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "10",
+     "8",
+     "16",
+     "7"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "20 − 4 × 3 = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "8",
+     "16",
+     "7",
+     "10"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "6 × (5 − 2) = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "18",
+     "36",
+     "20",
+     "17"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "100 ÷ (4 + 6) = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "10",
+     "12",
+     "20",
+     "9"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "7 + 8 ÷ 2 = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "22",
+     "11",
+     "10",
+     "13"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "3 × 3 + 3 × 3 = ?",
+    "time": 25,
+    "note": "先算括号，再算乘除，最后算加减",
+    "options": [
+     "18",
+     "36",
+     "17",
+     "20"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m-word",
+  "subject": "math",
+  "grade": [
+   "小三 – 小六",
+   "P3 – P6"
+  ],
+  "title": [
+   "生活应用题",
+   "Word problems"
+  ],
+  "desc": [
+   "购物、时间、面积……用数学解决生活问题",
+   "Shopping, time, area — maths in real life"
+  ],
+  "questions": [
+   {
+    "type": "input",
+    "prompt": "阿里有 24 张贴纸，送给朋友 9 张，还剩多少张？",
+    "time": 40,
+    "answer": [
+     "15"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "一盒鸡蛋有 6 排，每排 8 个，一共有多少个？",
+    "time": 40,
+    "answer": [
+     "48"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "3 支铅笔 1.20 元，1 支铅笔多少元？",
+    "time": 40,
+    "answer": [
+     "0.40",
+     "0.4",
+     "$0.40"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "美美有 3/4 个披萨，吃了 1/4 个，还剩多少个？",
+    "time": 40,
+    "answer": [
+     "1/2",
+     "0.5",
+     "2/4"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "火车上午 9:15 出发，10:40 到达，一共走了多少分钟？",
+    "time": 45,
+    "answer": [
+     "85"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "学校有 120 名学生，其中 1/3 是男生，女生有多少名？",
+    "time": 45,
+    "answer": [
+     "80"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "长方形长 7 厘米、宽 5 厘米，面积是多少平方厘米？",
+    "time": 40,
+    "answer": [
+     "35"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "小明每天读 12 页书，读完 84 页要几天？",
+    "time": 40,
+    "answer": [
+     "7"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "en-spelling",
+  "subject": "english",
+  "grade": [
+   "P2 – P4",
+   "P2 – P4"
+  ],
+  "title": [
+   "Spelling bee: animals",
+   "Spelling bee: animals"
+  ],
+  "desc": [
+   "听单词，选出正确拼写",
+   "Listen, then pick the right spelling"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "elephant",
+    "lang": "en-GB",
+    "options": [
+     "elephant",
+     "eliphant",
+     "elefant",
+     "elephent"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "giraffe",
+    "lang": "en-GB",
+    "options": [
+     "girafe",
+     "giraff",
+     "giraffe",
+     "jiraffe"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "butterfly",
+    "lang": "en-GB",
+    "options": [
+     "buterfly",
+     "butterflye",
+     "butterfly",
+     "butterfli"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "crocodile",
+    "lang": "en-GB",
+    "options": [
+     "crocodil",
+     "crocodile",
+     "crokodile",
+     "crocadile"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "dolphin",
+    "lang": "en-GB",
+    "options": [
+     "dalphin",
+     "dolphine",
+     "dolphin",
+     "dolfin"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "penguin",
+    "lang": "en-GB",
+    "options": [
+     "pengiun",
+     "penguine",
+     "penguin",
+     "pinguin"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "squirrel",
+    "lang": "en-GB",
+    "options": [
+     "squirel",
+     "squirrell",
+     "squrrel",
+     "squirrel"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Listen and choose the correct spelling",
+    "time": 20,
+    "speak": "kangaroo",
+    "lang": "en-GB",
+    "options": [
+     "kangaroo",
+     "kangeroo",
+     "kangarooo",
+     "kangaru"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "en-words",
+  "subject": "english",
+  "grade": [
+   "P3 – P5",
+   "P3 – P5"
+  ],
+  "title": [
+   "Synonyms & antonyms",
+   "Synonyms & antonyms"
+  ],
+  "desc": [
+   "同义词和反义词",
+   "Words that mean the same — or the opposite"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Which word means the SAME as \"happy\"?",
+    "time": 20,
+    "options": [
+     "sad",
+     "angry",
+     "glad",
+     "tired"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word means the SAME as \"big\"?",
+    "time": 20,
+    "options": [
+     "tiny",
+     "large",
+     "thin",
+     "short"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word means the OPPOSITE of \"quick\"?",
+    "time": 20,
+    "options": [
+     "slow",
+     "swift",
+     "fast",
+     "rapid"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word means the OPPOSITE of \"ancient\"?",
+    "time": 20,
+    "options": [
+     "old",
+     "early",
+     "antique",
+     "modern"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word means the SAME as \"brave\"?",
+    "time": 20,
+    "options": [
+     "courageous",
+     "shy",
+     "nervous",
+     "afraid"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word means the OPPOSITE of \"tiny\"?",
+    "time": 20,
+    "options": [
+     "huge",
+     "little",
+     "small",
+     "mini"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word means the SAME as \"begin\"?",
+    "time": 20,
+    "options": [
+     "start",
+     "end",
+     "stop",
+     "finish"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word means the OPPOSITE of \"noisy\"?",
+    "time": 20,
+    "options": [
+     "quiet",
+     "busy",
+     "loud",
+     "crowded"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "en-tenses",
+  "subject": "english",
+  "grade": [
+   "P4 – P6",
+   "P4 – P6"
+  ],
+  "title": [
+   "Grammar: tenses",
+   "Grammar: tenses"
+  ],
+  "desc": [
+   "选对动词时态",
+   "Choose the right verb form"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Yesterday, she ___ to the zoo.",
+    "time": 25,
+    "options": [
+     "went",
+     "goes",
+     "going",
+     "go"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "He ___ his homework every day.",
+    "time": 25,
+    "options": [
+     "doing",
+     "do",
+     "does",
+     "did"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Look! They ___ football now.",
+    "time": 25,
+    "options": [
+     "plays",
+     "played",
+     "play",
+     "are playing"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "I have already ___ my lunch.",
+    "time": 25,
+    "options": [
+     "ate",
+     "eat",
+     "eating",
+     "eaten"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "If it rains, we ___ stay at home.",
+    "time": 25,
+    "options": [
+     "did",
+     "will",
+     "are",
+     "would"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "She ___ a book when I called her.",
+    "time": 25,
+    "options": [
+     "reads",
+     "is reading",
+     "read",
+     "was reading"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "We ___ in Singapore since 2015.",
+    "time": 25,
+    "options": [
+     "live",
+     "are living",
+     "have lived",
+     "lived"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "The cake ___ by my mother.",
+    "time": 25,
+    "options": [
+     "was baked",
+     "bakes",
+     "is baking",
+     "baked"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "en-sentences",
+  "subject": "english",
+  "grade": [
+   "P1 – P3",
+   "P1 – P3"
+  ],
+  "title": [
+   "Build a sentence",
+   "Build a sentence"
+  ],
+  "desc": [
+   "把单词排成句子，把故事排好顺序",
+   "Put words and events in order"
+  ],
+  "questions": [
+   {
+    "type": "order",
+    "prompt": "Put the words in order",
+    "time": 30,
+    "options": [
+     "The",
+     "cat",
+     "sat",
+     "on",
+     "the",
+     "mat."
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the words in order",
+    "time": 30,
+    "options": [
+     "I",
+     "like",
+     "to",
+     "read",
+     "books."
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the words in order",
+    "time": 30,
+    "options": [
+     "We",
+     "went",
+     "to",
+     "the",
+     "park",
+     "yesterday."
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the words in order",
+    "time": 30,
+    "options": [
+     "My",
+     "mother",
+     "cooks",
+     "dinner",
+     "every",
+     "evening."
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the words in order",
+    "time": 30,
+    "options": [
+     "Can",
+     "you",
+     "help",
+     "me,",
+     "please?"
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the story in order",
+    "time": 40,
+    "options": [
+     "Tom woke up.",
+     "He brushed his teeth.",
+     "He ate breakfast.",
+     "He went to school."
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "\"i live in singapore.\" is written correctly.",
+    "time": 15,
+    "note": "I live in Singapore.",
+    "answer": false
+   },
+   {
+    "type": "tf",
+    "prompt": "A question ends with a question mark (?).",
+    "time": 15,
+    "answer": true
+   }
+  ]
+ },
+ {
+  "id": "en-plurals",
+  "subject": "english",
+  "grade": [
+   "P2 – P4",
+   "P2 – P4"
+  ],
+  "title": [
+   "Plurals & a / an",
+   "Plurals & a / an"
+  ],
+  "desc": [
+   "不规则复数、a 和 an 的用法",
+   "Irregular plurals and articles"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "One child, two ___",
+    "time": 20,
+    "options": [
+     "child",
+     "children",
+     "childs",
+     "childrens"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "One mouse, two ___",
+    "time": 20,
+    "options": [
+     "mices",
+     "mice",
+     "mouses",
+     "mouse"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "One box, two ___",
+    "time": 20,
+    "options": [
+     "boxies",
+     "boxs",
+     "boxes",
+     "box"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "One leaf, two ___",
+    "time": 20,
+    "options": [
+     "leaf",
+     "leafs",
+     "leafes",
+     "leaves"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "One tooth, two ___",
+    "time": 20,
+    "options": [
+     "toothes",
+     "teeths",
+     "tooths",
+     "teeth"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "___ apple a day keeps the doctor away.",
+    "time": 20,
+    "options": [
+     "An",
+     "Some",
+     "A",
+     "The"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "He is ___ honest boy.",
+    "time": 20,
+    "options": [
+     "a",
+     "an",
+     "the",
+     "some"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "She wants to study at ___ university.",
+    "time": 20,
+    "note": "\"university\" starts with a \"you\" sound, so we use \"a\".",
+    "options": [
+     "a",
+     "many",
+     "some",
+     "an"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sci-living",
+  "subject": "science",
+  "grade": [
+   "P3 – P4",
+   "P3 – P4"
+  ],
+  "title": [
+   "Living things",
+   "Living things"
+  ],
+  "desc": [
+   "生物的分类：哺乳动物、鸟类、昆虫……",
+   "Classify living things"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Which of these is a mammal?",
+    "time": 20,
+    "options": [
+     "Bat",
+     "Shark",
+     "Frog",
+     "Penguin"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "How many legs does an insect have?",
+    "time": 20,
+    "options": [
+     "4",
+     "10",
+     "8",
+     "6"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "How many legs does a spider have?",
+    "time": 20,
+    "note": "Spiders are not insects.",
+    "options": [
+     "4",
+     "8",
+     "6",
+     "10"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "A mushroom is a ___",
+    "time": 20,
+    "options": [
+     "animal",
+     "fungus",
+     "plant",
+     "bacterium"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "A whale is a fish.",
+    "time": 15,
+    "note": "A whale is a mammal — it breathes air and feeds its young with milk.",
+    "answer": false
+   },
+   {
+    "type": "tf",
+    "prompt": "A penguin is a bird.",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "tf",
+    "prompt": "All living things can move from place to place.",
+    "time": 15,
+    "note": "Plants are living things but cannot move from place to place.",
+    "answer": false
+   },
+   {
+    "type": "mcq",
+    "prompt": "What do ALL living things need to survive?",
+    "time": 20,
+    "options": [
+     "Only sunlight",
+     "Only water",
+     "Food, water and air",
+     "Soil"
+    ],
+    "answer": [
+     2
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sci-plants",
+  "subject": "science",
+  "grade": [
+   "P3 – P5",
+   "P3 – P5"
+  ],
+  "title": [
+   "Plant parts",
+   "Plant parts"
+  ],
+  "desc": [
+   "根、茎、叶、花的作用，植物的生命周期",
+   "Parts of a plant and what they do"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Which part of the plant takes in water from the soil?",
+    "time": 20,
+    "options": [
+     "Leaves",
+     "Flowers",
+     "Roots",
+     "Fruits"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which part of the plant makes food?",
+    "time": 20,
+    "options": [
+     "Leaves",
+     "Roots",
+     "Seeds",
+     "Stem"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "What carries water from the roots to the leaves?",
+    "time": 20,
+    "options": [
+     "Stem",
+     "Fruit",
+     "Seed",
+     "Flower"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Plants make food using sunlight. This is called ___",
+    "time": 20,
+    "options": [
+     "evaporation",
+     "germination",
+     "pollination",
+     "photosynthesis"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "The green substance in leaves is called ___",
+    "time": 20,
+    "options": [
+     "nectar",
+     "pollen",
+     "chlorophyll",
+     "oxygen"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "A seed needs light to germinate.",
+    "time": 15,
+    "note": "Seeds need water, air and warmth to germinate. Light is needed later to make food.",
+    "answer": false
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which part of a flowering plant develops into a fruit?",
+    "time": 20,
+    "options": [
+     "Leaf",
+     "Flower",
+     "Root",
+     "Stem"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the life cycle of a flowering plant in order",
+    "time": 30,
+    "options": [
+     "Seed",
+     "Seedling",
+     "Young plant",
+     "Adult plant with flowers"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sci-matter",
+  "subject": "science",
+  "grade": [
+   "P3 – P5",
+   "P3 – P5"
+  ],
+  "title": [
+   "States of matter",
+   "States of matter"
+  ],
+  "desc": [
+   "固体、液体、气体，熔化、蒸发和凝结",
+   "Solids, liquids, gases and changes of state"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Which has a definite shape AND a definite volume?",
+    "time": 20,
+    "options": [
+     "Solid",
+     "Liquid",
+     "None of them",
+     "Gas"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which has a definite volume but NO definite shape?",
+    "time": 20,
+    "options": [
+     "Gas",
+     "Solid",
+     "All of them",
+     "Liquid"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which has NO definite shape and NO definite volume?",
+    "time": 20,
+    "options": [
+     "Gas",
+     "Liquid",
+     "Ice",
+     "Solid"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "At what temperature (°C) does pure water boil at sea level?",
+    "time": 30,
+    "answer": [
+     "100"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "At what temperature (°C) does ice melt?",
+    "time": 30,
+    "answer": [
+     "0"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "Air has mass.",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "Water droplets form on the outside of a cold glass. This is ___",
+    "time": 20,
+    "options": [
+     "melting",
+     "freezing",
+     "evaporation",
+     "condensation"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Wet clothes dry in the sun because water ___",
+    "time": 20,
+    "options": [
+     "condenses",
+     "melts",
+     "freezes",
+     "evaporates"
+    ],
+    "answer": [
+     3
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sci-body",
+  "subject": "science",
+  "grade": [
+   "P4 – P6",
+   "P4 – P6"
+  ],
+  "title": [
+   "The human body",
+   "The human body"
+  ],
+  "desc": [
+   "心脏、肺、消化系统和骨骼",
+   "Heart, lungs, digestion and bones"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Which organ pumps blood around the body?",
+    "time": 20,
+    "options": [
+     "Stomach",
+     "Lungs",
+     "Brain",
+     "Heart"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which organs help us take in oxygen?",
+    "time": 20,
+    "options": [
+     "Kidneys",
+     "Lungs",
+     "Liver",
+     "Heart"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Where are digested food substances mostly absorbed into the blood?",
+    "time": 20,
+    "options": [
+     "Large intestine",
+     "Small intestine",
+     "Mouth",
+     "Gullet"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "Digestion begins in the mouth.",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "input",
+    "prompt": "How many bones are there in an adult human body?",
+    "time": 30,
+    "answer": [
+     "206"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "The skeleton ___",
+    "time": 20,
+    "options": [
+     "pumps blood",
+     "takes in oxygen",
+     "digests food",
+     "supports and protects the body"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the parts of the digestive system in order",
+    "time": 30,
+    "options": [
+     "Mouth",
+     "Gullet",
+     "Stomach",
+     "Small intestine",
+     "Large intestine"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which system carries blood around the body?",
+    "time": 20,
+    "options": [
+     "Respiratory system",
+     "Skeletal system",
+     "Circulatory system",
+     "Digestive system"
+    ],
+    "answer": [
+     2
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sci-forces",
+  "subject": "science",
+  "grade": [
+   "P4 – P6",
+   "P4 – P6"
+  ],
+  "title": [
+   "Magnets, light & forces",
+   "Magnets, light & forces"
+  ],
+  "desc": [
+   "磁铁、光、影子、摩擦力和重力",
+   "Magnets, light, shadows, friction and gravity"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "A magnet attracts objects made of ___",
+    "time": 20,
+    "options": [
+     "wood",
+     "iron",
+     "plastic",
+     "copper"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "The north poles of two magnets attract each other.",
+    "time": 15,
+    "note": "Like poles repel; unlike poles attract.",
+    "answer": false
+   },
+   {
+    "type": "mcq",
+    "prompt": "What is the main source of energy for living things on Earth?",
+    "time": 20,
+    "options": [
+     "The Sun",
+     "Soil",
+     "Wind",
+     "The Moon"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "Light travels in a straight line.",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "A shadow forms when ___",
+    "time": 20,
+    "options": [
+     "an object blocks light",
+     "light passes through glass",
+     "light bends around an object",
+     "an object gives out light"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which force slows down a rolling ball on a carpet?",
+    "time": 20,
+    "options": [
+     "Friction",
+     "Magnetic force",
+     "Push",
+     "Gravity only"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which force makes an apple fall to the ground?",
+    "time": 20,
+    "options": [
+     "Friction",
+     "Magnetic force",
+     "Gravity",
+     "Elastic force"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which material lets MOST light pass through?",
+    "time": 20,
+    "options": [
+     "Cardboard",
+     "Clear glass",
+     "Metal",
+     "Wood"
+    ],
+    "answer": [
+     1
+    ]
+   }
+  ]
+ },
+ {
+  "id": "g-singapore",
+  "subject": "general",
+  "grade": [
+   "全年级",
+   "All levels"
+  ],
+  "title": [
+   "新加坡知多少",
+   "Singapore quiz"
+  ],
+  "desc": [
+   "国庆、国花、国旗……你了解新加坡吗？",
+   "National Day, national flower, flag and more"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "新加坡的国庆日是几月几日？",
+    "time": 20,
+    "options": [
+     "8 月 31 日",
+     "10 月 1 日",
+     "7 月 4 日",
+     "8 月 9 日"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "新加坡的国花是什么？",
+    "time": 20,
+    "options": [
+     "樱花",
+     "向日葵",
+     "玫瑰",
+     "卓锦·万代兰"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "新加坡国旗上有几颗星星？",
+    "time": 30,
+    "answer": [
+     "5",
+     "五"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "新加坡的国语是哪一种语言？",
+    "time": 20,
+    "options": [
+     "马来语",
+     "华语",
+     "英语",
+     "淡米尔语"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "新加坡有几种官方语言？",
+    "time": 30,
+    "answer": [
+     "4",
+     "四"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "新加坡是哪一年独立的？",
+    "time": 20,
+    "options": [
+     "1959 年",
+     "1975 年",
+     "1945 年",
+     "1965 年"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "狮头鱼身的雕像叫什么？",
+    "time": 20,
+    "options": [
+     "鱼尾狮",
+     "龙",
+     "石狮",
+     "麒麟"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "新加坡的货币是什么？",
+    "time": 20,
+    "options": [
+     "新加坡元",
+     "美元",
+     "马来西亚令吉",
+     "人民币"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "g-world",
+  "subject": "general",
+  "grade": [
+   "小三以上",
+   "P3+"
+  ],
+  "title": [
+   "世界首都",
+   "World capitals"
+  ],
+  "desc": [
+   "这些国家的首都是哪里？",
+   "Name the capital city"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "日本的首都是？",
+    "time": 20,
+    "options": [
+     "首尔",
+     "东京",
+     "大阪",
+     "京都"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "澳大利亚的首都是？",
+    "time": 20,
+    "note": "很多人以为是悉尼，其实是堪培拉。",
+    "options": [
+     "悉尼",
+     "堪培拉",
+     "珀斯",
+     "墨尔本"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "马来西亚的首都是？",
+    "time": 20,
+    "options": [
+     "新山",
+     "槟城",
+     "马六甲",
+     "吉隆坡"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "法国的首都是？",
+    "time": 20,
+    "options": [
+     "柏林",
+     "巴黎",
+     "伦敦",
+     "罗马"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "泰国的首都是？",
+    "time": 20,
+    "options": [
+     "普吉",
+     "河内",
+     "曼谷",
+     "清迈"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "中国的首都是？",
+    "time": 20,
+    "options": [
+     "广州",
+     "北京",
+     "上海",
+     "南京"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "加拿大的首都是？",
+    "time": 20,
+    "options": [
+     "温哥华",
+     "渥太华",
+     "蒙特利尔",
+     "多伦多"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "英国的首都是？",
+    "time": 20,
+    "options": [
+     "都柏林",
+     "伦敦",
+     "巴黎",
+     "爱丁堡"
+    ],
+    "answer": [
+     1
+    ]
+   }
+  ]
+ },
+ {
+  "id": "g-festivals",
+  "subject": "general",
+  "grade": [
+   "全年级",
+   "All levels"
+  ],
+  "title": [
+   "节日文化",
+   "Festivals"
+  ],
+  "desc": [
+   "新加坡多元文化的节日",
+   "Festivals of multicultural Singapore"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "中秋节常吃什么？",
+    "time": 20,
+    "options": [
+     "月饼",
+     "粽子",
+     "汤圆",
+     "饺子"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "端午节常吃什么？",
+    "time": 20,
+    "options": [
+     "粽子",
+     "汤圆",
+     "月饼",
+     "年糕"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "屠妖节（Deepavali）又叫什么节？",
+    "time": 20,
+    "options": [
+     "圣诞节",
+     "开斋节",
+     "光明节",
+     "卫塞节"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "开斋节（Hari Raya Puasa）庆祝什么？",
+    "time": 20,
+    "options": [
+     "新年开始",
+     "丰收",
+     "斋戒月结束",
+     "春天到来"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "农历新年长辈常给小孩什么？",
+    "time": 20,
+    "options": [
+     "圣诞袜",
+     "红包",
+     "月饼",
+     "彩蛋"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "圣诞节是 12 月几日？",
+    "time": 30,
+    "answer": [
+     "25",
+     "25日",
+     "25 日"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "卫塞节纪念的是谁？",
+    "time": 20,
+    "options": [
+     "嫦娥",
+     "屈原",
+     "佛陀",
+     "孔子"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "端午节划龙舟，是为了纪念谁？",
+    "time": 20,
+    "options": [
+     "李白",
+     "屈原",
+     "嫦娥",
+     "孔子"
+    ],
+    "answer": [
+     1
+    ]
+   }
+  ]
+ },
+ {
+  "id": "g-health",
+  "subject": "general",
+  "grade": [
+   "全年级",
+   "All levels"
+  ],
+  "title": [
+   "健康生活",
+   "Healthy living"
+  ],
+  "desc": [
+   "我的健康餐盘、洗手、睡眠和喝水",
+   "Healthy plate, hand washing, sleep and water"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "「我的健康餐盘」里，水果和蔬菜应该占多少？",
+    "time": 20,
+    "options": [
+     "四分之一",
+     "一半",
+     "全部",
+     "一点点就好"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "口渴的时候，最健康的选择是？",
+    "time": 20,
+    "options": [
+     "汽水",
+     "奶茶",
+     "果汁饮料",
+     "白开水"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "用肥皂洗手，至少要搓洗多少秒？",
+    "time": 30,
+    "answer": [
+     "20"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "6 到 12 岁的孩子，每晚最好睡多少小时？",
+    "time": 20,
+    "options": [
+     "13 到 15 小时",
+     "6 到 7 小时",
+     "9 到 12 小时",
+     "5 到 6 小时"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "全谷类食物（例如糙米）比白米更有营养。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "tf",
+    "prompt": "不吃早餐对学习没有影响。",
+    "time": 15,
+    "note": "吃早餐能帮助我们上午集中精神。",
+    "answer": false
+   },
+   {
+    "type": "mcq",
+    "prompt": "打喷嚏时应该怎么做？",
+    "time": 20,
+    "options": [
+     "对着别人打",
+     "用手掌遮住后不洗手",
+     "用纸巾或手肘遮住口鼻",
+     "什么都不用做"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "每天大约运动多长时间对孩子比较好？",
+    "time": 20,
+    "options": [
+     "5 分钟",
+     "只在周末",
+     "至少 1 小时",
+     "完全不用"
+    ],
+    "answer": [
+     2
+    ]
+   }
+  ]
+ },
+ {
+  "id": "g-space",
+  "subject": "general",
+  "grade": [
+   "小三以上",
+   "P3+"
+  ],
+  "title": [
+   "太空探索",
+   "Space explorer"
+  ],
+  "desc": [
+   "太阳系的行星、月球和太空探索",
+   "Planets, the Moon and space exploration"
+  ],
+  "questions": [
+   {
+    "type": "tf",
+    "prompt": "太阳是一颗恒星。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "离太阳最近的行星是？",
+    "time": 20,
+    "options": [
+     "水星",
+     "火星",
+     "金星",
+     "地球"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "太阳系里最大的行星是？",
+    "time": 20,
+    "options": [
+     "海王星",
+     "土星",
+     "木星",
+     "地球"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "被称为「红色星球」的是？",
+    "time": 20,
+    "options": [
+     "木星",
+     "金星",
+     "火星",
+     "水星"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "太阳系有几颗行星？",
+    "time": 30,
+    "answer": [
+     "8",
+     "八"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "第一个登上月球的人是？",
+    "time": 20,
+    "options": [
+     "牛顿",
+     "加加林",
+     "阿姆斯特朗",
+     "杨利伟"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "白天和黑夜是怎么形成的？",
+    "time": 20,
+    "options": [
+     "地球离太阳时远时近",
+     "太阳绕地球转",
+     "地球自转",
+     "月球绕地球转"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "月球自己会发光。",
+    "time": 15,
+    "note": "月光是月球反射的太阳光。",
+    "answer": false
+   }
+  ]
+ }
+]
