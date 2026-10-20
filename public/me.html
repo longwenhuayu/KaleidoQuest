@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 body{min-height:100vh;display:flex;flex-direction:column}
 header{display:flex;align-items:center;gap:12px;padding:14px 20px}
@@ -32,7 +32,7 @@ main{flex:1;display:grid;place-items:center;padding:16px}
 <body class="home">
 <header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
 <main><div class="box" id="box"></div></main>
-<script src="/js/common.js"></script>
+<script src="/js/common.js?v=20261021c"></script>
 <script>
 const { tt, $, esc, api, icon } = VA;
 const QS = new URLSearchParams(location.search);
@@ -42,7 +42,7 @@ const err = x => { const m = ERR[x.message]; return m ? tt(m[0], m[1]) : tt('出
 function render() {
   const b = $('#box');
   if (me) {
-    b.innerHTML = `<div class="hello"><div class="av">🎒</div><b>${esc(me.name)}</b><div class="muted">${esc(me.className)}</div>
+    b.innerHTML = `<div class="hello">${VA.mascot('cheer', 120)}<b>${esc(me.name)}</b><div class="muted">${esc(me.className)}</div>
       <div class="muted">${tt('已经登录。在这台设备上玩游戏、做作业得到的卡，都会存进你的卡册，换设备登录也看得到。', "You're signed in. Cards you earn on this device are saved to your account — sign in on any device to see them.")}</div>
       <a class="btn go" href="/play" style="width:100%">${icon('gamepad-2')} ${tt('加入游戏', 'Join a game')}</a>
       <a class="btn main" href="/cards" style="width:100%">${icon('layers')} ${tt('我的卡册', 'My card book')}</a>
@@ -51,7 +51,7 @@ function render() {
     return;
   }
   if (!cls) {
-    b.innerHTML = `<h1>${icon('graduation-cap')} ${tt('学生登录', 'Student sign-in')}</h1>
+    b.innerHTML = `${VA.mascot('hello', 96)}<h1>${icon('graduation-cap')} ${tt('学生登录', 'Student sign-in')}</h1>
       <div class="muted">${tt('登录后，你收集的卡会一直保存，换设备也不会丢。输入老师给的班级码：', 'Sign in so your cards are saved for good. Enter the class code from your teacher:')}</div>
       <form id="f1" style="display:flex;flex-direction:column;gap:10px"><input class="in code" id="code" maxlength="6" autocomplete="off" autocapitalize="off" placeholder="abc234" value="${esc(code)}"><div class="err" id="e1"></div><button class="btn go">${tt('下一步', 'Next')} ${icon('arrow-right')}</button></form>
       <a href="/play" class="muted" style="text-align:center">${tt('不登录，直接加入游戏', 'Just join a game without signing in')}</a>`;

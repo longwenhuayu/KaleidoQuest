@@ -97,6 +97,10 @@
     });
   }
 
-  window.VA = { t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, icon, subjectIcon, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
+  // 吉祥物 Kaleido：hello / think / cheer / point / wait
+  const mascot = (pose, size = 120) => `<img class="mascot" src="/mascot/${pose}.webp" width="${size}" height="${size}" alt="">`;
+  // 头像：emoji，或者 card:<id>（收集到的卡片角色）
+  const av = a => { const m = /^card:([a-z0-9]{1,20})$/.exec(String(a || '')); return m ? `<img class="av-img" src="/card-art/${m[1]}.webp" alt="">` : esc(a); };
+  window.VA = { av, mascot, t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, icon, subjectIcon, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
   document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); passwordEyes(); });
 })();

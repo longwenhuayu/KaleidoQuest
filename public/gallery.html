@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 body{min-height:100vh}
 header{display:flex;align-items:center;gap:12px;padding:14px 20px}
@@ -25,13 +25,13 @@ h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px;display:flex;a
 <body class="home">
 <header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><a class="btn ghost sm" id="me" href="/" style="background:rgba(255,255,255,.12);color:#fff"></a><button class="lang" type="button" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></header>
 <div class="wrap">
-  <h1 id="h"></h1><div class="sub" id="sub"></div>
+  <div style="display:flex;align-items:center;gap:16px"><div style="flex:1"><h1 id="h"></h1><div class="sub" id="sub"></div></div><span style="display:inline-block;transform:scaleX(-1);flex:none"><img class="mascot" src="/mascot/point.webp" width="110" height="110" alt=""></span></div>
   <div class="gchips" id="chips"></div>
   <div class="ggrid" id="grid"></div>
   <div class="note" id="note"></div>
 </div>
-<script src="/js/common.js"></script>
-<script src="/js/gallery-ui.js?v=20261021b"></script>
+<script src="/js/common.js?v=20261021c"></script>
+<script src="/js/gallery-ui.js?v=20261021c"></script>
 <script>
 const { tt, $, icon } = VA;
 let list = [], subj = new URLSearchParams(location.search).get('s') || 'all', me = null;

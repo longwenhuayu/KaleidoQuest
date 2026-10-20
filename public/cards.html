@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 body{min-height:100vh}
 header{display:flex;align-items:center;gap:12px;padding:14px 20px}
@@ -38,7 +38,7 @@ h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px}
   <div class="grid" id="grid"></div>
   <div class="note" id="note"></div>
 </div>
-<script src="/js/common.js"></script>
+<script src="/js/common.js?v=20261021c"></script>
 <script src="/js/cards-ui.js?v=20261020b"></script>
 <script src="/data/cards.js"></script>
 <script>
@@ -59,7 +59,7 @@ function render() {
   let html = mine.map(x => KQC.mini(x.card, { n: x.n })).join('');
   // 固定卡池：没收集到的显示成「？」
   if (tab !== 'zh') { const pool = KQ_CARDS.SETS[tab].cards; html += '<div class="kc-back"><div>?</div></div>'.repeat(Math.max(0, pool.length - mine.length)); }
-  $('#grid').innerHTML = html || '<div class="kc-back"><div>?</div></div>'.repeat(4) + `<div class="empty">${tab === 'zh' ? tt('玩一局华文游戏，就能收集这一课的「字灵」——每个汉字的部首、结构和字源都藏在卡里。', 'Play a Chinese game to collect Hanzi Spirits — each card holds the radical, structure and origin of a character.') : tt('还没有这一套的卡，玩一局就有机会得到！', 'No cards from this set yet — play a game to earn some!')}</div>`;
+  $('#grid').innerHTML = html || '<div class="kc-back"><div>?</div></div>'.repeat(4) + `<div class="empty">${VA.mascot('think', 96)}${tab === 'zh' ? tt('玩一局华文游戏，就能收集这一课的「字灵」——每个汉字的部首、结构和字源都藏在卡里。', 'Play a Chinese game to collect Hanzi Spirits — each card holds the radical, structure and origin of a character.') : tt('还没有这一套的卡，玩一局就有机会得到！', 'No cards from this set yet — play a game to earn some!')}</div>`;
   $('#note').innerHTML = (student ? esc(tt(`已登录：${student.name}（${student.className}）。卡册存在账号里，换设备登录也看得到。`, `Signed in as ${student.name} (${student.className}). Your cards are saved to your account.`)) : `${esc(tt('卡册存在这台设备的浏览器里；换手机或清除浏览器数据会看不到。', 'Your card book is saved in this browser — it won’t follow you to another device.'))} <a href="/me?next=/cards" style="color:#fde68a;font-weight:800">${tt('学生登录，换设备也不丢', 'Student sign-in keeps them safe')}</a>`) + '<br>' + esc(tt('卡片插画由 AI 生成。', 'Card illustrations are AI-generated.'));
 }
 $('#prog').onclick = e => { const b = e.target.closest('[data-k]'); if (b) { tab = b.dataset.k; render(); } };

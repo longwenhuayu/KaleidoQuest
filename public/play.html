@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 html,body{height:100%}
 body{display:flex;flex-direction:column;overscroll-behavior:none}
@@ -25,6 +25,12 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 .joinbox input{font-size:24px;font-weight:900;text-align:center;padding:12px;border:2px solid var(--line);border-radius:14px}
 .joinbox input:focus{outline:none;border-color:var(--accent)}
 .joinbox input#pinIn{letter-spacing:6px}
+.avpick{display:flex;flex-direction:column;gap:6px;text-align:left}
+.avpick small{font-size:12px;font-weight:800;color:var(--muted)}
+.avrow{display:flex;gap:6px;overflow-x:auto;padding:3px 2px 6px}
+.avrow button{flex:none;width:52px;height:52px;border-radius:14px;border:2px solid var(--line);background:#faf9ff;padding:2px;cursor:pointer;font-size:24px;display:grid;place-items:center}
+.avrow button.on{border-color:var(--brand2);box-shadow:0 0 0 3px rgba(124,58,237,.25)}
+.avrow img{width:100%;height:100%;border-radius:10px;object-fit:cover;display:block}
 .big-av{font-size:96px;line-height:1;animation:bob 1.4s infinite alternate}
 @keyframes bob{to{transform:translateY(-10px)}}
 .h{font-size:26px;font-weight:900}
@@ -75,10 +81,12 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 <div class="top"><span class="logo"><i></i></span><span id="gameTitle"></span><span class="sp"></span><span class="me" id="me" hidden><span id="meAv"></span><b id="meName"></b></span><span class="clock" id="tqClock" hidden></span><span class="score" id="meScore"></span><button class="lang" type="button" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></div>
 
 <div class="view on" id="vJoin"><div class="mid">
+  <img class="mascot" src="/mascot/hello.webp" width="110" height="110" alt="">
   <div class="logo" style="font-size:30px"><i></i><span>KaleidoQuest</span></div>
   <form class="joinbox" id="joinForm">
     <input id="pinIn" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="000000">
     <input id="nameIn" maxlength="16" autocomplete="nickname">
+    <div class="avpick" id="avPick" hidden><small id="avLbl"></small><div class="avrow" id="avRow"></div></div>
     <div class="err" id="joinErr" style="color:var(--bad)"></div>
     <button class="btn go" id="joinBtn" style="font-size:20px"></button>
   </form>
@@ -102,7 +110,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 <div class="view" id="vEnd"><div class="mid"><div class="medal" id="endMedal"></div><div class="h" id="endRank"></div><div class="pts" id="endScore"></div><div class="sub" id="endStats"></div><div id="endCards"></div><a class="btn ghost" href="/play" id="endAgain" style="margin-top:10px"></a></div></div>
 <div class="view" id="vMsg"><div class="mid"><div class="h" id="msgText"></div><a class="btn go" href="/play" id="msgBtn"></a></div></div>
 
-<script src="/js/common.js"></script>
+<script src="/js/common.js?v=20261021c"></script>
 <script src="/js/cards-ui.js?v=20261020b"></script>
 <script>
 const { tt, $, esc, SHAPES, sfx, icon } = VA;
@@ -124,7 +132,20 @@ function renderStatic() {
 }
 // 登录了的学生：自动填上名字
 let student = null;
-VA.api('/api/student/me').then(s => { student = s; if (!$('#nameIn').value) $('#nameIn').value = s.name; renderStatic(); }).catch(() => {});
+VA.api('/api/student/me').then(async s => { student = s; if (!$('#nameIn').value) $('#nameIn').value = s.name; renderStatic(); try { server = await VA.api('/api/student/cards'); } catch (e) {} renderAvatars(); }).catch(() => {});
+// 头像：用收集到的卡片角色（华文字灵没有插画，不算）；没选就是随机 emoji
+let avatar = '', server = {};
+try { avatar = localStorage.getItem('kq_avatar') || ''; } catch (e) {}
+function renderAvatars() {
+  const own = [...new Set(Object.keys({ ...KQC.all(), ...server }).filter(k => !k.startsWith('zh:')).map(k => k.split(':').pop()))];
+  if (!own.includes(avatar.replace('card:', ''))) avatar = '';
+  $('#avPick').hidden = !own.length;
+  $('#avLbl').textContent = tt('选一个头像（用你收集到的卡）', 'Pick an avatar from your cards');
+  $('#avRow').innerHTML = `<button type="button" data-a=""${avatar ? '' : ' class="on"'} title="${tt('随机', 'Random')}">🎲</button>` + own.map(id => `<button type="button" data-a="card:${id}"${avatar === 'card:' + id ? ' class="on"' : ''}><img src="/card-art/${id}.webp" alt=""></button>`).join('');
+}
+document.addEventListener('langchange', renderAvatars);
+$('#avRow').onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; avatar = b.dataset.a; try { localStorage.setItem('kq_avatar', avatar); } catch (x) {} renderAvatars(); };
+renderAvatars();
 document.addEventListener('langchange', renderStatic); renderStatic();
 $('#pinIn').value = pin; if (pin) setTimeout(() => $('#nameIn').focus(), 100);
 $('#pinIn').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
@@ -143,7 +164,7 @@ $('#joinForm').onsubmit = e => {
   if (pin.length !== 6) { $('#joinErr').textContent = tt('请输入 6 位房间码', 'Enter the 6-digit game code'); return; }
   if (!name) { $('#joinErr').textContent = tt('请输入昵称', 'Enter a nickname'); return; }
   $('#joinBtn').disabled = true; $('#joinErr').textContent = '';
-  connect({ t: 'join', pin, name });
+  connect({ t: 'join', pin, name, avatar: avatar || undefined });
 };
 
 function handle(m) {
@@ -157,11 +178,11 @@ function handle(m) {
   if (m.t === 'joined') {
     me = m; sessionStorage.setItem(SAVE, JSON.stringify({ pin: m.pin, token: m.token }));
     history.replaceState(null, '', '/play?pin=' + m.pin);
-    $('#me').hidden = false; $('#meAv').textContent = m.avatar; $('#meName').textContent = m.name; $('#gameTitle').textContent = m.title; score(m.score);
+    $('#me').hidden = false; $('#meAv').innerHTML = VA.av(m.avatar); $('#meName').textContent = m.name; $('#gameTitle').textContent = m.title; score(m.score);
     keepAwake();
     return;
   }
-  if (m.t === 'wait') { view('vWait'); $('#waitAv').textContent = me.avatar; $('#waitName').textContent = me.name; $('#waitMsg').textContent = tt('你已加入！看大屏，等老师开始', "You're in! Watch the big screen"); return; }
+  if (m.t === 'wait') { view('vWait'); $('#waitAv').innerHTML = VA.av(me.avatar); $('#waitName').textContent = me.name; $('#waitMsg').textContent = tt('你已加入！看大屏，等老师开始', "You're in! Watch the big screen"); return; }
   if (m.t === 'get_ready') { view('vReady'); $('#readyN').textContent = tt(`第 ${m.qi + 1} / ${m.total} 题`, `Question ${m.qi + 1} / ${m.total}`); return; }
   if (m.t === 'q') return question(m);
   if (m.t === 'tq') { startClock(m); return question({ qi: m.qi, total: 0, q: m.q, left: 0, treasure: true, score: m.score }); }
@@ -263,7 +284,7 @@ function tqResult(m) {
 function tqPick(m) {
   view('vPick');
   $('#pickH').textContent = m.kind === 'steal' ? tt('选一个人，偷走他的宝石！', 'Pick someone to steal from!') : tt('选一个人，交换宝石！', 'Pick someone to swap with!');
-  $('#pickList').innerHTML = m.players.map(p => `<button data-id="${esc(p.id)}"><span>${p.avatar}</span>${esc(p.name)}<b>${p.score} ${icon('gem')}</b></button>`).join('');
+  $('#pickList').innerHTML = m.players.map(p => `<button data-id="${esc(p.id)}"><span>${VA.av(p.avatar)}</span>${esc(p.name)}<b>${p.score} ${icon('gem')}</b></button>`).join('');
   $('#pickList').querySelectorAll('button').forEach(b => b.onclick = () => { $('#pickList').querySelectorAll('button').forEach(x => x.disabled = true); clearInterval(pickTimer); send({ t: 'target', id: b.dataset.id }); });
   let n = Math.round(m.timeout / 1000);
   const tick = () => { $('#pickSub').textContent = tt(`${n} 秒内不选就随机`, `Random pick in ${n}s`); n--; };
@@ -273,8 +294,7 @@ function tqOut(m) {
   clearInterval(pickTimer); view('vOut'); score(m.score);
   const [e, h] = KIND[m.kind] || ['🎁', () => ''];
   $('#outE').textContent = e; $('#outH').textContent = h();
-  const who = m.target ? `${m.target.avatar}${m.target.name}` : '';
-  const G = icon('gem'), W = esc(who);
+  const G = icon('gem'), W = m.target ? VA.av(m.target.avatar) + esc(m.target.name) : '';
   $('#outPts').innerHTML = m.kind === 'gain' ? `+${m.amount} ${G}` : m.kind === 'double' ? `${m.score} ${G}` : m.kind.startsWith('lose') ? `−${m.amount} ${G}`
     : m.kind === 'steal' ? tt(`从 ${W} 那里 +${m.amount} ${G}`, `+${m.amount} ${G} from ${W}`) : m.kind === 'swap' ? tt(`和 ${W} 交换，现在 ${m.score} ${G}`, `Swapped with ${W}: now ${m.score} ${G}`) : '';
   m.kind === 'nothing' || m.kind.startsWith('lose') ? sfx.bad() : sfx.fanfare();
@@ -284,9 +304,8 @@ function tqOut(m) {
 }
 function tqHit(m) {
   score(m.score);
-  const who = `${m.by.avatar}${m.by.name}`;
   const d = document.createElement('div'); d.className = 'hitbar';
-  const G = icon('gem'), W = esc(who);
+  const G = icon('gem'), W = VA.av(m.by.avatar) + esc(m.by.name);
   d.innerHTML = m.kind === 'steal' ? tt(`${W} 偷走了你 ${m.amount} ${G}！`, `${W} stole ${m.amount} ${G} from you!`) : tt(`${W} 和你交换了宝石，现在 ${m.score} ${G}`, `${W} swapped gems with you: now ${m.score} ${G}`);
   document.body.appendChild(d); sfx.bad(); if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
   setTimeout(() => d.remove(), 2600);

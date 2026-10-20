@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 .top{display:flex;align-items:center;gap:10px;padding:16px 24px;max-width:1200px;margin:0 auto;width:100%}
 .top .sp{flex:1}
@@ -64,6 +64,11 @@
 .gall:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.55)}
 .gall b{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:24px;display:flex;align-items:center;gap:8px}
 .gall span{color:#c9c3ea;font-size:14px;line-height:1.6}
+.ready{max-width:1120px;margin:0 auto 50px;padding:28px 32px;display:flex;align-items:center;gap:28px;border-radius:26px;background:linear-gradient(120deg,rgba(124,58,237,.35),rgba(8,145,178,.25));border:1px solid rgba(255,255,255,.14)}
+.ready .mascot{margin:0;flex:none}
+.ready h2{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:30px}
+.ready p{color:#d6d0f5;margin-top:6px;line-height:1.6}
+@media (max-width:700px){.ready{flex-direction:column;text-align:center;margin:0 16px 40px;padding:24px 18px}.ready .cta{justify-content:center}}
 .foot{text-align:center;padding:20px 16px 28px;font-size:13px;color:#a39dc9;border-top:1px solid rgba(255,255,255,.08)}
 .foot a{color:#c4b5fd}
 /* 登录弹窗 */
@@ -109,6 +114,7 @@
   <h2 class="sec-h" id="galH"></h2><div class="sec-sub" id="galSub"></div>
   <div class="ggrid" id="galGrid"></div>
 </section>
+<section class="ready"><img class="mascot" src="/mascot/cheer.webp" width="150" height="150" alt=""><div><h2 id="readyH"></h2><p id="readyP"></p><div class="cta" style="margin-top:16px"><button class="btn main" type="button" id="signupBtn2"></button><a class="btn ghost" href="/guide" id="guideBtn2"></a></div></div></section>
 <div class="foot"><a href="/guide">老师上手指南 Teacher guide</a> · <a href="/me">学生登录 Student sign-in</a> · <a href="/cards">卡册 Card book</a> · © Vision Chinese Academy 文心书院 · <a href="https://visionchinese.com" target="_blank" rel="noopener">visionchinese.com</a></div>
 
 <div class="auth" id="auth" hidden>
@@ -134,8 +140,8 @@
     <div class="stu" id="stuBox"></div>
   </div>
 </div>
-<script src="/js/common.js"></script>
-<script src="/js/gallery-ui.js?v=20261021b"></script>
+<script src="/js/common.js?v=20261021c"></script>
+<script src="/js/gallery-ui.js?v=20261021c"></script>
 <script>
 const { t, tt, api, $ } = VA;
 let tab = 'login', gallery = [], me = null;
@@ -161,6 +167,10 @@ function renderText() {
   $('#pitch').textContent = tt('全班一起玩的课堂答题游戏。华文、数学、英文、科学都能用；AI 一键出题，学生用手机扫码加入，不用注册。', 'Live quiz games your whole class plays together — Chinese, Math, English and Science. AI writes the questions; students join by QR, no sign-up.');
   $('#signupBtn').innerHTML = VA.icon('user-plus') + ' ' + tt('老师免费注册', 'Sign up free');
   $('#tryLink').innerHTML = VA.icon('play') + ' ' + tt('免登录试玩', 'Try a game');
+  $('#readyH').textContent = tt('准备好让全班一起闯关了吗？', 'Ready to turn your next lesson into a quest?');
+  $('#readyP').textContent = tt('老师免费注册，10 分钟就能开出第一局。', 'Sign up free — your first game can be running in 10 minutes.');
+  $('#signupBtn2').innerHTML = VA.icon('user-plus') + ' ' + (me ? tt('进入老师后台', 'Go to dashboard') : tt('老师免费注册', 'Sign up free'));
+  $('#guideBtn2').innerHTML = VA.icon('circle-help') + ' ' + tt('上手指南', 'Teacher guide');
   const SC = { chinese: '#fda4af', math: '#93c5fd', english: '#c4b5fd', science: '#86efac', malay: '#fcd34d', tamil: '#fdba74' };
   $('#subjects').innerHTML = [['chinese', tt('华文', 'Chinese')], ['math', tt('数学', 'Math')], ['english', tt('英文', 'English')], ['science', tt('科学', 'Science')], ['malay', tt('马来文', 'Malay')], ['tamil', tt('淡米尔文', 'Tamil')]].map(([s, n]) => `<span style="--sc:${SC[s]}">${VA.icon(VA.SUBJECT_ICON[s])} ${n}</span>`).join('');
   $('#howH').innerHTML = VA.icon('sparkles') + ' ' + tt('课堂上是这样的', 'What it looks like in class');
@@ -196,6 +206,7 @@ const openAuth = which => {
 };
 $('#loginBtn').onclick = () => openAuth('login');
 $('#signupBtn').onclick = () => openAuth('register');
+$('#signupBtn2').onclick = () => openAuth('register');
 $('#authX').onclick = () => { $('#auth').hidden = true; };
 $('#auth').onclick = e => { if (e.target === $('#auth')) $('#auth').hidden = true; };
 document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#auth').hidden = true; });

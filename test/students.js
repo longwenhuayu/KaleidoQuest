@@ -61,8 +61,12 @@ const count = book => Object.values(book).reduce((s, x) => s + x.n, 0);
   const sets = await json('/api/gallery/sci-living/copy', { body: {}, cookie: T });
   const host = await open(T); host.sendj({ t: 'host', setId: sets.id, mode: 'classic' });
   const room = await wait(host, 'room');
-  const p1 = await open(S); p1.sendj({ t: 'join', pin: room.pin, name: '小明' }); await wait(p1, 'joined');
-  const p2 = await open(); p2.sendj({ t: 'join', pin: room.pin, name: '路人' }); await wait(p2, 'joined');
+  const p1 = await open(S); p1.sendj({ t: 'join', pin: room.pin, name: '小明', avatar: 'card:pi' });
+  assert.equal((await wait(p1, 'joined')).avatar, 'card:pi', '卡片头像');
+  const p2 = await open(); p2.sendj({ t: 'join', pin: room.pin, name: '路人', avatar: 'card:<img src=x>' });
+  const j2 = await wait(p2, 'joined'); assert.ok(!j2.avatar.startsWith('card:'), '伪造的头像不收');
+  const p3 = await open(); p3.sendj({ t: 'join', pin: room.pin, name: '路人2', avatar: 'card:nothere' });
+  assert.ok(!(await wait(p3, 'joined')).avatar.startsWith('card:')); p3.close();
   host.sendj({ t: 'start' });
   for (let k = 0; k < 8; k++) {
     const m = await wait(p1, 'q'); await wait(p2, 'q');
@@ -109,6 +113,6 @@ const count = book => Object.values(book).reduce((s, x) => s + x.n, 0);
   // AI 出题：没配 key 时返回 ai_off；要登录
   assert.equal((await req('/api/ai/questions', { body: { topic: 'x' } })).status, 401);
   assert.equal((await req('/api/ai/questions', { body: { topic: 'x' }, cookie: T })).status, 503);
-  console.log('✅ 班级与学生通过：建班去重、PIN 登录、权限隔离、试玩 / 课堂 / 作业得卡入账号且不重复、老师看进度、重设密码使旧登录失效、错 8 次锁定、删除连带清理、AI 出题权限');
+  console.log('✅ 班级与学生通过：建班去重、PIN 登录、权限隔离、试玩 / 课堂 / 作业得卡入账号且不重复、老师看进度、重设密码使旧登录失效、错 8 次锁定、删除连带清理、AI 出题权限、卡片头像校验');
   process.exit(0);
 })().catch(e => { console.error('❌', e); process.exit(1); });

@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 html,body{height:100%}
 body{overflow:hidden}
@@ -33,7 +33,7 @@ body{overflow:hidden}
 @keyframes pop{from{transform:scale(.4);opacity:0}}
 .lobby-foot{display:flex;align-items:center;gap:14px}
 .lobby-foot .count{font-size:22px;font-weight:900}
-.waiting{font-size:20px;opacity:.7;text-align:center;width:100%;margin-top:40px}
+.waiting{font-size:20px;text-align:center;width:100%;margin-top:30px;color:rgba(255,255,255,.75)}
 /* 准备 */
 .ready{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .ready .n{font-size:28px;font-weight:800;opacity:.85}
@@ -150,7 +150,7 @@ body{overflow:hidden}
   <div class="foot" style="justify-content:center"><a class="btn go" id="reportBtn"></a><a class="btn ghost" id="againBtn"></a></div>
 </section>
 
-<script src="/js/common.js"></script>
+<script src="/js/common.js?v=20261021c"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 const { t, tt, $, esc, SHAPES, sfx, speak, icon } = VA;
@@ -188,7 +188,7 @@ function renderStatic() {
   renderPlayers();
 }
 function renderPlayers() {
-  $('#players').innerHTML = players.length ? players.map(p => `<div class="pl${p.online ? '' : ' off'}${seen.has(p.id) ? ' old' : ''}" data-id="${p.id}" title="${tt('点一下踢出', 'Click to remove')}"><span>${p.avatar}</span>${esc(p.name)}</div>`).join('') : `<div class="waiting">${tt('等待学生加入…', 'Waiting for players…')}</div>`;
+  $('#players').innerHTML = players.length ? players.map(p => `<div class="pl${p.online ? '' : ' off'}${seen.has(p.id) ? ' old' : ''}" data-id="${p.id}" title="${tt('点一下踢出', 'Click to remove')}"><span>${VA.av(p.avatar)}</span>${esc(p.name)}</div>`).join('') : `<div class="waiting">${VA.mascot('wait', 130)}${tt('等待学生加入…', 'Waiting for players…')}</div>`;
   players.forEach(p => seen.add(p.id));
   $('#count').innerHTML = `${icon('users')} ${players.length}`;
   $('#startBtn').disabled = !players.length;
@@ -296,7 +296,7 @@ function reveal(m) {
 
 function board(m) {
   show('sBoard');
-  $('#board').innerHTML = `<h2>${icon('trophy')} ${tt('排行榜', 'Leaderboard')}</h2>` + (m.top.length ? m.top.map((p, i) => `<div class="brow"><span>${i + 1}</span><span class="av">${p.avatar}</span>${esc(p.name)}${p.streak >= 2 ? `<span class="st">${icon('flame')}${p.streak}</span>` : ''}<span class="sc">${p.score}</span></div>`).join('') : `<div class="center-msg">${tt('还没有人得分', 'No scores yet')}</div>`);
+  $('#board').innerHTML = `<h2>${icon('trophy')} ${tt('排行榜', 'Leaderboard')}</h2>` + (m.top.length ? m.top.map((p, i) => `<div class="brow"><span>${i + 1}</span><span class="av">${VA.av(p.avatar)}</span>${esc(p.name)}${p.streak >= 2 ? `<span class="st">${icon('flame')}${p.streak}</span>` : ''}<span class="sc">${p.score}</span></div>`).join('') : `<div class="center-msg">${tt('还没有人得分', 'No scores yet')}</div>`);
   $('#nextBtn').innerHTML = m.last ? icon('trophy') + ' ' + tt('看最终结果', 'Final results') : tt('下一题', 'Next question') + ' ' + icon('arrow-right');
 }
 
@@ -304,7 +304,7 @@ function end(m) {
   clearInterval(tqTick);
   stopMusic(); show('sEnd'); sfx.fanfare(); sessionStorage.removeItem(KEY); endMsg = m;
   const order = [1, 0, 2];
-  $('#podium').innerHTML = order.map(i => m.podium[i] ? `<div class="pod p${i + 1}"><div class="av">${m.podium[i].avatar}</div><div class="nm">${esc(m.podium[i].name)}</div><div class="blk">${i + 1}<small>${m.podium[i].score}${m.unit ? ' ' + m.unit : ''}</small></div></div>` : '').join('');
+  $('#podium').innerHTML = order.map(i => m.podium[i] ? `<div class="pod p${i + 1}"><div class="av">${VA.av(m.podium[i].avatar)}</div><div class="nm">${esc(m.podium[i].name)}</div><div class="blk">${i + 1}<small>${m.podium[i].score}${m.unit ? ' ' + m.unit : ''}</small></div></div>` : '').join('');
   // 访客开的局不保存报告：换成注册入口
   $('#reportBtn').innerHTML = guest ? icon('user-plus') + ' ' + tt('免费注册，保存每次的报告', 'Sign up free to save reports') : icon('chart-column') + ' ' + tt('查看报告', 'View report');
   $('#reportBtn').href = guest ? '/?signup=1' : m.reportId ? `/report?id=${m.reportId}` : '/teacher#reports';
@@ -328,7 +328,7 @@ function tqStart(m) {
 function tqBoard(m) {
   if (state !== 'sTreasure') tqStart({ endsAt: m.endsAt, now: m.now });
   $('#tqPlayers').innerHTML = `${icon('users')} ${m.players}`;
-  $('#tqRank').innerHTML = m.top.map((p, i) => `<div class="trow"><span>${i + 1}</span><span class="av">${p.avatar}</span>${esc(p.name)}<span class="sc${lastScores[p.id] != null && lastScores[p.id] !== p.score ? ' bump' : ''}">${p.score} ${icon('gem')}</span></div>`).join('');
+  $('#tqRank').innerHTML = m.top.map((p, i) => `<div class="trow"><span>${i + 1}</span><span class="av">${VA.av(p.avatar)}</span>${esc(p.name)}<span class="sc${lastScores[p.id] != null && lastScores[p.id] !== p.score ? ' bump' : ''}">${p.score} ${icon('gem')}</span></div>`).join('');
   m.top.forEach(p => lastScores[p.id] = p.score);
   const newest = m.events.length ? m.events[0].at : lastEvAt;
   $('#tqFeed').innerHTML = m.events.map(e => `<div class="ev${e.at > lastEvAt ? ' new' : ''}">${esc(e.text)}</div>`).join('') || `<div style="opacity:.6">${tt('答对就能开宝箱…', 'Answer right to open chests…')}</div>`;

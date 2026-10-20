@@ -161,3 +161,9 @@ body.home::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:no
   radial-gradient(42rem 30rem at 12% -6%,rgba(124,58,237,.55),transparent 70%),
   radial-gradient(36rem 28rem at 98% 18%,rgba(8,145,178,.32),transparent 70%),
   radial-gradient(40rem 26rem at 60% 108%,rgba(219,39,119,.22),transparent 70%)}
+/* 吉祥物 */
+.mascot{display:block;margin:0 auto;animation:mbob 3s ease-in-out infinite;filter:drop-shadow(0 10px 16px rgba(0,0,0,.25))}
+@keyframes mbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@media (prefers-reduced-motion:reduce){.mascot{animation:none}}
+.empty .mascot{margin-bottom:10px}
+.av-img{width:1.25em;height:1.25em;border-radius:24%;vertical-align:-.3em;object-fit:cover;display:inline-block;box-shadow:0 0 0 2px rgba(255,255,255,.7)}

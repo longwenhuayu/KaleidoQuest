@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 .head{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .head h1{font-size:24px;margin-right:auto}
@@ -59,9 +59,9 @@
     <div id="reports"></div>
   </section>
 </div>
-<script src="/js/common.js"></script>
+<script src="/js/common.js?v=20261021c"></script>
 <script src="/data/cards.js"></script>
-<script src="/js/classes.js"></script>
+<script src="/js/classes.js?v=20261021c"></script>
 <script>
 const { t, tt, api, $, esc, toast, SUBJECT_ICON } = VA;
 let sets = [], reports = [], hws = [];
@@ -71,12 +71,12 @@ function renderSets() {
     <h3>${VA.subjectIcon(s.subject)}<span>${esc(s.title)}</span></h3>
     <div class="meta"><span class="tag">${t('s_' + s.subject)}</span>${s.grade ? `<span>${esc(s.grade)}</span>` : ''}<span>${s.n} ${t('questions')}</span><span>· ${when(s.updated)}</span></div>
     <div class="acts"><button class="btn go sm" data-act="play"${s.n ? '' : ' disabled'}>${VA.icon('play')} ${t('play')}</button><button class="btn ghost sm" data-act="hw"${s.n ? '' : ' disabled'}>${VA.icon('send')} ${tt('布置作业', 'Assign')}</button><a class="btn ghost sm" href="/edit?id=${s.id}">${VA.icon('pencil')} ${t('edit')}</a><button class="btn ghost sm" data-act="copy">${VA.icon('copy')} ${t('copy')}</button><button class="btn ghost sm danger" data-act="del">${t('del')}</button></div>
-  </div>`).join('') : `<div class="empty">${t('empty_sets')}<br><a href="/gallery" style="font-weight:800">${tt('或者先从游戏库挑一个现成的', 'Or start from a ready-made game in the Gallery')}</a></div>`;
+  </div>`).join('') : `<div class="empty">${VA.mascot('point', 110)}${t('empty_sets')}<br><a href="/gallery" style="font-weight:800">${tt('或者先从游戏库挑一个现成的', 'Or start from a ready-made game in the Gallery')}</a></div>`;
   $('#galBtn').innerHTML = VA.icon('layout-grid') + ' ' + tt('游戏库', 'Gallery');
   $('#guideBtn').innerHTML = VA.icon('circle-help') + ' ' + tt('上手指南', 'Guide');
 }
 function renderReports() {
-  $('#reports').innerHTML = reports.length ? reports.map(r => `<a class="card rep" href="/report?id=${r.id}"><span class="subj" style="background:#ede9fe;color:#6d28d9">${VA.icon(r.mode === 'treasure' ? 'gem' : 'swords')}</span><b>${esc(r.title)}</b><span class="sp"></span><span class="muted">${r.players} ${t('players')} · ${when(r.ended)}</span></a>`).join('') : `<div class="empty">${t('empty_reports')}</div>`;
+  $('#reports').innerHTML = reports.length ? reports.map(r => `<a class="card rep" href="/report?id=${r.id}"><span class="subj" style="background:#ede9fe;color:#6d28d9">${VA.icon(r.mode === 'treasure' ? 'gem' : 'swords')}</span><b>${esc(r.title)}</b><span class="sp"></span><span class="muted">${r.players} ${t('players')} · ${when(r.ended)}</span></a>`).join('') : `<div class="empty">${VA.mascot('wait', 100)}${t('empty_reports')}</div>`;
 }
 $('#sets').onclick = async e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
@@ -106,7 +106,7 @@ function renderHw() {
     <a class="btn go sm" href="/report?hw=${h.id}">${VA.icon('chart-column')} ${tt('看成绩', 'Results')}</a>
     <button class="btn ghost sm" data-hw="close">${h.status === 'closed' ? tt('重新开放', 'Reopen') : tt('关闭', 'Close')}</button>
     <button class="btn ghost sm danger" data-hw="del">${t('del')}</button></div>`).join('')
-    : `<div class="empty">${tt('还没有布置作业。在题包上点「布置作业」就能生成链接。', 'No homework yet. Click “Assign” on a question set to get a link.')}</div>`;
+    : `<div class="empty">${VA.mascot('think', 100)}${tt('还没有布置作业。在题包上点「布置作业」就能生成链接。', 'No homework yet. Click “Assign” on a question set to get a link.')}</div>`;
 }
 $('#hws').onclick = async e => {
   const b = e.target.closest('[data-hw]'); if (!b) return;

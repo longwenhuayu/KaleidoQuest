@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021b">
+<link rel="stylesheet" href="/css/app.css?v=20261021c">
 <style>
 h1{font-size:26px}
 .sum{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
@@ -38,7 +38,7 @@ td.y{background:#dcfce7;color:#166534}td.x{background:#fee2e2;color:#991b1b}td.z
 <body>
 <div class="topbar"><a class="logo" href="/teacher"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher#reports" data-i="back" id="backLink"></a></div>
 <div class="wrap" id="root"></div>
-<script src="/js/common.js"></script>
+<script src="/js/common.js?v=20261021c"></script>
 <script>
 const { t, tt, api, $, esc, toast, icon } = VA;
 const RQ = new URLSearchParams(location.search), id = +RQ.get('id'), hwId = +RQ.get('hw');
@@ -69,7 +69,7 @@ function render() {
     <div class="card" style="padding:4px 0">${qs.map((q, i) => `<div class="qrow"><span class="muted">${i + 1}</span><span class="p">${esc(q.prompt)}<small>${esc(q.answerText)} · ${(q.avgMs / 1000).toFixed(1)}s</small></span><span class="meter"><i style="width:${acc[i]}%;background:${pctColor(acc[i])}"></i></span><span class="pct" style="color:${pctColor(acc[i])}">${acc[i]}%</span></div>`).join('')}</div>
     <h2>${icon('graduation-cap')} ${tt('每位学生', 'By student')}</h2>
     <div class="tbl"><table><tr><th>#</th><th>${tt('学生', 'Student')}</th><th>${tt('得分', 'Score')}</th><th>${TQ ? tt('答对 / 作答', 'Correct / tried') : tt('答对', 'Correct')}</th>${HW ? `<th>${tt('做了几次', 'Attempts')}</th><th>${tt('用时', 'Time')}</th>` : ''}${qs.map((_, i) => `<th>${i + 1}</th>`).join('')}</tr>
-      ${r.players.map(p => `<tr><td>${p.rank}</td><td class="n">${p.avatar} ${esc(p.name)}</td><td>${p.score}${TQ ? ' ' + icon('gem') : ''}</td><td>${p.correct}/${TQ ? p.tries : qs.length}</td>${HW ? `<td>${p.tries}</td><td>${p.minutes} ${tt('分', 'min')}</td>` : ''}${p.answers.map(a => a === 1 ? `<td class="y">${icon('check')}</td>` : a === 0 ? `<td class="x">${icon('x')}</td>` : '<td class="z">–</td>').join('')}</tr>`).join('')}</table></div>`;
+      ${r.players.map(p => `<tr><td>${p.rank}</td><td class="n">${VA.av(p.avatar)} ${esc(p.name)}</td><td>${p.score}${TQ ? ' ' + icon('gem') : ''}</td><td>${p.correct}/${TQ ? p.tries : qs.length}</td>${HW ? `<td>${p.tries}</td><td>${p.minutes} ${tt('分', 'min')}</td>` : ''}${p.answers.map(a => a === 1 ? `<td class="y">${icon('check')}</td>` : a === 0 ? `<td class="x">${icon('x')}</td>` : '<td class="z">–</td>').join('')}</tr>`).join('')}</table></div>`;
   $('#csvBtn').onclick = () => {
     const rows = [[tt('名次', 'Rank'), tt('学生', 'Student'), tt('得分', 'Score'), tt('答对', 'Correct'), ...qs.map((_, i) => `Q${i + 1}`)], ...r.players.map(p => [p.rank, p.name, p.score, p.correct, ...p.answers.map(a => a === 1 ? 1 : a === 0 ? 0 : '')])];
     rows.push([], [tt('题目', 'Question'), tt('正确率', 'Accuracy'), tt('正确答案', 'Answer')], ...qs.map((q, i) => [q.prompt, acc[i] + '%', q.answerText]));

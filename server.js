@@ -192,7 +192,7 @@ wss.on('connection', (ws, req) => {
         if (p.ws && p.ws !== ws) try { p.ws.close(); } catch (e) {}
         p.ws = ws;
       } else {
-        const res = G.join(r, m.name, ws);
+        const res = G.join(r, m.name, ws, m.avatar);
         if (res.error) return G.send(ws, { t: 'error', error: res.error });
         p = res.player;
         // 登录了的学生：这一局得到的卡记到他的账号上
