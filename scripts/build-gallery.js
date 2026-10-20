@@ -1,4 +1,4 @@
-// 生成 Gallery 题包（lib/data/gallery.json）：5 个学科 × 5 个游戏
+// 生成 Gallery 题包（lib/data/gallery.json）：5 个学科 × 5 个游戏 + 节日专题（lib/data/collections.json）
 // 拼音用 pinyin-pro 按上下文注音，部件拼字用 Make Me a Hanzi 数据；选项打乱用固定种子，每次生成结果一样
 // 用法：node scripts/build-gallery.js
 const fs = require('fs');
@@ -23,7 +23,7 @@ const input = (prompt, answer, extra = {}) => ({ type: 'input', prompt, answer: 
 const order = (prompt, items, extra = {}) => ({ type: 'order', prompt, options: items, time: 30, ...extra });
 
 const SETS = [];
-const add = (id, subject, grade, title, desc, questions) => SETS.push({ id, subject, grade, title, desc, questions });
+const add = (id, subject, grade, title, desc, questions, collection) => SETS.push({ id, subject, grade, title, desc, questions, ...(collection ? { collection } : {}) });
 
 // ── 华文 ──
 {
@@ -267,6 +267,139 @@ add('g-space', 'general', ['小三以上', 'P3+'], ['太空探索', 'Space explo
   mcq('白天和黑夜是怎么形成的？', '地球自转', ['月球绕地球转', '太阳绕地球转', '地球离太阳时远时近']),
   tf('月球自己会发光。', false, { note: '月光是月球反射的太阳光。' })
 ]);
+
+// ── 节日专题：每个专题 3 个游戏，按日期自动出现在首页（农历节日每年日期不同，窗口放宽一些）──
+const COLLECTIONS = [
+  { id: 'deepavali', title: ['屠妖节专题', 'Deepavali'], desc: ['光明节：油灯、彩绘和小印度的灯饰', 'Festival of Lights: diyas, rangoli and Little India'], from: '10-05', to: '11-20' },
+  { id: 'yearend', title: ['圣诞与年终', 'Christmas & year-end'], desc: ['圣诞节、新年和年终假期', 'Christmas, New Year and the year-end holidays'], from: '11-21', to: '12-31' },
+  { id: 'cny', title: ['农历新年专题', 'Chinese New Year'], desc: ['红包、团圆饭、捞鱼生和十二生肖', 'Red packets, reunion dinner, lo hei and the zodiac'], from: '01-01', to: '02-28' },
+  { id: 'hariraya', title: ['开斋节专题', 'Hari Raya Puasa'], desc: ['斋月、马来粽和芽笼士乃的灯饰', 'Ramadan, ketupat and Geylang Serai'], from: '02-20', to: '04-15' }
+];
+// 屠妖节
+add('dv-culture', 'general', ['全年级', 'All levels'], ['屠妖节知多少', 'All about Deepavali'], ['光明节的习俗和意义', 'Customs and meaning of the Festival of Lights'], [
+  mcq('屠妖节（Deepavali）又叫什么节？', '光明节', ['开斋节', '丰收节', '卫塞节']),
+  mcq('屠妖节点的传统小油灯叫什么？', '陶土油灯（diya）', ['纸灯笼', '孔明灯', '圣诞彩灯']),
+  mcq('屠妖节时，家门口地上用彩色米粉画的图案叫什么？', '彩绘图案（rangoli / kolam）', ['春联', '剪纸', '门神']),
+  mcq('新加坡哪里每年有屠妖节灯饰？', '小印度（实龙岗路）', ['牛车水', '芽笼士乃', '乌节路']),
+  tf('屠妖节象征光明战胜黑暗、善良战胜邪恶。', true),
+  mcq('屠妖节主要是哪个宗教的节日？', '印度教', ['伊斯兰教', '佛教', '基督教']),
+  tf('屠妖节在新加坡是公共假期。', true),
+  mcq('过屠妖节时，人们常常会怎么做？', '穿新衣、拜访亲友', ['吃月饼、赏月', '划龙舟', '堆雪人'])
+], 'deepavali');
+add('dv-english', 'english', ['P2 – P4', 'P2 – P4'], ['Festival of Lights', 'Festival of Lights'], ['屠妖节主题英文词汇', 'Deepavali words in English'], [
+  mcq('Deepavali is also called the Festival of ___.', 'Lights', ['Lanterns', 'Harvest', 'Boats']),
+  mcq('A small clay oil lamp lit during Deepavali is a ___.', 'diya', ['kite', 'bell', 'drum']),
+  mcq('Colourful patterns drawn on the floor near the door are called ___.', 'rangoli', ['mosaic', 'origami', 'graffiti']),
+  mcq('Little India is decorated with bright ___ during Deepavali.', 'lights', ['snowflakes', 'pumpkins', 'mooncakes']),
+  tf('Deepavali celebrates the victory of light over darkness.', true),
+  mcq('Which word is the opposite of "darkness"?', 'light', ['night', 'shadow', 'smoke']),
+  input('Fill in the missing letter: l _ m p (a small light)', ['a']),
+  order('Put the words in order to make a sentence.', ['We', 'light', 'the', 'lamps'])
+], 'deepavali');
+add('dv-math', 'math', ['小二 – 小四', 'P2 – P4'], ['数一数油灯', 'Counting diyas'], ['屠妖节主题应用题', 'Deepavali word problems'], [
+  input('每排有 6 盏油灯，摆了 4 排，一共多少盏？', ['24']),
+  input('妈妈买了 30 块印度甜点，平分给 5 个孩子，每人几块？', ['6']),
+  input('小印度挂了 125 串彩灯，又挂上 75 串，一共几串？', ['200']),
+  mcq('Rangoli 图案常常是对称的。下面哪个图形也是对称的？', '正方形', ['数字 7', '字母 F', '一块不规则的石头']),
+  input('一盏油灯能点 3 小时，晚上 7 点点起，晚上几点熄灭？（填数字）', ['10']),
+  tf('8 排油灯，每排 5 盏，一共 45 盏。', false, { note: '8 × 5 = 40' }),
+  mcq('小明有 50 元，买新衣服用了 32 元，还剩多少元？', '18 元', ['28 元', '22 元', '82 元']),
+  input('Rangoli 用了红、黄、蓝 3 种颜色，每种 12 包彩粉，一共几包？', ['36'])
+], 'deepavali');
+// 圣诞与年终
+add('xm-culture', 'general', ['全年级', 'All levels'], ['圣诞与年终', 'Christmas & year-end'], ['圣诞节、新年和年终假期', 'Christmas, New Year and the holidays'], [
+  mcq('圣诞节在每年的哪个月？', '十二月', ['十一月', '一月', '十月']),
+  mcq('传说中，圣诞老人的雪橇由什么动物拉？', '驯鹿', ['马', '狗', '骆驼']),
+  mcq('新加坡哪条街每年年底有圣诞灯饰？', '乌节路', ['实龙岗路', '芽笼士乃', '牛车水']),
+  tf('新加坡十二月会下雪。', false, { note: '新加坡在赤道附近，全年都很温暖，不会下雪。' }),
+  mcq('圣诞节常见的装饰树是什么树？', '松树（圣诞树）', ['椰子树', '榕树', '竹子']),
+  mcq('一年的最后一天是几月几日？', '12 月 31 日', ['12 月 25 日', '1 月 1 日', '12 月 30 日']),
+  mcq('新年的第一天是几月几日？', '1 月 1 日', ['1 月 31 日', '12 月 31 日', '2 月 1 日']),
+  tf('学年结束后，新加坡的学校有年终假期。', true)
+], 'yearend');
+add('xm-english', 'english', ['P2 – P4', 'P2 – P4'], ['Holiday words', 'Holiday words'], ['圣诞和新年的英文', 'Christmas and New Year English'], [
+  mcq("Santa's sleigh is pulled by ___.", 'reindeer', ['horses', 'dogs', 'camels']),
+  mcq('One present, two ___.', 'presents', ['presentes', 'presentss', 'present']),
+  mcq('Christmas Day is on 25 ___.', 'December', ['November', 'January', 'October']),
+  order('Put the words in order to make a greeting.', ['Merry', 'Christmas', 'to', 'you']),
+  tf('A snowman is made of sand.', false, { note: 'A snowman is made of snow.' }),
+  mcq('Which word is the opposite of "first"?', 'last', ['next', 'early', 'begin']),
+  input('Fill in the missing letter: g _ f t (a present)', ['i']),
+  mcq('On 1 January we say "Happy ___ Year!"', 'New', ['Old', 'Big', 'First'])
+], 'yearend');
+add('xm-math', 'math', ['小二 – 小四', 'P2 – P4'], ['礼物数学', 'Gift maths'], ['年终主题应用题', 'Year-end word problems'], [
+  input('一个礼物盒的长方形面长 20 厘米、宽 10 厘米，这一面的周长是多少厘米？', ['60']),
+  input('圣诞树上挂了 48 个彩球，红色的占一半，红彩球有几个？', ['24']),
+  input('12 月有几天？', ['31']),
+  mcq('从 12 月 25 日到 12 月 31 日，一共几天？（两头都算）', '7 天', ['6 天', '8 天', '5 天']),
+  input('买 8 份礼物，每份 15 元，一共多少元？', ['120']),
+  tf('一年有 12 个月。', true),
+  mcq('1 小时等于多少分钟？', '60 分钟', ['100 分钟', '24 分钟', '30 分钟']),
+  input('年终假期有 6 个星期，一共多少天？', ['42'])
+], 'yearend');
+// 农历新年
+add('cny-customs', 'chinese', ['全年级', 'All levels'], ['新年习俗', 'New Year customs'], ['红包、团圆饭、捞鱼生和舞狮', 'Red packets, reunion dinner, lo hei and lion dance'], [
+  mcq('拜年时，常说的一句吉祥话是？', '恭喜发财', ['中秋快乐', '圣诞快乐', '生日快乐']),
+  mcq('除夕晚上全家一起吃的饭叫什么？', '团圆饭', ['早餐', '下午茶', '夜宵']),
+  mcq('新加坡人过年时常一起「捞」什么？', '鱼生', ['面线', '粥', '米粉']),
+  mcq('拜年时，常带什么水果送给亲友？', '两个柑（橘子）', ['榴梿', '香蕉', '西瓜']),
+  mcq('贴在门上、写着吉祥话的红纸叫什么？', '春联', ['红包', '灯笼', '贺卡']),
+  mcq('过年时，牛车水常见的表演是？', '舞狮', ['划龙舟', '放风筝', '堆雪人']),
+  tf('农历新年按农历计算，所以每年在阳历上的日期都不一样。', true),
+  mcq('「年年有余」的图案里常画哪种动物？', '鱼', ['猫', '狗', '鸡'], { note: '「余」和「鱼」同音。' })
+], 'cny');
+add('cny-zodiac', 'chinese', ['小一 – 小四', 'P1 – P4'], ['十二生肖', 'The 12 zodiac animals'], ['生肖的名字和顺序', 'Names and order of the zodiac'], [
+  order('按十二生肖的顺序排一排（第 1 到第 4 个）', ['鼠', '牛', '虎', '兔']),
+  order('按十二生肖的顺序排一排（第 5 到第 8 个）', ['龙', '蛇', '马', '羊']),
+  order('按十二生肖的顺序排一排（第 9 到第 12 个）', ['猴', '鸡', '狗', '猪']),
+  input('十二生肖一共有几种动物？', ['12', '十二']),
+  mcq('十二生肖排第一的是？', '鼠', ['牛', '龙', '猪']),
+  mcq('「龙」后面是哪个生肖？', '蛇', ['马', '虎', '兔']),
+  mcq('十二生肖里，哪一个是传说中的动物？', '龙', ['蛇', '马', '猴']),
+  tf('生肖每 12 年轮一次。', true)
+], 'cny');
+add('cny-math', 'math', ['小二 – 小四', 'P2 – P4'], ['红包数学', 'Red packet maths'], ['新年主题应用题', 'Chinese New Year word problems'], [
+  input('小明收到 5 个红包，每个 8 元，一共几元？', ['40']),
+  input('一盒年饼有 36 块，平分给 4 个人，每人几块？', ['9']),
+  mcq('每户人家送 2 个柑，拜访 6 户人家，一共要带几个柑？', '12 个', ['8 个', '6 个', '14 个']),
+  input('团圆饭晚上 7 点开始，吃了 2 小时，晚上几点吃完？（填数字）', ['9']),
+  tf('3 个灯笼，每个挂 8 条流苏，一共 24 条。', true),
+  input('小红有 50 元红包钱，买书用了 23 元，还剩几元？', ['27']),
+  mcq('舞狮队有 4 头狮子，每头狮子由 2 个人舞，一共几个人？', '8 人', ['6 人', '10 人', '4 人']),
+  input('从正月初一到初三，一共几天？（两头都算）', ['3', '三'])
+], 'cny');
+// 开斋节
+add('hr-culture', 'general', ['全年级', 'All levels'], ['开斋节知多少', 'All about Hari Raya'], ['斋月、开斋节的习俗', 'Ramadan and Hari Raya customs'], [
+  mcq('开斋节之前，穆斯林斋戒的那个月叫什么？', '斋月（Ramadan）', ['腊月', '正月', '中秋月']),
+  mcq('开斋节主要是哪些人的节日？', '穆斯林', ['印度教徒', '佛教徒', '基督徒']),
+  mcq('新加坡哪里每年有开斋节灯饰和市集？', '芽笼士乃', ['小印度', '牛车水', '乌节路']),
+  mcq('用椰叶编成小方格、里面包着米饭的食物叫什么？', '马来粽（ketupat）', ['粽子', '年糕', '月饼']),
+  mcq('开斋节的问候语是？', 'Selamat Hari Raya', ['Gong Xi Fa Cai', 'Happy Deepavali', 'Merry Christmas']),
+  tf('斋月期间，穆斯林从日出到日落都不吃东西、不喝水。', true),
+  tf('开斋节时，人们会互相请求原谅。', true, { note: '常说 maaf zahir dan batin。' }),
+  mcq('开斋节时，马来男士常穿的传统服装是？', 'Baju Melayu', ['旗袍', '纱丽', '和服'])
+], 'hariraya');
+add('hr-english', 'english', ['P2 – P4', 'P2 – P4'], ['Hari Raya words', 'Hari Raya words'], ['开斋节主题英文词汇', 'Hari Raya Puasa words in English'], [
+  mcq('Hari Raya Puasa marks the end of the fasting month of ___.', 'Ramadan', ['December', 'Deepavali', 'spring']),
+  mcq('Rice wrapped in woven coconut leaves is called ___.', 'ketupat', ['mooncake', 'dumpling', 'pizza']),
+  tf('People visit relatives and friends during Hari Raya.', true),
+  mcq('"Selamat Hari Raya" is a ___.', 'greeting', ['food', 'dance', 'game']),
+  order('Put the words in order to make a sentence.', ['We', 'visit', 'our', 'grandparents']),
+  mcq('We wear our ___ clothes on Hari Raya.', 'new', ['news', 'newly', 'knew']),
+  input('Fill in the missing letter: f _ s t (to go without food)', ['a']),
+  mcq('Which word is the opposite of "sunrise"?', 'sunset', ['sunshine', 'sunlight', 'sunny'])
+], 'hariraya');
+add('hr-math', 'math', ['小二 – 小四', 'P2 – P4'], ['市集数学', 'Bazaar maths'], ['开斋节主题应用题', 'Hari Raya word problems'], [
+  input('一串马来粽有 6 个，买 7 串，一共几个？', ['42']),
+  input('斋月有 30 天，已经过了 12 天，还剩几天？', ['18']),
+  mcq('市集有 8 排摊位，每排 9 个，一共几个摊位？', '72 个', ['64 个', '81 个', '17 个']),
+  input('一盘饼干 45 块，平分给 9 个人，每人几块？', ['5']),
+  tf('晚上 7:15 日落，7:30 开始吃开斋饭，中间相隔 15 分钟。', true),
+  input('拜访 3 户人家，每户待 40 分钟，一共多少分钟？', ['120']),
+  mcq('收到 10 元、5 元、2 元的绿包，一共多少元？', '17 元', ['15 元', '12 元', '20 元']),
+  input('2 小时等于多少分钟？', ['120'])
+], 'hariraya');
+fs.writeFileSync(path.join(__dirname, '..', 'lib', 'data', 'collections.json'), JSON.stringify(COLLECTIONS.map(c => ({ ...c, games: SETS.filter(s => s.collection === c.id).map(s => s.id) })), null, 1));
 
 // 校验并输出
 const out = SETS.map(s => {

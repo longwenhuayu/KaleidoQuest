@@ -23,8 +23,17 @@ const wait = async (ws, t, ms = 8000) => { const end = Date.now() + ms; for (;;)
 (async () => {
   await new Promise(r => server.on('listening', r));
   const list = await (await fetch(BASE + '/api/gallery')).json();
-  assert.equal(list.length, 25);
-  for (const subj of ['chinese', 'math', 'english', 'science', 'general']) assert.equal(list.filter(x => x.subject === subj).length, 5, subj + ' 5 个');
+  const base = list.filter(x => !x.collection);
+  assert.equal(base.length, 25);
+  for (const subj of ['chinese', 'math', 'english', 'science', 'general']) assert.equal(base.filter(x => x.subject === subj).length, 5, subj + ' 5 个');
+  // 节日专题：4 个，每个 3 个游戏，正在进行的排第一
+  const colls = await (await fetch(BASE + '/api/collections')).json();
+  assert.equal(colls.length, 4); colls.forEach(c => assert.equal(list.filter(x => x.collection === c.id).length, 3, c.id));
+  assert.ok(colls.filter(c => c.active).every((c, i) => colls[i].active), '进行中的排前面');
+  const at = d => G.collections(new Date(d + 'T04:00:00Z'))[0];
+  assert.equal(at('2026-10-20').id, 'deepavali'); assert.ok(at('2026-10-20').active);
+  assert.equal(at('2026-12-10').id, 'yearend'); assert.equal(at('2027-01-20').id, 'cny'); assert.equal(at('2027-03-05').id, 'hariraya');
+  assert.equal(at('2027-06-01').id, 'deepavali'); assert.ok(!at('2027-06-01').active, '都不在时间内就给下一个');
   assert.ok(!JSON.stringify(list).includes('"answer"'), '列表不带答案');
   // 单人试玩：每个游戏都全对跑一遍
   for (const g of list) {
@@ -68,6 +77,6 @@ const wait = async (ws, t, ms = 8000) => { const end = Date.now() + ms; for (;;)
   const hx = await open(); hx.sendj({ t: 'host', gallery: 'g-space' }); assert.equal((await wait(hx, 'error')).error, 'too_many');
   // 登录的老师不受这个限制
   const ht = await open(cookie); ht.sendj({ t: 'host', gallery: 'g-space' }); assert.equal((await wait(ht, 'room')).guest, false);
-  console.log('✅ Gallery 通过：25 个游戏（5 科 × 5）全部能全对通关并得卡、续玩、复制要登录、访客开局不写报告、令牌重连、访客限流');
+  console.log('✅ Gallery 通过：25 个基础游戏（5 科 × 5）+ 4 个节日专题，全部能全对通关并得卡、续玩、复制要登录、访客开局不写报告、令牌重连、访客限流');
   process.exit(0);
 })().catch(e => { console.error('❌', e); process.exit(1); });

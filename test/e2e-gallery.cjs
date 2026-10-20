@@ -9,7 +9,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   // 首页
   const H = await (await b.newContext({ viewport: { width: 1366, height: 820 } })).newPage(); watch(H, 'home');
   await H.goto(BASE + '/'); await H.waitForSelector('#galGrid .gcard');
-  const homeCards = await H.locator('#galGrid .gcard').count();
+  const homeCards = await H.locator('#galGrid .gcard').count(), festCards = await H.locator('#festGrid .gcard').count();
   await H.click('#tryLink'); await H.waitForTimeout(600); await shot(H, '60-home-gallery');
   // 手机单人试玩
   const P = await (await b.newContext({ viewport: { width: 390, height: 780 }, isMobile: true, hasTouch: true })).newPage(); watch(P, 'try');
@@ -33,6 +33,12 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   // /gallery 页：筛选
   await H.goto(BASE + '/gallery'); await H.waitForSelector('.gcard');
   const all = await H.locator('.gcard').count();
+  // 节日专题筛选 + 搜索
+  await H.click('.colls [data-c=cny]'); const cny = await H.locator('.gcard').count();
+  await H.click('.colls [data-c=cny]'); await H.fill('#q', '分数'); await H.waitForTimeout(200); const found = await H.locator('.gcard').count();
+  await H.fill('#q', 'fractions'); await H.waitForTimeout(200); const foundEn = await H.locator('.gcard').count();
+  await H.fill('#q', 'zzzz'); await H.waitForTimeout(200); const none = await H.isVisible('.none'); await shot(H, '63b-gallery-search');
+  await H.fill('#q', '');
   await H.click('.gchip[data-s=science]'); const sci = await H.locator('.gcard').count();
   await shot(H, '64-gallery-science');
   await H.click('.gchip[data-s=all]');
@@ -69,7 +75,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   await H.waitForTimeout(2200); await shot(H, '68-guest-end');
   const repHref = await H.getAttribute('#reportBtn', 'href'), dash = await H.getAttribute('#toDash', 'href'), again = await H.getAttribute('#againBtn', 'href');
   await b.close();
-  const ok = homeCards === 5 && /挑战完成|全对/.test(doneText) && doneCards >= 1 && more === 2 && all === 25 && sci === 5 && /on/.test(regOn) && pin2 === pin && repHref === '/?signup=1' && dash === '/gallery' && /gallery=sci-living/.test(again) && !errs.length;
-  console.log({ homeCards, doneCards, more, all, sci, regOn, pin, pin2, repHref, dash, again, errs });
+  const ok = homeCards === 5 && /挑战完成|全对/.test(doneText) && doneCards >= 1 && more === 2 && all === 37 && festCards === 3 && cny === 3 && found >= 1 && foundEn >= 1 && none && sci === 5 && /on/.test(regOn) && pin2 === pin && repHref === '/?signup=1' && dash === '/gallery' && /gallery=sci-living/.test(again) && !errs.length;
+  console.log({ homeCards, festCards, doneCards, more, all, cny, found, foundEn, none, sci, regOn, pin, pin2, repHref, dash, again, errs });
   console.log(ok ? '✅ Gallery 浏览器测试通过' : '❌ 失败'); process.exit(ok ? 0 : 1);
 })().catch(async e => { console.error(e.message); process.exit(1); });

@@ -60,6 +60,7 @@
 /* 游戏库 */
 .gal{max-width:1120px;margin:0 auto;padding:8px 24px 56px}
 .gal .ggrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.live{font-size:13px;font-weight:800;background:#16a34a;color:#fff;border-radius:999px;padding:3px 10px;font-family:"Noto Sans SC",sans-serif;letter-spacing:0}
 .gall{border:1.5px dashed rgba(255,255,255,.3);border-radius:18px;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:22px;color:#fff;text-decoration:none;background:rgba(255,255,255,.04);transition:background .15s,border-color .15s}
 .gall:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.55)}
 .gall b{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:24px;display:flex;align-items:center;gap:8px}
@@ -110,6 +111,10 @@
   <h2 class="sec-h" id="howH"></h2><div class="sec-sub" id="howSub"></div>
   <div class="loops" id="loops"></div>
 </section>
+<section class="gal" id="fest" hidden>
+  <h2 class="sec-h" id="festH"></h2><div class="sec-sub" id="festSub"></div>
+  <div class="ggrid" id="festGrid"></div>
+</section>
 <section class="gal" id="gallery">
   <h2 class="sec-h" id="galH"></h2><div class="sec-sub" id="galSub"></div>
   <div class="ggrid" id="galGrid"></div>
@@ -144,7 +149,7 @@
 <script src="/js/gallery-ui.js?v=20261021c"></script>
 <script>
 const { t, tt, api, $ } = VA;
-let tab = 'login', gallery = [], me = null;
+let tab = 'login', gallery = [], colls = [], me = null;
 // 首屏转圈的角色；中间那张每隔几秒翻一次
 const ORBIT = ['crown', 'owl', 'fib', 'photo', 'rocket', 'magnet', 'turtle', 'h'];
 const FLIP = [['pi', '圆周率 π', 'Pi'], ['rainbow', '彩虹', 'Rainbow'], ['fossil', '化石', 'Fossil'], ['au', '金', 'Gold'], ['infinity', '无限', 'Infinity'], ['light', '光', 'Light']];
@@ -178,9 +183,17 @@ function renderText() {
   $('#loops').innerHTML = LOOPS().map(([id, ic, h, s]) => `<div class="loop"><div class="shot"><img src="/loops/${id}.webp" alt="${h}" loading="lazy"></div><div class="cap"><b>${VA.icon(ic)} ${h}</b><span>${s}</span></div></div>`).join('');
   $('#galH').innerHTML = VA.icon('layout-grid') + ' ' + tt('游戏库：直接开玩', 'Gallery: play right now');
   $('#galSub').textContent = tt('每个学科挑一个给你先试试。学生免登录单人试玩，老师可以直接投屏全班一起玩。', 'One pick from each subject. Students try them solo, no sign-up; teachers can host one for the whole class.');
-  // 每个学科挑第一个，最后一格是「查看全部」
-  $('#galGrid').innerHTML = gallery.length ? gallery.filter((g, i) => gallery.findIndex(x => x.subject === g.subject) === i).map(KQG.card).join('') +
-    `<a class="gall" href="/gallery"><b>${tt(`全部 ${gallery.length} 个游戏`, `All ${gallery.length} games`)} ${VA.icon('arrow-right')}</b><span>${tt('华文、数学、英文、科学、综合，每科 5 个。复制到自己的题包里还能改。', 'Chinese, Math, English, Science and General — 5 each. Copy any one to edit it.')}</span></a>` : '';
+  // 节日专题：正在进行的（没有就是下一个）
+  const c = colls[0];
+  $('#fest').hidden = !c || !gallery.length;
+  if (c && gallery.length) {
+    $('#festH').innerHTML = `${VA.icon('sparkles')} ${VA.esc(tt(c.title[0], c.title[1]))} ${c.active ? `<span class="live">${tt('应节', 'In season')}</span>` : `<span class="live" style="background:#475569">${tt('即将到来', 'Coming up')}</span>`}`;
+    $('#festSub').textContent = tt(`${c.desc[0]}。按节日自动更新，全年有 ${colls.length} 个专题。`, `${c.desc[1]}. Updates with the calendar — ${colls.length} festival specials a year.`);
+    $('#festGrid').innerHTML = gallery.filter(g => g.collection === c.id).map(KQG.card).join('') || '';
+  }
+  // 每个学科挑第一个（不含节日专题），最后一格是「查看全部」
+  $('#galGrid').innerHTML = gallery.length ? gallery.filter(g => !g.collection).filter((g, i, a) => a.findIndex(x => x.subject === g.subject) === i).map(KQG.card).join('') +
+    `<a class="gall" href="/gallery"><b>${tt(`全部 ${gallery.length} 个游戏`, `All ${gallery.length} games`)} ${VA.icon('arrow-right')}</b><span>${tt('华文、数学、英文、科学、综合，还有节日专题。复制到自己的题包里还能改。', 'Chinese, Math, English, Science, General and festival specials. Copy any one to edit it.')}</span></a>` : '';
   // 登录弹窗
   $('#authX').innerHTML = VA.icon('x');
   $('#authBtn').textContent = t(tab);
@@ -193,8 +206,9 @@ function renderText() {
   $('#stuBox').innerHTML = `${tt('我是学生：', "I'm a student: ")}<a href="/play">${tt('加入游戏', 'join a game')}</a> · <a href="/me">${tt('学生登录', 'student sign-in')}</a>`;
   if (me) { $('#loginBtn').textContent = tt('老师后台', 'Dashboard'); $('#signupBtn').innerHTML = VA.icon('presentation') + ' ' + tt('进入老师后台', 'Go to dashboard'); }
 }
-VA.api('/api/gallery').then(d => { gallery = d; renderText(); }).catch(() => {});
+Promise.all([VA.api('/api/gallery'), VA.api('/api/collections')]).then(([g, c]) => { gallery = g; colls = c; renderText(); }).catch(() => {});
 $('#galGrid').onclick = KQG.onClick;
+$('#festGrid').onclick = KQG.onClick;
 document.addEventListener('langchange', () => { renderText(); face(faces[side], fi); });
 document.addEventListener('DOMContentLoaded', renderText);
 

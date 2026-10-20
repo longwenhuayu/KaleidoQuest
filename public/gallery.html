@@ -17,7 +17,17 @@ header .sp{flex:1}
 .wrap{max-width:1120px}
 h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px;display:flex;align-items:center;gap:10px}
 .sub{opacity:.82;margin:6px 0 18px;line-height:1.6}
-.gchips{margin-bottom:18px}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.bar .gchips{flex:1}
+.search{position:relative;width:min(260px,100%)}
+.search input{width:100%;padding:9px 12px 9px 36px;border-radius:999px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:14px}
+.search input::placeholder{color:#b9b3dc}
+.search input:focus{outline:none;border-color:#fff}
+.search .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#b9b3dc}
+.colls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.colls>span{font-size:13px;font-weight:800;color:#c9c3ea}
+.gchip.live::after{content:"";width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80}
+.none{grid-column:1/-1;text-align:center;color:#c9c3ea;padding:30px}
 .note{font-size:13px;opacity:.65;margin:30px 0 10px;text-align:center}
 @media (max-width:640px){h1{font-size:26px}}
 </style>
@@ -26,30 +36,41 @@ h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px;display:flex;a
 <header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><a class="btn ghost sm" id="me" href="/" style="background:rgba(255,255,255,.12);color:#fff"></a><button class="lang" type="button" style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)">EN</button></header>
 <div class="wrap">
   <div style="display:flex;align-items:center;gap:16px"><div style="flex:1"><h1 id="h"></h1><div class="sub" id="sub"></div></div><span style="display:inline-block;transform:scaleX(-1);flex:none"><img class="mascot" src="/mascot/point.webp" width="110" height="110" alt=""></span></div>
-  <div class="gchips" id="chips"></div>
+  <div class="bar"><div class="gchips" id="chips"></div><label class="search"><svg class="ic" aria-hidden="true"><use href="/icons.svg#search"></use></svg><input id="q" type="search" autocomplete="off"></label></div>
+  <div class="colls" id="colls"></div>
   <div class="ggrid" id="grid"></div>
   <div class="note" id="note"></div>
 </div>
 <script src="/js/common.js?v=20261021d"></script>
 <script src="/js/gallery-ui.js?v=20261021c"></script>
 <script>
-const { tt, $, icon } = VA;
-let list = [], subj = new URLSearchParams(location.search).get('s') || 'all', me = null;
+const { tt, $, icon, esc } = VA;
+const QS = new URLSearchParams(location.search);
+let list = [], colls = [], subj = QS.get('s') || 'all', coll = QS.get('c') || '', query = QS.get('q') || '', me = null;
+function url() { const u = new URLSearchParams(); if (subj !== 'all') u.set('s', subj); if (coll) u.set('c', coll); if (query) u.set('q', query); history.replaceState(null, '', '/gallery' + (u.toString() ? '?' + u : '')); }
 function render() {
   $('#h').innerHTML = icon('layout-grid') + ' ' + tt('游戏库', 'Game Gallery');
   $('#sub').textContent = tt(`${list.length} 个现成的课堂游戏。学生可以免登录单人试玩；老师可以直接投屏，全班用手机扫码一起玩。`, `${list.length} ready-made classroom games. Students can try them solo with no sign-up; teachers can host one for the whole class right away.`);
   $('#me').innerHTML = me ? icon('presentation') + ' ' + tt('老师后台', 'Dashboard') : icon('user-plus') + ' ' + tt('老师免费注册', 'Teacher sign-up');
   $('#me').href = me ? '/teacher' : '/?signup=1';
+  $('#q').placeholder = tt('搜索游戏，例如：分数、动物', 'Search, e.g. fractions, animals');
   $('#chips').innerHTML = KQG.filters(subj);
-  $('#grid').innerHTML = list.filter(g => subj === 'all' || g.subject === subj).map(KQG.card).join('');
+  $('#colls').innerHTML = `<span>${icon('sparkles')} ${tt('节日专题', 'Festivals')}</span>` + colls.map(c => `<button type="button" class="gchip${c.id === coll ? ' on' : ''}${c.active ? ' live' : ''}" data-c="${esc(c.id)}" title="${esc(tt(c.desc[0], c.desc[1]))}">${esc(tt(c.title[0], c.title[1]))}</button>`).join('');
+  // 搜索：标题和简介，中英文都算，不分大小写
+  const q = query.trim().toLowerCase();
+  const shown = list.filter(g => (subj === 'all' || g.subject === subj) && (!coll || g.collection === coll) && (!q || [...g.title, ...g.desc].join(' ').toLowerCase().includes(q)));
+  $('#grid').innerHTML = shown.map(KQG.card).join('') || `<div class="none">${VA.mascot('think', 100)}${tt('没有找到，换个词试试', 'Nothing found — try another word')}</div>`;
   $('#note').textContent = tt('访客投屏开的局不保存报告。免费注册后，可以复制任何一个游戏到自己的题包里修改，每一局都会留下成绩报告。', "Games hosted without an account don't save reports. Sign up free to copy any game into your own sets, edit it, and keep a report for every game.");
 }
-$('#chips').onclick = e => { const b = e.target.closest('[data-s]'); if (!b) return; subj = b.dataset.s; history.replaceState(null, '', subj === 'all' ? '/gallery' : `/gallery?s=${subj}`); render(); };
+$('#chips').onclick = e => { const b = e.target.closest('[data-s]'); if (!b) return; subj = b.dataset.s; url(); render(); };
+$('#colls').onclick = e => { const b = e.target.closest('[data-c]'); if (!b) return; coll = coll === b.dataset.c ? '' : b.dataset.c; url(); render(); };
+$('#q').value = query;
+$('#q').oninput = e => { query = e.target.value; url(); render(); };
 $('#grid').onclick = KQG.onClick;
 document.addEventListener('langchange', render);
 (async () => {
   try { me = await VA.api('/api/me'); } catch (e) {}
-  list = await VA.api('/api/gallery'); render();
+  [list, colls] = await Promise.all([VA.api('/api/gallery'), VA.api('/api/collections')]); render();
 })();
 </script>
 </body>

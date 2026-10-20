@@ -1,0 +1,74 @@
+[
+ {
+  "id": "deepavali",
+  "title": [
+   "屠妖节专题",
+   "Deepavali"
+  ],
+  "desc": [
+   "光明节：油灯、彩绘和小印度的灯饰",
+   "Festival of Lights: diyas, rangoli and Little India"
+  ],
+  "from": "10-05",
+  "to": "11-20",
+  "games": [
+   "dv-culture",
+   "dv-english",
+   "dv-math"
+  ]
+ },
+ {
+  "id": "yearend",
+  "title": [
+   "圣诞与年终",
+   "Christmas & year-end"
+  ],
+  "desc": [
+   "圣诞节、新年和年终假期",
+   "Christmas, New Year and the year-end holidays"
+  ],
+  "from": "11-21",
+  "to": "12-31",
+  "games": [
+   "xm-culture",
+   "xm-english",
+   "xm-math"
+  ]
+ },
+ {
+  "id": "cny",
+  "title": [
+   "农历新年专题",
+   "Chinese New Year"
+  ],
+  "desc": [
+   "红包、团圆饭、捞鱼生和十二生肖",
+   "Red packets, reunion dinner, lo hei and the zodiac"
+  ],
+  "from": "01-01",
+  "to": "02-28",
+  "games": [
+   "cny-customs",
+   "cny-zodiac",
+   "cny-math"
+  ]
+ },
+ {
+  "id": "hariraya",
+  "title": [
+   "开斋节专题",
+   "Hari Raya Puasa"
+  ],
+  "desc": [
+   "斋月、马来粽和芽笼士乃的灯饰",
+   "Ramadan, ketupat and Geylang Serai"
+  ],
+  "from": "02-20",
+  "to": "04-15",
+  "games": [
+   "hr-culture",
+   "hr-english",
+   "hr-math"
+  ]
+ }
+]

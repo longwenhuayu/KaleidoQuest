@@ -39,7 +39,19 @@ const SCENE = {
   'g-world': 'a globe with famous landmarks around it (pyramid, Eiffel tower, Great Wall), a character with a passport',
   'g-festivals': 'festival celebration with lanterns, oil lamps, fireworks and mooncakes, characters celebrating together',
   'g-health': 'characters with fruits and vegetables, a water bottle, toothbrush and a skipping rope, healthy and happy',
-  'g-space': 'a little astronaut character floating among planets, a rocket and the moon, stars sparkling'
+  'g-space': 'a little astronaut character floating among planets, a rocket and the moon, stars sparkling',
+  'dv-culture': 'Deepavali night: rows of glowing clay oil lamps (diyas) and a colourful flower-like rangoli floor pattern, crystal characters in festive clothes smiling',
+  'dv-english': 'a street decorated with arches of warm festive lights at night, crystal characters holding small glowing clay oil lamps',
+  'dv-math': 'neat rows of small glowing clay oil lamps arranged in a grid, a crystal character counting them happily',
+  'xm-culture': 'a decorated Christmas pine tree with gifts underneath in a warm tropical night, crystal characters wearing Santa hats',
+  'xm-english': 'a sleigh pulled by cute reindeer flying past a crescent moon, wrapped presents falling softly',
+  'xm-math': 'a stack of colourful wrapped gift boxes of different sizes, a crystal character measuring one with a ruler',
+  'cny-customs': 'Chinese New Year celebration: a lion dance, red lanterns, mandarin oranges and a big plate of colourful yusheng salad being tossed by crystal characters',
+  'cny-zodiac': 'a friendly Chinese dragon curling around a big round red lantern, a cute rat and ox riding on its back, small red lanterns and plum blossoms',
+  'cny-math': 'red packets and mandarin oranges neatly arranged in groups on a table, a crystal character counting them',
+  'hr-culture': 'Hari Raya evening: a street with green and gold festive lights, ketupat rice cakes in woven coconut leaves, crystal characters in traditional Malay clothes',
+  'hr-english': 'woven ketupat rice cakes hanging as decorations, a crescent moon in the sky, crystal characters visiting a family home',
+  'hr-math': 'a festive night bazaar with rows of stalls selling cookies and ketupat, crystal characters shopping'
 };
 
 async function gen(id) {
