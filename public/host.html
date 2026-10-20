@@ -27,6 +27,9 @@ body{overflow:hidden}
 .players{flex:1;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;justify-content:center;padding:20px 0;overflow:auto}
 .pl{background:rgba(255,255,255,.14);border-radius:999px;padding:8px 16px 8px 10px;font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;animation:pop .3s;cursor:pointer}
 .pl span{font-size:26px}
+/* 人多时名字缩小，100 人也能在一屏里看全 */
+.players.m{gap:8px;padding:14px 0}.players.m .pl{font-size:16px;padding:6px 12px 6px 8px;gap:6px}.players.m .pl span{font-size:20px}
+.players.l{gap:6px;padding:10px 0}.players.l .pl{font-size:13.5px;padding:4px 10px 4px 6px;gap:5px}.players.l .pl span{font-size:16px}
 .pl.old{animation:none}
 .pl.off{opacity:.4}
 .pl:hover{background:rgba(220,38,38,.6)}
@@ -190,6 +193,7 @@ function renderStatic() {
   renderPlayers();
 }
 function renderPlayers() {
+  $('#players').classList.toggle('m', players.length > 40 && players.length <= 70); $('#players').classList.toggle('l', players.length > 70);
   $('#players').innerHTML = players.length ? players.map(p => `<div class="pl${p.online ? '' : ' off'}${seen.has(p.id) ? ' old' : ''}" data-id="${p.id}" title="${tt('点一下踢出', 'Click to remove')}"><span>${VA.av(p.avatar)}</span>${esc(p.name)}</div>`).join('') : `<div class="waiting">${VA.mascot('wait', 130)}${tt('等待学生加入…', 'Waiting for players…')}</div>`;
   players.forEach(p => seen.add(p.id));
   $('#count').innerHTML = `${icon('users')} ${players.length}`;
