@@ -12,7 +12,7 @@
     players: ['人', 'players'], save: ['保存', 'Save'], saved: ['已保存', 'Saved'], back: ['返回', 'Back'],
     s_chinese: ['华文', 'Chinese'], s_math: ['数学', 'Math'], s_english: ['英文', 'English'], s_science: ['科学', 'Science'], s_general: ['综合', 'General'], s_malay: ['马来文', 'Malay'], s_tamil: ['淡米尔文', 'Tamil'],
     err_email: ['邮箱格式不对', 'Invalid email'], err_password: ['密码至少 8 位', 'Password must be 8+ characters'], err_name: ['请填写称呼', 'Please enter your name'],
-    err_exists: ['这个邮箱已经注册过，请直接登录', 'Email already registered — please log in'], err_wrong: ['邮箱或密码不对', 'Wrong email or password'], err_too_many: ['尝试太多次，请 15 分钟后再试', 'Too many attempts. Try again in 15 minutes'],
+    err_exists: ['这个邮箱已经注册过，请直接登录', 'Email already registered — please log in'], err_wrong: ['邮箱或密码不对。还没有账号？请先点上面的「注册」。', 'Wrong email or password. No account yet? Click “Sign up” above first.'], err_disabled: ['这个账号已被停用，请联系 ask@visionchinese.com', 'This account has been disabled — contact ask@visionchinese.com'], err_too_many: ['尝试太多次，请 15 分钟后再试', 'Too many attempts. Try again in 15 minutes'],
     err_room_not_found: ['找不到这个房间，请检查房间码', 'Game not found — check the PIN'], err_locked: ['房间已锁定，请让老师解锁', 'This game is locked'], err_full: ['房间满了', 'Game is full'],
     err_name_req: ['请输入昵称', 'Please enter a nickname'], err_login_required: ['请先登录', 'Please log in first'], err_generic: ['出错了，请再试一次', 'Something went wrong — please try again']
   };
