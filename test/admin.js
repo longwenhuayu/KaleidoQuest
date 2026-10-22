@@ -32,6 +32,14 @@ const reg = async (email, name) => (await req('POST', '/api/register', { email, 
   const detail = await (await req('GET', `/api/admin/teachers/${id1}`, null, boss)).json();
   assert.equal(detail.sets[0].title, '王老师的题'); assert.equal(detail.assignments[0].done, 1);
   assert.equal((await (await req('GET', `/api/admin/sets/${setId}`, null, boss)).json()).teacher, '王老师', '只读查看别人的题包');
+  const t2row = (await (await req('GET', '/api/admin/teachers?q=李', null, boss)).json())[0];
+  assert.equal((await req('PATCH', `/api/admin/teachers/${t2row.id}`, { name: '李老师（编辑）', email: 'edited@x.com' }, boss)).status, 200, '管理员可编辑用户资料');
+  assert.equal((await req('PATCH', `/api/admin/teachers/${t2row.id}`, { email: 't1@x.com' }, boss)).status, 409, '邮箱不能重复');
+  const t2new = await req('POST', '/api/login', { email: 'edited@x.com', password: 'secret123' });
+  const t2newCookie = t2new.headers.get('set-cookie').split(';')[0];
+  assert.equal((await req('POST', `/api/admin/teachers/${t2row.id}/password`, { password: 'newsecret123' }, boss)).status, 200, '管理员可直接重设密码');
+  assert.equal((await req('GET', '/api/me', null, t2newCookie)).status, 401, '重设密码会使旧会话失效');
+  assert.equal((await req('POST', '/api/login', { email: 'edited@x.com', password: 'newsecret123' })).status, 200, '新密码可以登录');
   // 停用：会话失效、不能登录；再启用就能登录
   await req('POST', `/api/admin/teachers/${id1}/disable`, { disabled: true }, boss);
   assert.equal((await req('GET', '/api/me', null, t1)).status, 401, '停用后原来的会话失效');
