@@ -3001,6 +3001,559 @@
   ]
  },
  {
+  "id": "zh-story",
+  "subject": "chinese",
+  "grade": [
+   "小二 – 小四",
+   "P2 – P4"
+  ],
+  "title": [
+   "看图讲故事",
+   "Story starters"
+  ],
+  "desc": [
+   "根据词语和句子线索，排出一个小故事",
+   "Put story clues in a sensible order"
+  ],
+  "questions": [
+   {
+    "type": "order",
+    "prompt": "把小雨伞的故事排好顺序",
+    "time": 30,
+    "options": [
+     "天空下起雨。",
+     "小明打开雨伞。",
+     "他和朋友一起走回家。",
+     "雨停了，天空出现彩虹。"
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "把小种子的故事排好顺序",
+    "time": 30,
+    "options": [
+     "种子落在泥土里。",
+     "种子吸收水分。",
+     "小芽从土里长出来。",
+     "植物开出美丽的花。"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「兴高采烈」最接近哪个意思？",
+    "time": 20,
+    "options": [
+     "感到害怕",
+     "非常开心",
+     "特别安静",
+     "十分疲倦"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「安安静静」的反义词是？",
+    "time": 20,
+    "options": [
+     "干干净净",
+     "整整齐齐",
+     "开开心心",
+     "吵吵闹闹"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "「一 ___ 白云」应该填什么量词？",
+    "time": 30,
+    "answer": [
+     "朵"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「因为下雨，___ 我带了雨伞。」应该填？",
+    "time": 20,
+    "options": [
+     "但是",
+     "还是",
+     "所以",
+     "如果"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "写日记时，可以按事情发生的先后顺序来写。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "哪一句话最适合作为故事的结尾？",
+    "time": 20,
+    "options": [
+     "大家带着笑容回家了。",
+     "从前有一座小山。",
+     "突然，门被推开了。",
+     "首先，我们准备材料。"
+    ],
+    "answer": [
+     0
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m-money",
+  "subject": "math",
+  "grade": [
+   "小二 – 小四",
+   "P2 – P4"
+  ],
+  "title": [
+   "小小理财家",
+   "Money matters"
+  ],
+  "desc": [
+   "认识钱币、找钱和简单预算",
+   "Coins, change and simple budgeting"
+  ],
+  "questions": [
+   {
+    "type": "input",
+    "prompt": "小文有 10 元，买了 3 元的橡皮，还剩多少元？",
+    "time": 30,
+    "answer": [
+     "7",
+     "7元",
+     "7 元"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "一杯果汁 2 元，买 4 杯要多少元？",
+    "time": 30,
+    "answer": [
+     "8",
+     "8元",
+     "8 元"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "哪一种钱币的价值最大？",
+    "time": 20,
+    "options": [
+     "50 分",
+     "10 分",
+     "20 分",
+     "1 元"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "小丽用 5 元买 3 元 50 分的书签，应找回多少元？",
+    "time": 30,
+    "answer": [
+     "1.50",
+     "1.5",
+     "1 元 50 分"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "2 元和 50 分合起来是多少？",
+    "time": 20,
+    "options": [
+     "7 元",
+     "2 元 5 分",
+     "1 元 50 分",
+     "2 元 50 分"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "4 本练习簿每本 2 元，一共多少钱？",
+    "time": 30,
+    "answer": [
+     "8",
+     "8元",
+     "8 元"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "买东西时，先看看自己有多少钱，再决定买不买，是好习惯。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "小明有 20 元，想买 18 元的玩具，他还剩？",
+    "time": 20,
+    "options": [
+     "38 元",
+     "8 元",
+     "1 元",
+     "2 元"
+    ],
+    "answer": [
+     3
+    ]
+   }
+  ]
+ },
+ {
+  "id": "sci-weather",
+  "subject": "science",
+  "grade": [
+   "P3 – P5",
+   "P3 – P5"
+  ],
+  "title": [
+   "天气观察站",
+   "Weather watch"
+  ],
+  "desc": [
+   "云、雨、风和温度：认识每天的天气",
+   "Clouds, rain, wind and temperature"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "用什么仪器测量温度？",
+    "time": 20,
+    "options": [
+     "温度计",
+     "指南针",
+     "放大镜",
+     "直尺"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "哪一种天气最适合放风筝？",
+    "time": 20,
+    "options": [
+     "完全没有风",
+     "暴雨",
+     "雷雨大风",
+     "有风但不下雨"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "云是由许多很小的水滴或冰晶组成的。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "雨水从云中落到地面，这个过程叫？",
+    "time": 20,
+    "options": [
+     "反射",
+     "降水",
+     "发芽",
+     "融化"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "一天中，早上 20°C，下午 29°C，下午比早上高几度？",
+    "time": 30,
+    "answer": [
+     "9",
+     "9°C",
+     "9 度"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "风向是指风从哪里？",
+    "time": 20,
+    "options": [
+     "吹去",
+     "消失",
+     "停留",
+     "吹来"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "雷电天气时，躲在大树下是安全的。",
+    "time": 15,
+    "note": "雷雨时应进入安全的室内，远离大树和空旷地带。",
+    "answer": false
+   },
+   {
+    "type": "order",
+    "prompt": "水循环的简单顺序",
+    "time": 30,
+    "options": [
+     "太阳加热水面",
+     "水蒸气上升冷却",
+     "云中形成小水滴",
+     "雨水落回地面"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "hw-culture",
+  "subject": "general",
+  "grade": [
+   "全年级",
+   "All levels"
+  ],
+  "title": [
+   "万圣节探险",
+   "Halloween adventure"
+  ],
+  "desc": [
+   "南瓜灯、服装和不给糖就捣蛋：认识万圣节",
+   "Pumpkins, costumes and trick-or-treating"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "万圣节是哪一天？",
+    "time": 20,
+    "options": [
+     "12 月 31 日",
+     "10 月 1 日",
+     "10 月 31 日",
+     "11 月 11 日"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "万圣节常见的橙色蔬菜是？",
+    "time": 20,
+    "options": [
+     "玉米",
+     "西瓜",
+     "南瓜",
+     "黄瓜"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "南瓜灯通常刻成什么样的脸？",
+    "time": 20,
+    "options": [
+     "一朵花",
+     "吓人的笑脸",
+     "睡着的脸",
+     "哭泣的小鸟"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "孩子们挨家挨户说什么来要糖果？",
+    "time": 20,
+    "options": [
+     "新年快乐",
+     "不给糖就捣蛋",
+     "早上好",
+     "生日快乐"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "万圣节时，人们常常穿上特别的服装。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "下面哪一个最像万圣节的装饰？",
+    "time": 20,
+    "options": [
+     "蜘蛛网",
+     "灯笼鱼",
+     "春联",
+     "雪橇"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "哪一种动物常常出现在万圣节故事里？",
+    "time": 20,
+    "options": [
+     "长颈鹿",
+     "海豚",
+     "企鹅",
+     "蝙蝠"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "万圣节的颜色常见橙色和黑色。",
+    "time": 15,
+    "answer": true
+   }
+  ],
+  "collection": "halloween"
+ },
+ {
+  "id": "hw-english",
+  "subject": "english",
+  "grade": [
+   "P2 – P4",
+   "P2 – P4"
+  ],
+  "title": [
+   "Halloween word hunt",
+   "Halloween word hunt"
+  ],
+  "desc": [
+   "听一听、读一读万圣节英文词汇",
+   "Listen and practise Halloween words"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "A carved pumpkin is called a ___",
+    "time": 20,
+    "options": [
+     "rainbow",
+     "jack-o'-lantern",
+     "firework",
+     "snowman"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Children say “Trick or ___!”",
+    "time": 20,
+    "options": [
+     "train",
+     "treat",
+     "tree",
+     "trip"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "A person who flies on a broom in stories is a ___",
+    "time": 20,
+    "options": [
+     "witch",
+     "chef",
+     "farmer",
+     "pilot"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "A white, spooky spirit is a ___",
+    "time": 20,
+    "options": [
+     "ghost",
+     "rocket",
+     "robot",
+     "rabbit"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which animal is often linked with Halloween?",
+    "time": 20,
+    "options": [
+     "giraffe",
+     "panda",
+     "bat",
+     "dolphin"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "Fill in the missing letter: c _ ndy",
+    "time": 30,
+    "answer": [
+     "a"
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "Put the words in order.",
+    "time": 30,
+    "options": [
+     "Happy",
+     "Halloween",
+     "to",
+     "you!"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "A pumpkin is usually orange.",
+    "time": 15,
+    "answer": true
+   }
+  ],
+  "collection": "halloween"
+ },
+ {
   "id": "dv-culture",
   "subject": "general",
   "grade": [
@@ -3023,8 +3576,8 @@
     "options": [
      "丰收节",
      "光明节",
-     "卫塞节",
-     "开斋节"
+     "开斋节",
+     "卫塞节"
     ],
     "answer": [
      1
@@ -3035,24 +3588,10 @@
     "prompt": "屠妖节点的传统小油灯叫什么？",
     "time": 20,
     "options": [
-     "孔明灯",
      "圣诞彩灯",
-     "纸灯笼",
-     "陶土油灯（diya）"
-    ],
-    "answer": [
-     3
-    ]
-   },
-   {
-    "type": "mcq",
-    "prompt": "屠妖节时，家门口地上用彩色米粉画的图案叫什么？",
-    "time": 20,
-    "options": [
-     "春联",
-     "剪纸",
-     "彩绘图案（rangoli / kolam）",
-     "门神"
+     "孔明灯",
+     "陶土油灯（diya）",
+     "纸灯笼"
     ],
     "answer": [
      2
@@ -3060,16 +3599,30 @@
    },
    {
     "type": "mcq",
+    "prompt": "屠妖节时，家门口地上用彩色米粉画的图案叫什么？",
+    "time": 20,
+    "options": [
+     "门神",
+     "春联",
+     "剪纸",
+     "彩绘图案（rangoli / kolam）"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
     "prompt": "新加坡哪里每年有屠妖节灯饰？",
     "time": 20,
     "options": [
-     "小印度（实龙岗路）",
      "牛车水",
-     "乌节路",
-     "芽笼士乃"
+     "芽笼士乃",
+     "小印度（实龙岗路）",
+     "乌节路"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -3083,13 +3636,13 @@
     "prompt": "屠妖节主要是哪个宗教的节日？",
     "time": 20,
     "options": [
-     "佛教",
      "基督教",
-     "伊斯兰教",
-     "印度教"
+     "佛教",
+     "印度教",
+     "伊斯兰教"
     ],
     "answer": [
-     3
+     2
     ]
    },
    {
@@ -3103,13 +3656,13 @@
     "prompt": "过屠妖节时，人们常常会怎么做？",
     "time": 20,
     "options": [
-     "划龙舟",
+     "穿新衣、拜访亲友",
      "吃月饼、赏月",
-     "堆雪人",
-     "穿新衣、拜访亲友"
+     "划龙舟",
+     "堆雪人"
     ],
     "answer": [
-     3
+     0
     ]
    }
   ],
@@ -3136,13 +3689,13 @@
     "prompt": "Deepavali is also called the Festival of ___.",
     "time": 20,
     "options": [
-     "Lanterns",
-     "Harvest",
      "Boats",
-     "Lights"
+     "Harvest",
+     "Lights",
+     "Lanterns"
     ],
     "answer": [
-     3
+     2
     ]
    },
    {
@@ -3150,13 +3703,13 @@
     "prompt": "A small clay oil lamp lit during Deepavali is a ___.",
     "time": 20,
     "options": [
-     "diya",
-     "kite",
      "drum",
+     "kite",
+     "diya",
      "bell"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -3165,12 +3718,12 @@
     "time": 20,
     "options": [
      "origami",
-     "graffiti",
+     "rangoli",
      "mosaic",
-     "rangoli"
+     "graffiti"
     ],
     "answer": [
-     3
+     1
     ]
    },
    {
@@ -3178,13 +3731,13 @@
     "prompt": "Little India is decorated with bright ___ during Deepavali.",
     "time": 20,
     "options": [
+     "snowflakes",
      "mooncakes",
      "lights",
-     "snowflakes",
      "pumpkins"
     ],
     "answer": [
-     1
+     2
     ]
    },
    {
@@ -3198,13 +3751,13 @@
     "prompt": "Which word is the opposite of \"darkness\"?",
     "time": 20,
     "options": [
-     "night",
-     "smoke",
      "shadow",
-     "light"
+     "light",
+     "night",
+     "smoke"
     ],
     "answer": [
-     3
+     1
     ]
    },
    {
@@ -3274,13 +3827,13 @@
     "prompt": "Rangoli 图案常常是对称的。下面哪个图形也是对称的？",
     "time": 20,
     "options": [
-     "一块不规则的石头",
-     "数字 7",
      "正方形",
-     "字母 F"
+     "字母 F",
+     "数字 7",
+     "一块不规则的石头"
     ],
     "answer": [
-     2
+     0
     ]
    },
    {
@@ -3303,10 +3856,10 @@
     "prompt": "小明有 50 元，买新衣服用了 32 元，还剩多少元？",
     "time": 20,
     "options": [
-     "82 元",
      "28 元",
+     "22 元",
      "18 元",
-     "22 元"
+     "82 元"
     ],
     "answer": [
      2
@@ -3344,13 +3897,13 @@
     "prompt": "圣诞节在每年的哪个月？",
     "time": 20,
     "options": [
-     "十月",
-     "十二月",
      "十一月",
-     "一月"
+     "一月",
+     "十月",
+     "十二月"
     ],
     "answer": [
-     1
+     3
     ]
    },
    {
@@ -3358,13 +3911,13 @@
     "prompt": "传说中，圣诞老人的雪橇由什么动物拉？",
     "time": 20,
     "options": [
-     "马",
      "驯鹿",
-     "骆驼",
-     "狗"
+     "狗",
+     "马",
+     "骆驼"
     ],
     "answer": [
-     1
+     0
     ]
    },
    {
@@ -3372,13 +3925,13 @@
     "prompt": "新加坡哪条街每年年底有圣诞灯饰？",
     "time": 20,
     "options": [
-     "乌节路",
      "芽笼士乃",
-     "实龙岗路",
-     "牛车水"
+     "牛车水",
+     "乌节路",
+     "实龙岗路"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -3394,12 +3947,12 @@
     "time": 20,
     "options": [
      "榕树",
-     "竹子",
      "椰子树",
-     "松树（圣诞树）"
+     "松树（圣诞树）",
+     "竹子"
     ],
     "answer": [
-     3
+     2
     ]
    },
    {
@@ -3407,13 +3960,13 @@
     "prompt": "一年的最后一天是几月几日？",
     "time": 20,
     "options": [
-     "12 月 30 日",
      "12 月 31 日",
      "1 月 1 日",
-     "12 月 25 日"
+     "12 月 25 日",
+     "12 月 30 日"
     ],
     "answer": [
-     1
+     0
     ]
    },
    {
@@ -3422,12 +3975,12 @@
     "time": 20,
     "options": [
      "1 月 31 日",
-     "1 月 1 日",
      "12 月 31 日",
-     "2 月 1 日"
+     "2 月 1 日",
+     "1 月 1 日"
     ],
     "answer": [
-     1
+     3
     ]
    },
    {
@@ -3461,9 +4014,9 @@
     "time": 20,
     "options": [
      "reindeer",
-     "camels",
+     "horses",
      "dogs",
-     "horses"
+     "camels"
     ],
     "answer": [
      0
@@ -3474,13 +4027,13 @@
     "prompt": "One present, two ___.",
     "time": 20,
     "options": [
-     "presents",
-     "present",
+     "presentss",
      "presentes",
-     "presentss"
+     "presents",
+     "present"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -3488,13 +4041,13 @@
     "prompt": "Christmas Day is on 25 ___.",
     "time": 20,
     "options": [
+     "November",
      "October",
      "January",
-     "December",
-     "November"
+     "December"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -3520,13 +4073,13 @@
     "prompt": "Which word is the opposite of \"first\"?",
     "time": 20,
     "options": [
-     "early",
      "last",
-     "next",
-     "begin"
+     "begin",
+     "early",
+     "next"
     ],
     "answer": [
-     1
+     0
     ]
    },
    {
@@ -3542,13 +4095,13 @@
     "prompt": "On 1 January we say \"Happy ___ Year!\"",
     "time": 20,
     "options": [
-     "First",
      "Big",
      "New",
+     "First",
      "Old"
     ],
     "answer": [
-     2
+     1
     ]
    }
   ],
@@ -3599,8 +4152,8 @@
     "prompt": "从 12 月 25 日到 12 月 31 日，一共几天？（两头都算）",
     "time": 20,
     "options": [
-     "5 天",
      "6 天",
+     "5 天",
      "8 天",
      "7 天"
     ],
@@ -3627,10 +4180,10 @@
     "prompt": "1 小时等于多少分钟？",
     "time": 20,
     "options": [
-     "100 分钟",
      "24 分钟",
+     "30 分钟",
      "60 分钟",
-     "30 分钟"
+     "100 分钟"
     ],
     "answer": [
      2
@@ -3668,8 +4221,8 @@
     "prompt": "拜年时，常说的一句吉祥话是？",
     "time": 20,
     "options": [
-     "生日快乐",
      "圣诞快乐",
+     "生日快乐",
      "恭喜发财",
      "中秋快乐"
     ],
@@ -3684,8 +4237,8 @@
     "options": [
      "团圆饭",
      "早餐",
-     "下午茶",
-     "夜宵"
+     "夜宵",
+     "下午茶"
     ],
     "answer": [
      0
@@ -3696,13 +4249,13 @@
     "prompt": "新加坡人过年时常一起「捞」什么？",
     "time": 20,
     "options": [
-     "米粉",
-     "粥",
      "鱼生",
+     "粥",
+     "米粉",
      "面线"
     ],
     "answer": [
-     2
+     0
     ]
    },
    {
@@ -3710,13 +4263,13 @@
     "prompt": "拜年时，常带什么水果送给亲友？",
     "time": 20,
     "options": [
-     "西瓜",
      "榴梿",
-     "两个柑（橘子）",
-     "香蕉"
+     "香蕉",
+     "西瓜",
+     "两个柑（橘子）"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -3738,13 +4291,13 @@
     "prompt": "过年时，牛车水常见的表演是？",
     "time": 20,
     "options": [
+     "舞狮",
      "划龙舟",
      "堆雪人",
-     "舞狮",
      "放风筝"
     ],
     "answer": [
-     2
+     0
     ]
    },
    {
@@ -3759,13 +4312,13 @@
     "time": 20,
     "note": "「余」和「鱼」同音。",
     "options": [
-     "狗",
      "鱼",
-     "猫",
-     "鸡"
+     "狗",
+     "鸡",
+     "猫"
     ],
     "answer": [
-     1
+     0
     ]
    }
   ],
@@ -3834,13 +4387,13 @@
     "prompt": "十二生肖排第一的是？",
     "time": 20,
     "options": [
-     "鼠",
      "龙",
+     "猪",
      "牛",
-     "猪"
+     "鼠"
     ],
     "answer": [
-     0
+     3
     ]
    },
    {
@@ -3862,13 +4415,13 @@
     "prompt": "十二生肖里，哪一个是传说中的动物？",
     "time": 20,
     "options": [
+     "龙",
      "蛇",
      "马",
-     "猴",
-     "龙"
+     "猴"
     ],
     "answer": [
-     3
+     0
     ]
    },
    {
@@ -3917,13 +4470,13 @@
     "prompt": "每户人家送 2 个柑，拜访 6 户人家，一共要带几个柑？",
     "time": 20,
     "options": [
+     "14 个",
      "12 个",
      "6 个",
-     "8 个",
-     "14 个"
+     "8 个"
     ],
     "answer": [
-     0
+     1
     ]
    },
    {
@@ -3953,13 +4506,13 @@
     "prompt": "舞狮队有 4 头狮子，每头狮子由 2 个人舞，一共几个人？",
     "time": 20,
     "options": [
-     "10 人",
      "4 人",
      "8 人",
+     "10 人",
      "6 人"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -3995,13 +4548,13 @@
     "prompt": "开斋节之前，穆斯林斋戒的那个月叫什么？",
     "time": 20,
     "options": [
-     "正月",
      "腊月",
      "斋月（Ramadan）",
-     "中秋月"
+     "中秋月",
+     "正月"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -4010,8 +4563,8 @@
     "time": 20,
     "options": [
      "穆斯林",
-     "佛教徒",
      "印度教徒",
+     "佛教徒",
      "基督徒"
     ],
     "answer": [
@@ -4023,24 +4576,10 @@
     "prompt": "新加坡哪里每年有开斋节灯饰和市集？",
     "time": 20,
     "options": [
+     "芽笼士乃",
      "小印度",
-     "牛车水",
      "乌节路",
-     "芽笼士乃"
-    ],
-    "answer": [
-     3
-    ]
-   },
-   {
-    "type": "mcq",
-    "prompt": "用椰叶编成小方格、里面包着米饭的食物叫什么？",
-    "time": 20,
-    "options": [
-     "马来粽（ketupat）",
-     "粽子",
-     "年糕",
-     "月饼"
+     "牛车水"
     ],
     "answer": [
      0
@@ -4048,16 +4587,30 @@
    },
    {
     "type": "mcq",
+    "prompt": "用椰叶编成小方格、里面包着米饭的食物叫什么？",
+    "time": 20,
+    "options": [
+     "粽子",
+     "马来粽（ketupat）",
+     "年糕",
+     "月饼"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
     "prompt": "开斋节的问候语是？",
     "time": 20,
     "options": [
-     "Happy Deepavali",
-     "Gong Xi Fa Cai",
+     "Merry Christmas",
      "Selamat Hari Raya",
-     "Merry Christmas"
+     "Gong Xi Fa Cai",
+     "Happy Deepavali"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -4078,9 +4631,9 @@
     "prompt": "开斋节时，马来男士常穿的传统服装是？",
     "time": 20,
     "options": [
-     "旗袍",
-     "和服",
      "纱丽",
+     "和服",
+     "旗袍",
      "Baju Melayu"
     ],
     "answer": [
@@ -4111,13 +4664,13 @@
     "prompt": "Hari Raya Puasa marks the end of the fasting month of ___.",
     "time": 20,
     "options": [
-     "Ramadan",
      "spring",
-     "Deepavali",
-     "December"
+     "December",
+     "Ramadan",
+     "Deepavali"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -4126,12 +4679,12 @@
     "time": 20,
     "options": [
      "dumpling",
-     "ketupat",
      "pizza",
+     "ketupat",
      "mooncake"
     ],
     "answer": [
-     1
+     2
     ]
    },
    {
@@ -4145,13 +4698,13 @@
     "prompt": "\"Selamat Hari Raya\" is a ___.",
     "time": 20,
     "options": [
-     "food",
-     "game",
      "dance",
-     "greeting"
+     "food",
+     "greeting",
+     "game"
     ],
     "answer": [
-     3
+     2
     ]
    },
    {
@@ -4170,13 +4723,13 @@
     "prompt": "We wear our ___ clothes on Hari Raya.",
     "time": 20,
     "options": [
-     "newly",
      "knew",
-     "new",
-     "news"
+     "news",
+     "newly",
+     "new"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -4193,12 +4746,12 @@
     "time": 20,
     "options": [
      "sunlight",
-     "sunny",
      "sunset",
+     "sunny",
      "sunshine"
     ],
     "answer": [
-     2
+     1
     ]
    }
   ],
@@ -4241,13 +4794,13 @@
     "prompt": "市集有 8 排摊位，每排 9 个，一共几个摊位？",
     "time": 20,
     "options": [
-     "72 个",
+     "81 个",
      "64 个",
      "17 个",
-     "81 个"
+     "72 个"
     ],
     "answer": [
-     0
+     3
     ]
    },
    {
@@ -4278,9 +4831,9 @@
     "time": 20,
     "options": [
      "17 元",
+     "15 元",
      "12 元",
-     "20 元",
-     "15 元"
+     "20 元"
     ],
     "answer": [
      0

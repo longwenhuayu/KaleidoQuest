@@ -268,8 +268,63 @@ add('g-space', 'general', ['小三以上', 'P3+'], ['太空探索', 'Space explo
   tf('月球自己会发光。', false, { note: '月光是月球反射的太阳光。' })
 ]);
 
+// ── 新增题包 ──
+add('zh-story', 'chinese', ['小二 – 小四', 'P2 – P4'], ['看图讲故事', 'Story starters'], ['根据词语和句子线索，排出一个小故事', 'Put story clues in a sensible order'], [
+  order('把小雨伞的故事排好顺序', ['天空下起雨。', '小明打开雨伞。', '他和朋友一起走回家。', '雨停了，天空出现彩虹。']),
+  order('把小种子的故事排好顺序', ['种子落在泥土里。', '种子吸收水分。', '小芽从土里长出来。', '植物开出美丽的花。']),
+  mcq('「兴高采烈」最接近哪个意思？', '非常开心', ['十分疲倦', '感到害怕', '特别安静']),
+  mcq('「安安静静」的反义词是？', '吵吵闹闹', ['开开心心', '干干净净', '整整齐齐']),
+  input('「一 ___ 白云」应该填什么量词？', ['朵']),
+  mcq('「因为下雨，___ 我带了雨伞。」应该填？', '所以', ['但是', '还是', '如果']),
+  tf('写日记时，可以按事情发生的先后顺序来写。', true),
+  mcq('哪一句话最适合作为故事的结尾？', '大家带着笑容回家了。', ['从前有一座小山。', '首先，我们准备材料。', '突然，门被推开了。'])
+]);
+add('m-money', 'math', ['小二 – 小四', 'P2 – P4'], ['小小理财家', 'Money matters'], ['认识钱币、找钱和简单预算', 'Coins, change and simple budgeting'], [
+  input('小文有 10 元，买了 3 元的橡皮，还剩多少元？', ['7', '7元', '7 元']),
+  input('一杯果汁 2 元，买 4 杯要多少元？', ['8', '8元', '8 元']),
+  mcq('哪一种钱币的价值最大？', '1 元', ['20 分', '50 分', '10 分']),
+  input('小丽用 5 元买 3 元 50 分的书签，应找回多少元？', ['1.50', '1.5', '1 元 50 分']),
+  mcq('2 元和 50 分合起来是多少？', '2 元 50 分', ['2 元 5 分', '7 元', '1 元 50 分']),
+  input('4 本练习簿每本 2 元，一共多少钱？', ['8', '8元', '8 元']),
+  tf('买东西时，先看看自己有多少钱，再决定买不买，是好习惯。', true),
+  mcq('小明有 20 元，想买 18 元的玩具，他还剩？', '2 元', ['38 元', '8 元', '1 元'])
+]);
+add('sci-weather', 'science', ['P3 – P5', 'P3 – P5'], ['天气观察站', 'Weather watch'], ['云、雨、风和温度：认识每天的天气', 'Clouds, rain, wind and temperature'], [
+  mcq('用什么仪器测量温度？', '温度计', ['指南针', '直尺', '放大镜']),
+  mcq('哪一种天气最适合放风筝？', '有风但不下雨', ['雷雨大风', '完全没有风', '暴雨']),
+  tf('云是由许多很小的水滴或冰晶组成的。', true),
+  mcq('雨水从云中落到地面，这个过程叫？', '降水', ['发芽', '融化', '反射']),
+  input('一天中，早上 20°C，下午 29°C，下午比早上高几度？', ['9', '9°C', '9 度']),
+  mcq('风向是指风从哪里？', '吹来', ['吹去', '停留', '消失']),
+  tf('雷电天气时，躲在大树下是安全的。', false, { note: '雷雨时应进入安全的室内，远离大树和空旷地带。' }),
+  order('水循环的简单顺序', ['太阳加热水面', '水蒸气上升冷却', '云中形成小水滴', '雨水落回地面'])
+]);
+
+// ── 万圣节专题 ──
+add('hw-culture', 'general', ['全年级', 'All levels'], ['万圣节探险', 'Halloween adventure'], ['南瓜灯、服装和不给糖就捣蛋：认识万圣节', 'Pumpkins, costumes and trick-or-treating'], [
+  mcq('万圣节是哪一天？', '10 月 31 日', ['10 月 1 日', '11 月 11 日', '12 月 31 日']),
+  mcq('万圣节常见的橙色蔬菜是？', '南瓜', ['西瓜', '黄瓜', '玉米']),
+  mcq('南瓜灯通常刻成什么样的脸？', '吓人的笑脸', ['睡着的脸', '哭泣的小鸟', '一朵花']),
+  mcq('孩子们挨家挨户说什么来要糖果？', '不给糖就捣蛋', ['新年快乐', '生日快乐', '早上好']),
+  tf('万圣节时，人们常常穿上特别的服装。', true),
+  mcq('下面哪一个最像万圣节的装饰？', '蜘蛛网', ['春联', '灯笼鱼', '雪橇']),
+  mcq('哪一种动物常常出现在万圣节故事里？', '蝙蝠', ['企鹅', '长颈鹿', '海豚']),
+  tf('万圣节的颜色常见橙色和黑色。', true)
+], 'halloween');
+add('hw-english', 'english', ['P2 – P4', 'P2 – P4'], ['Halloween word hunt', 'Halloween word hunt'], ['听一听、读一读万圣节英文词汇', 'Listen and practise Halloween words'], [
+  mcq('A carved pumpkin is called a ___', "jack-o'-lantern", ['snowman', 'firework', 'rainbow']),
+  mcq('Children say “Trick or ___!”', 'treat', ['train', 'tree', 'trip']),
+  mcq('A person who flies on a broom in stories is a ___', 'witch', ['pilot', 'farmer', 'chef']),
+  mcq('A white, spooky spirit is a ___', 'ghost', ['robot', 'rabbit', 'rocket']),
+  mcq('Which animal is often linked with Halloween?', 'bat', ['dolphin', 'panda', 'giraffe']),
+  input('Fill in the missing letter: c _ ndy', ['a']),
+  order('Put the words in order.', ['Happy', 'Halloween', 'to', 'you!']),
+  tf('A pumpkin is usually orange.', true)
+], 'halloween');
+
 // ── 节日专题：每个专题 3 个游戏，按日期自动出现在首页（农历节日每年日期不同，窗口放宽一些）──
 const COLLECTIONS = [
+  { id: 'halloween', title: ['万圣节专题', 'Halloween'], desc: ['南瓜灯、变装和不给糖就捣蛋', 'Pumpkins, costumes and trick-or-treating'], from: '10-01', to: '11-04' },
   { id: 'deepavali', title: ['屠妖节专题', 'Deepavali'], desc: ['光明节：油灯、彩绘和小印度的灯饰', 'Festival of Lights: diyas, rangoli and Little India'], from: '10-05', to: '11-20' },
   { id: 'yearend', title: ['圣诞与年终', 'Christmas & year-end'], desc: ['圣诞节、新年和年终假期', 'Christmas, New Year and the year-end holidays'], from: '11-21', to: '12-31' },
   { id: 'cny', title: ['农历新年专题', 'Chinese New Year'], desc: ['红包、团圆饭、捞鱼生和十二生肖', 'Red packets, reunion dinner, lo hei and the zodiac'], from: '01-01', to: '02-28' },
