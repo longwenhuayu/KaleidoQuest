@@ -11,7 +11,7 @@
       <a class="gcover" href="/try/${esc(g.id)}" tabindex="-1" aria-hidden="true"><img src="/gallery-covers/${esc(g.id)}.webp?v=20261022b" alt="" loading="lazy" onerror="this.parentNode.remove()"></a>
       <div class="gtop">${subjectIcon(g.subject)}<span class="gsub">${tt(SUBJ.find(s => s[0] === g.subject)[1], SUBJ.find(s => s[0] === g.subject)[2])}</span><span class="ggrade">${esc(grade)}</span></div>
       <h3><a class="gdetail" href="/copy/${esc(g.id)}">${esc(name)}</a></h3><p>${esc(desc)}</p>
-      <div class="gmeta"><span>${icon('list-ordered')} ${g.n} ${tt('题', 'questions')}${g.listening ? ` · ${icon('volume-2')} ${tt('听力', 'Listening')}` : ''}</span><button type="button" class="gcopy" data-g="copy">${icon('copy')} ${tt('复制来改', 'Copy & edit')}</button></div>
+      <div class="gmeta"><span>${icon('list-ordered')} ${g.n} ${tt('题', 'questions')}${g.listening ? ` · ${icon('volume-2')} ${tt('听力', 'Listening')}` : ''}</span><span class="gmeta-actions"><button type="button" class="gshare" data-g="share">${icon('send')} ${tt('分享', 'Share')}</button><button type="button" class="gcopy" data-g="copy">${icon('copy')} ${tt('复制来改', 'Copy & edit')}</button></span></div>
       <div class="gacts">
         <a class="btn go sm" href="/try/${esc(g.id)}">${icon('play')} ${tt('单人试玩', 'Try it')}</a>
         <button type="button" class="btn ghost sm" data-g="host">${icon('presentation')} ${tt('投屏开一局', 'Host for class')}</button>
@@ -25,6 +25,14 @@
     const b = e.target.closest('[data-g]'); if (!b) return;
     const id = b.closest('.gcard').dataset.id;
     if (b.dataset.g === 'host') return VA.pickMode(id, { gallery: true });
+    if (b.dataset.g === 'share') {
+      return VA.shareMenu({
+        title: tt(g.title[0], g.title[1]),
+        text: tt(`这套「${g.title[0]}」可以直接试玩，也可以复制后改成自己的课堂游戏。`, `Try “${g.title[1]}”, then copy it to make your own classroom game.`),
+        url: `${location.origin}/copy/${encodeURIComponent(id)}`,
+        event: 'gallery_shared'
+      });
+    }
     if (b.dataset.g === 'copy') {
       if (!await who()) { toast(tt('先免费注册一个老师账号，就能复制和修改', 'Sign up free to copy and edit')); setTimeout(() => location.href = '/?signup=1', 1200); return; }
       try { const r = await api(`/api/gallery/${id}/copy`, { method: 'POST', body: { lang: VA.lang } }); location.href = `/edit?id=${r.id}`; } catch (x) { toast(tt('出错了，请再试一次', 'Something went wrong')); }
