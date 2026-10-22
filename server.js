@@ -171,13 +171,18 @@ app.get(['/try/:id', '/hw/:code'], (req, res) => res.sendFile(path.join(__dirnam
 app.get('/copy/:id', (req, res) => res.sendFile(path.join(__dirname, 'public', 'copy.html')));
 require('./lib/admin')(app, { sendReset, rooms: G.rooms });
 
-app.get('/api/health', (req, res) => res.json({ ok: true, rooms: G.rooms.size }));
+app.get('/api/health', (req, res) => {
+  try { q('SELECT 1 AS ok').get(); res.json({ ok: true, rooms: G.rooms.size }); }
+  catch (e) { console.error('health check failed', e.message); res.status(503).json({ ok: false, error: 'database' }); }
+});
 // HTML 每次都向服务器确认（部署后马上生效）；其他静态文件缓存 1 小时
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: '1h', setHeaders: (res, file) => { if (file.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache'); } }));
 app.use('/api', (req, res) => res.status(404).json({ error: 'not_found' }));
 
 // ── WebSocket：主持人和学生都走这里 ──
 const server = http.createServer(app);
+process.on('unhandledRejection', e => console.error('unhandled rejection', e));
+process.on('uncaughtException', e => { console.error('uncaught exception', e); process.exit(1); });
 // 真实 IP：nginx 转发时在 X-Forwarded-For 里（只信本机代理）
 const clientIp = req => { const a = req.socket.remoteAddress || ''; return (a === '127.0.0.1' || a === '::1' || a === '::ffff:127.0.0.1') && req.headers['x-forwarded-for'] ? req.headers['x-forwarded-for'].split(',')[0].trim() : a; };
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 8 * 1024 });
