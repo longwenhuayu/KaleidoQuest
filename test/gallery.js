@@ -28,7 +28,7 @@ const wait = async (ws, t, ms = 8000) => { const end = Date.now() + ms; for (;;)
   for (const [subj, n] of Object.entries({ chinese: 9, math: 9, english: 7, science: 8, general: 5 })) assert.equal(base.filter(x => x.subject === subj).length, n, subj + ` ${n} 个`);
   // 节日专题：5 个，每个 2 或 3 个游戏，正在进行的排第一
   const colls = await (await fetch(BASE + '/api/collections')).json();
-  assert.equal(colls.length, 5); colls.forEach(c => assert.equal(list.filter(x => x.collection === c.id).length, c.id === 'halloween' ? 2 : 3, c.id));
+  assert.equal(colls.length, 5); colls.forEach(c => assert.equal(list.filter(x => x.collection === c.id).length, c.id === 'halloween' ? 3 : 3, c.id));
   assert.ok(colls.filter(c => c.active).every((c, i) => colls[i].active), '进行中的排前面');
   const at = d => G.collections(new Date(d + 'T04:00:00Z'))[0];
   assert.equal(at('2026-10-20').id, 'halloween'); assert.ok(at('2026-10-20').active);

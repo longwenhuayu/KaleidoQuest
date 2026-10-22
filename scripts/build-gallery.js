@@ -425,6 +425,16 @@ add('hw-english', 'english', ['P2 – P4', 'P2 – P4'], ['Halloween word hunt',
   order('Put the words in order.', ['Happy', 'Halloween', 'to', 'you!']),
   tf('A pumpkin is usually orange.', true)
 ], 'halloween');
+add('hw-math', 'math', ['小二 – 小四', 'P2 – P4'], ['万圣节数学派对', 'Halloween maths party'], ['南瓜、糖果和派对布置里的加减乘除', 'Add, subtract and multiply with pumpkins and sweets'], [
+  input('桌上有 6 个南瓜，每个南瓜画 2 张眼睛，一共有几只眼睛？', ['12', '12只', '12 只']),
+  input('小女巫有 24 颗糖果，平均分给 4 个朋友，每人几颗？', ['6', '6颗', '6 颗']),
+  input('南瓜灯每排 5 个，摆了 7 排，一共有几个？', ['35', '35个', '35 个']),
+  input('小明有 50 颗糖果，送出 18 颗，还剩几颗？', ['32', '32颗', '32 颗']),
+  mcq('派对上有 3 组小朋友，每组 4 人，一共有多少人？', '12 人', ['7 人', '9 人', '16 人']),
+  mcq('一条彩带长 10 米，用了 6 米，还剩多少米？', '4 米', ['3 米', '5 米', '16 米']),
+  tf('4 个南瓜，每个重 2 千克，一共重 8 千克。', true),
+  order('把制作南瓜灯的步骤排好顺序', ['挑选一个南瓜', '挖出里面的籽', '刻出眼睛和嘴巴', '放入小灯并点亮'])
+], 'halloween');
 
 // ── 节日专题：每个专题 3 个游戏，按日期自动出现在首页（农历节日每年日期不同，窗口放宽一些）──
 const COLLECTIONS = [
