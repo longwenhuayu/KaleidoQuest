@@ -8,7 +8,7 @@
 ## 当前状态
 
 - 生产环境已上线，健康检查：`GET /api/health` 返回 `{"ok":true,"rooms":0}`。
-- GitHub `main` 已推送，最近提交：`7139972 Add admin exports audit logs and stability checks`。
+- GitHub `main` 已推送，最近提交：`1398e56 Add admin user editing and password reset`。
 - `.DS_Store` 是本地已有改动，未提交、未上传。
 - 部署脚本：`deploy/push.sh`。
 - 生产服务器：`root@103.253.146.222:/opt/kaleido/`，PM2 应用名：`kaleido`，端口：`3048`。
@@ -45,6 +45,9 @@
 - System 页面展示最近管理员操作日志。
 - `admin_logs` 记录增长导出、教师启用/禁用、删除和重置密码等操作。
 - 教师列表在手机端切换为卡片布局，桌面端保留表格布局。
+- 用户详情抽屉支持编辑姓名和邮箱；邮箱重复时拒绝保存。
+- 管理员支持直接设置用户新密码；重设后会删除该用户的所有旧会话和待处理的密码重设令牌，并写入 `admin_logs`。
+- 保留“发送重设密码邮件”流程；管理员不能删除或停用自己的账号，自己的邮箱也不能改成非管理员邮箱。
 
 ### 首次登录与首局转化
 
@@ -60,6 +63,7 @@
 - `deploy/push.sh` 部署完成后同时检查本机和线上健康接口。
 - 新增 `deploy/healthcheck.sh`，检查健康接口、首页和复制游戏页面。
 - 2026-10-22 已完成线上部署，`https://kaleido.quest` 健康检查通过，Admin 返回 HTTP 200。
+- 2026-10-22 已完成管理后台用户编辑与直接重设密码功能的线上部署，完整测试通过。
 
 ## 关键文件
 
