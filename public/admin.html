@@ -52,16 +52,18 @@ tr.click:hover td{background:#faf8ff}
 .qv small{color:var(--muted)}
 .search{max-width:360px;margin-bottom:12px}
 .growth-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}.growth-panel{min-width:0}.growth-panel h3{margin-bottom:4px}.growth-panel .sub{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
-@media (max-width:760px){.charts,.growth-grid{grid-template-columns:1fr}}
+.admin-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:24px;padding:6px 0 2px}.eyebrow{display:block;color:var(--brand2);font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}.admin-intro h1{font-family:"Fredoka",sans-serif;font-size:clamp(28px,4vw,40px);line-height:1.05}.admin-intro p{color:var(--muted);font-size:14px;margin-top:7px;line-height:1.5}.admin-actions{display:flex;gap:8px;flex-wrap:wrap}.admin-actions .btn{white-space:nowrap}.ttabs{position:sticky;top:0;z-index:10;background:rgba(245,243,255,.92);backdrop-filter:blur(10px);padding-top:2px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:12px}.section-head h2{font-size:22px}.section-head p{font-size:13px;color:var(--muted);margin-top:4px}.search-wrap{width:min(360px,100%);position:relative}.search-wrap .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}.search-wrap .in{padding-left:36px;width:100%;margin:0}
+@media (max-width:760px){.charts,.growth-grid{grid-template-columns:1fr}.admin-intro{align-items:flex-start;flex-direction:column;margin-bottom:14px}.admin-actions{width:100%}.admin-actions .btn{flex:1}.ttabs{overflow:auto;top:0}.ttabs button{white-space:nowrap}.section-head{align-items:stretch;flex-direction:column}.search-wrap{width:100%}}
 </style>
 </head>
 <body>
 <div class="topbar"><a class="logo" href="/teacher"><i></i><span>KaleidoQuest</span></a><span class="tag" style="margin-left:6px"><svg class="ic" aria-hidden="true"><use href="/icons.svg#shield"></use></svg> Admin</span><span class="sp"></span><span class="muted" id="who"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher" id="toDash"></a></div>
 <div class="wrap">
-  <div class="ttabs"><button data-v="ov" class="on"></button><button data-v="growth"></button><button data-v="tc"></button><button data-v="sys"></button></div>
+  <header class="admin-intro"><div><span class="eyebrow">KaleidoQuest / Operations</span><h1 id="adminTitle"></h1><p id="adminSub"></p></div><div class="admin-actions"><button class="btn ghost sm" id="refreshAll"><svg class="ic" aria-hidden="true"><use href="/icons.svg#rotate-ccw"></use></svg> <span id="refreshLabel"></span></button><a class="btn main sm" href="/teacher" id="dashAction"></a></div></header>
+  <div class="ttabs" role="tablist"><button data-v="ov" class="on" role="tab"></button><button data-v="growth" role="tab"></button><button data-v="tc" role="tab"></button><button data-v="sys" role="tab"></button></div>
   <section id="vov"></section>
   <section id="vgrowth" hidden></section>
-  <section id="vtc" hidden><input class="in search" id="q"><div class="scroll"><table id="tTable"></table></div></section>
+  <section id="vtc" hidden><div class="section-head"><div><h2 id="teachersTitle"></h2><p id="teachersSub"></p></div><label class="search-wrap"><svg class="ic" aria-hidden="true"><use href="/icons.svg#search"></use></svg><input class="in" id="q"></label></div><div class="scroll"><table id="tTable"></table></div></section>
   <section id="vsys" hidden></section>
 </div>
 <div class="tip" id="tip" hidden></div>
@@ -74,8 +76,14 @@ const ago = ms => { if (!ms) return tt('从未', 'never'); const m = (Date.now()
 
 function staticText() {
   const [a, g, b, c] = document.querySelectorAll('.ttabs button');
-  a.textContent = tt('总览', 'Overview'); g.textContent = tt('增长', 'Growth'); b.textContent = tt('老师', 'Teachers'); c.textContent = tt('系统', 'System');
+  a.innerHTML = icon('layout-dashboard') + ' ' + tt('总览', 'Overview'); g.innerHTML = icon('trending-up') + ' ' + tt('增长', 'Growth'); b.innerHTML = icon('users') + ' ' + tt('老师', 'Teachers'); c.innerHTML = icon('server') + ' ' + tt('系统', 'System');
+  $('#adminTitle').textContent = tt('运营工作台', 'Operations dashboard');
+  $('#adminSub').textContent = tt('用真实使用数据判断哪里值得继续投入。', 'Use real product signals to decide what to improve next.');
+  $('#refreshLabel').textContent = tt('刷新数据', 'Refresh data');
+  $('#dashAction').textContent = tt('回老师后台', 'Teacher dashboard');
   $('#toDash').textContent = tt('回老师后台', 'Teacher dashboard');
+  $('#teachersTitle').textContent = tt('老师账号', 'Teacher accounts');
+  $('#teachersSub').textContent = tt('点击一行查看题包、游戏和作业；搜索不会改变数据。', 'Open a teacher to inspect sets, games and homework. Search is read-only.');
   $('#q').placeholder = tt('搜索邮箱或名字', 'Search email or name');
 }
 
@@ -200,9 +208,18 @@ function renderSys() {
   $('#sysRefresh').onclick = loadSys;
 }
 async function loadSys() { SYS = await api('/api/admin/system'); renderSys(); }
+async function refreshAll() {
+  const b = $('#refreshAll'); b.disabled = true;
+  try {
+    [OV, TC, GR, SYS] = await Promise.all([api('/api/admin/overview'), api('/api/admin/teachers'), api('/api/admin/growth'), api('/api/admin/system')]);
+    renderOv(); renderTc(); renderGrowth(); renderSys(); toast(tt('数据已刷新', 'Data refreshed'));
+  } catch (e) { toast(tt('刷新失败，请稍后再试', 'Refresh failed — try again'));
+  } finally { b.disabled = false; }
+}
+$('#refreshAll').onclick = refreshAll;
 
 document.querySelectorAll('.ttabs button').forEach(b => b.onclick = () => {
-  tab = b.dataset.v; document.querySelectorAll('.ttabs button').forEach(x => x.classList.toggle('on', x === b));
+  tab = b.dataset.v; document.querySelectorAll('.ttabs button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
   ['ov', 'growth', 'tc', 'sys'].forEach(v => $('#v' + v).hidden = v !== tab);
   if (tab === 'growth') loadGrowth();
   if (tab === 'sys') loadSys();
