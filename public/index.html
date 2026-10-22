@@ -5,21 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KaleidoQuest · Every subject is a quest</title>
 <meta name="description" content="KaleidoQuest：Every subject is a quest. 全班一起玩的课堂实时答题游戏。华文、数学、英文、科学都能用，AI 一键出题，学生手机扫码加入不用注册。by Vision Chinese Academy.">
+<meta property="og:type" content="website"><meta property="og:title" content="KaleidoQuest · 每一门课，都是一场闯关"><meta property="og:description" content="全班一起玩的课堂答题游戏。学生扫码加入，不用注册。"><meta property="og:image" content="https://kaleido.quest/icon.svg"><meta property="og:url" content="https://kaleido.quest/"><meta name="twitter:card" content="summary">
 <meta name="theme-color" content="#0e0b26">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021d">
+<link rel="stylesheet" href="/css/app.css?v=20261022a">
 <style>
-.top{display:flex;align-items:center;gap:10px;padding:16px 24px;max-width:1200px;margin:0 auto;width:100%}
+.top{display:flex;align-items:center;gap:10px;padding:16px 24px;max-width:1200px;margin:0 auto;width:100%;position:sticky;top:0;z-index:20;background:rgba(14,11,38,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .top .sp{flex:1}
 .top .logo{font-size:24px}
 .top .btn{font-size:15px}
 .top .ghost{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.25)}
 .lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
 /* 首屏：一句话 + 两个按钮；右边是会动的卡片角色 */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center;max-width:1160px;margin:0 auto;padding:36px 24px 56px;overflow-x:clip}
-.hero h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:clamp(44px,6.4vw,82px);line-height:1;letter-spacing:-1px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center;max-width:1160px;margin:0 auto;padding:36px 24px 56px;overflow:visible}
+.hero h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:clamp(44px,6.4vw,82px);line-height:1;letter-spacing:-1px;overflow-wrap:anywhere;min-width:0}
 .hero h1 span{background:linear-gradient(90deg,#fbbf24,#fb7185 55%,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .zh{font-size:clamp(20px,2.4vw,26px);font-weight:900;margin-top:18px}
 .hero p{font-size:17px;color:#cfc9ee;margin-top:12px;line-height:1.7;max-width:500px}
@@ -29,7 +30,7 @@
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
 .chips span{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 11px;font-weight:700;font-size:13px;color:#f1efff}
 .chips .ic{color:var(--sc)}
-.stage{position:relative;aspect-ratio:1;max-width:520px;width:100%;justify-self:center}
+.stage{position:relative;aspect-ratio:1;max-width:520px;width:100%;justify-self:center;min-width:0}
 .stage::before{content:"";position:absolute;inset:12%;border-radius:50%;background:conic-gradient(from 0deg,#7c3aed,#2563eb,#0891b2,#16a34a,#f59e0b,#ea580c,#db2777,#7c3aed);filter:blur(60px);opacity:.35;animation:spin 18s linear infinite}
 .orbit{position:absolute;inset:0;animation:spin 60s linear infinite}
 .orbit img{position:absolute;width:21%;aspect-ratio:1;border-radius:22px;box-shadow:0 12px 26px rgba(0,0,0,.4);border:3px solid rgba(255,255,255,.85);animation:spin 60s linear infinite reverse}
@@ -74,21 +75,23 @@
 .foot a{color:#c4b5fd}
 /* 登录弹窗 */
 .auth{position:fixed;inset:0;z-index:100;background:rgba(8,6,30,.7);display:grid;place-items:center;padding:16px;animation:tin .2s}
-.panel{position:relative;width:min(420px,100%);background:#fff;color:var(--ink);border-radius:22px;padding:24px;border-top:5px solid var(--brand2);box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.panel{position:relative;width:min(420px,100%);background:#fff;color:var(--ink);border-radius:22px;padding:24px;border-top:5px solid var(--brand2);box-shadow:0 30px 70px rgba(0,0,0,.5);max-height:calc(100dvh - 32px);overflow:auto}
 .panel h2{font-size:18px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .panel h2 .ic{color:var(--brand2)}
+.referral-hint{padding:10px 12px;margin:-4px 0 12px;background:#fdf2f8;border:1px solid #fbcfe8;border-radius:12px;color:#9d174d;font-size:13px;line-height:1.5;font-weight:700}
 .panel .x{position:absolute;top:12px;right:12px;border:0;background:#f3f0ff;border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}
 .tabs{display:flex;gap:4px;margin-bottom:12px;background:#f3f0ff;border-radius:12px;padding:4px}
-.tabs button{flex:1;border:0;border-radius:9px;padding:8px;font-weight:800;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button{flex:1;border:0;border-radius:9px;padding:8px;min-height:44px;font-weight:800;background:transparent;color:var(--muted);cursor:pointer}
 .tabs button.on{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(30,27,75,.15)}
 .form{display:grid;gap:10px}
 .forgot{background:none;border:0;color:var(--brand2);font-weight:700;font-size:13px;cursor:pointer;justify-self:center}
 .stu{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;text-align:center;color:var(--muted)}
 .stu a{font-weight:800;text-decoration:none}
 @media (max-width:980px){.gal .ggrid,.loops{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr);gap:18px;padding:16px 16px 40px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.cta,.chips{justify-content:center}.stage{max-width:360px;grid-row:1}.top{padding:12px 16px;gap:6px}.top .logo small{display:none}.how,.gal{padding-left:16px;padding-right:16px}.sec-h{font-size:26px}}
-@media (max-width:600px){.gal .ggrid,.loops{grid-template-columns:minmax(0,1fr)}.top .logo span{font-size:20px}.top .btn{padding:8px 11px;font-size:13px}.cta .btn{flex:1 1 100%}}
-@media (max-width:480px){.top .logo span{display:none}.top .lang{padding:5px 9px}}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr);gap:18px;padding:28px 16px 40px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.cta,.chips{justify-content:center}.stage{max-width:360px;grid-row:auto}.top{padding:12px 16px;gap:6px}.top .logo small{display:none}.how,.gal{padding-left:16px;padding-right:16px}.sec-h{font-size:26px}}
+@media (max-width:600px){.gal .ggrid,.loops{grid-template-columns:minmax(0,1fr)}.top .logo span{font-size:20px}.top .btn{padding:8px 10px;font-size:13px;min-height:40px}.cta{width:100%}.cta .btn{flex:1 1 100%;width:100%}.hero h1{font-size:clamp(42px,13vw,58px)}.hero .zh{font-size:20px}.hero p{font-size:15px}.stage{max-width:310px;margin-top:2px}.ready .cta{width:auto}.ready .cta .btn{width:auto}}
+@media (max-width:380px){.top{padding-left:10px;padding-right:10px;gap:4px}.top .logo{gap:0}.top .logo i{width:34px;height:34px}.top .btn{padding-left:8px;padding-right:8px;font-size:12px}.top .lang{padding-left:8px;padding-right:8px}.panel{padding:20px 16px}.hero{padding-left:12px;padding-right:12px}.chips{gap:6px}.chips span{font-size:12px;padding:5px 9px}}
+@media (max-width:480px){.top .logo span{display:none}.top .lang{padding:5px 9px}.auth{place-items:start center;overflow:auto;padding-top:max(16px,env(safe-area-inset-top))}}
 </style>
 </head>
 <body class="home">
@@ -126,6 +129,7 @@
   <div class="panel" id="teacherPanel">
     <button class="x" type="button" id="authX" aria-label="关闭"></button>
     <h2><svg class="ic" aria-hidden="true"><use href="/icons.svg#presentation"></use></svg> <span data-i="teacher_title"></span></h2>
+    <div class="referral-hint" id="referralHint" hidden></div>
     <div class="tabs"><button type="button" data-tab="login" class="on" data-i="login"></button><button type="button" data-tab="register" data-i="register"></button></div>
     <form class="form" id="authForm">
       <input class="in" id="name" data-ip="your_name" autocomplete="name" hidden>
@@ -145,7 +149,7 @@
     <div class="stu" id="stuBox"></div>
   </div>
 </div>
-<script src="/js/common.js?v=20261021d"></script>
+<script src="/js/common.js?v=20261022b"></script>
 <script src="/js/gallery-ui.js?v=20261021c"></script>
 <script>
 const { t, tt, api, $ } = VA;
@@ -197,6 +201,8 @@ function renderText() {
   // 登录弹窗
   $('#authX').innerHTML = VA.icon('x');
   $('#authBtn').textContent = t(tab);
+  $('#referralHint').hidden = !(tab === 'register' && VA.attribution.ref);
+  if (VA.attribution.ref) $('#referralHint').textContent = tt('你通过同事邀请而来。完成注册并开出第一局后，你和邀请人各得 5 次 AI 出题额度。', 'You were invited by a colleague. After you register and host your first game, you both get 5 AI generations.');
   $('#forgotLink').textContent = tt('忘记密码？', 'Forgot password?');
   $('#forgotLink').hidden = tab !== 'login';
   $('#forgotHint').textContent = tt('输入注册时用的邮箱，我们会发一个重设密码的链接（1 小时内有效）。', "Enter your sign-up email and we'll send a reset link (valid for 1 hour).");
@@ -214,6 +220,7 @@ document.addEventListener('DOMContentLoaded', renderText);
 
 const openAuth = which => {
   if (me) { location.href = '/teacher'; return; }
+  if (which === 'register') VA.track('signup_started');
   $('#auth').hidden = false;
   document.querySelector(`[data-tab=${which}]`).click();
   setTimeout(() => (which === 'register' ? $('#name') : $('#email')).focus(), 30);
@@ -237,7 +244,8 @@ document.addEventListener('DOMContentLoaded', () => { if (QS.get('signup')) open
 $('#authForm').onsubmit = async e => {
   e.preventDefault(); $('#err').textContent = '';
   try {
-    await api('/api/' + tab, { method: 'POST', body: { email: $('#email').value, password: $('#password').value, name: $('#name').value } });
+    await api('/api/' + tab, { method: 'POST', body: { email: $('#email').value, password: $('#password').value, name: $('#name').value, ref: VA.attribution.ref || '' } });
+    if (tab === 'register') VA.track('signup_completed');
     location.href = '/teacher';
   } catch (x) { $('#err').textContent = t('err_' + x.message) !== 'err_' + x.message ? t('err_' + x.message) : t('err_generic'); }
 };

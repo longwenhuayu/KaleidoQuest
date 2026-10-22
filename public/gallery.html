@@ -6,10 +6,11 @@
 <meta name="theme-color" content="#1e1b4b">
 <title>KaleidoQuest · 游戏库 Gallery</title>
 <meta name="description" content="KaleidoQuest 游戏库：华文、数学、英文、科学、综合常识 25 个现成课堂游戏，免登录单人试玩，也可以直接投屏全班一起玩。">
+<meta property="og:type" content="website"><meta property="og:title" content="KaleidoQuest 游戏库"><meta property="og:description" content="挑一个游戏直接试玩，或复制给自己的课堂使用。"><meta property="og:image" content="https://kaleido.quest/icon.svg"><meta property="og:url" content="https://kaleido.quest/gallery"><meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021d">
+<link rel="stylesheet" href="/css/app.css?v=20261022a">
 <style>
 body{min-height:100vh}
 header{display:flex;align-items:center;gap:12px;padding:14px 20px}
@@ -17,9 +18,9 @@ header .sp{flex:1}
 .wrap{max-width:1120px}
 h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px;display:flex;align-items:center;gap:10px}
 .sub{opacity:.82;margin:6px 0 18px;line-height:1.6}
-.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px;min-width:0}
 .bar .gchips{flex:1}
-.search{position:relative;width:min(260px,100%)}
+.search{position:relative;width:min(260px,100%);flex:none}
 .search input{width:100%;padding:9px 12px 9px 36px;border-radius:999px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:14px}
 .search input::placeholder{color:#b9b3dc}
 .search input:focus{outline:none;border-color:#fff}
@@ -29,7 +30,7 @@ h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px;display:flex;a
 .gchip.live::after{content:"";width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80}
 .none{grid-column:1/-1;text-align:center;color:#c9c3ea;padding:30px}
 .note{font-size:13px;opacity:.65;margin:30px 0 10px;text-align:center}
-@media (max-width:640px){h1{font-size:26px}}
+@media (max-width:640px){header{padding:10px 12px;gap:8px}h1{font-size:26px;overflow-wrap:anywhere;min-width:0}.wrap>div:first-child>span{display:none!important}.bar{display:block}.bar .gchips{margin-bottom:10px}.search{width:100%}}
 </style>
 </head>
 <body class="home">
@@ -41,7 +42,7 @@ h1{font-family:"Fredoka","Noto Sans SC",sans-serif;font-size:34px;display:flex;a
   <div class="ggrid" id="grid"></div>
   <div class="note" id="note"></div>
 </div>
-<script src="/js/common.js?v=20261021d"></script>
+<script src="/js/common.js?v=20261022b"></script>
 <script src="/js/gallery-ui.js?v=20261021c"></script>
 <script>
 const { tt, $, icon, esc } = VA;

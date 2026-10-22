@@ -37,6 +37,43 @@
   const $ = (s, root = document) => root.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   function toast(msg) { const d = document.createElement('div'); d.className = 'toast'; d.textContent = msg; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
+  const ATTR_KEY = 'kq_attribution';
+  function attribution() {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(ATTR_KEY) || '{}') || {}; } catch (e) {}
+    const q = new URLSearchParams(location.search);
+    const next = { ...saved };
+    ['from', 'ref', 'utm_source', 'utm_medium', 'utm_campaign'].forEach(k => { if (q.get(k)) next[k] = q.get(k).slice(0, 80); });
+    if (Object.keys(next).length) { try { localStorage.setItem(ATTR_KEY, JSON.stringify(next)); } catch (e) {} }
+    return next;
+  }
+  const ATTR = attribution();
+  function track(kind, meta = {}) {
+    try { fetch('/api/events', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind, source: ATTR.utm_source || ATTR.from || '', ref: ATTR.ref || '', meta: { ...meta, path: location.pathname } }), keepalive: true }).catch(() => {}); } catch (e) {}
+  }
+  function copyText(text) {
+    return navigator.clipboard?.writeText(text).catch(() => { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }) || Promise.resolve();
+  }
+  async function shareMenu({ title, text, url, event = 'share_sent' }) {
+    const shareUrl = url || location.href;
+    track('share_opened', { event });
+    const d = document.createElement('div'); d.className = 'share-pick';
+    d.innerHTML = `<div class="share-box" role="dialog" aria-modal="true" aria-labelledby="shareTitle"><button class="share-x" type="button" aria-label="${tt('关闭', 'Close')}">${icon('x')}</button><h2 id="shareTitle">${esc(tt('分享给同事或班级', 'Share with a colleague or class'))}</h2><p>${esc(text)}</p><div class="share-actions"><button class="btn main" data-share="native">${icon('send')} ${tt('系统分享', 'Share')}</button><button class="btn ghost" data-share="copy">${icon('copy')} ${tt('复制文案', 'Copy text')}</button><a class="btn ghost" data-share="wa" target="_blank" rel="noopener">WhatsApp</a><a class="btn ghost" data-share="tg" target="_blank" rel="noopener">Telegram</a></div><button class="btn ghost sm share-close" type="button">${tt('关闭', 'Close')}</button></div>`;
+    const message = `${text}\n${shareUrl}`;
+    d.querySelector('[data-share="wa"]').href = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    d.querySelector('[data-share="tg"]').href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
+    const close = () => d.remove();
+    d.addEventListener('click', e => { if (e.target === d || e.target.closest('.share-x,.share-close')) close(); });
+    d.querySelector('[data-share="native"]').onclick = async () => {
+      try {
+        if (navigator.share) { await navigator.share({ title, text, url: shareUrl }); track(event, { channel: 'native' }); close(); return; }
+      } catch (e) { if (e.name === 'AbortError') return; }
+      await copyText(message); track('share_copied', { channel: 'fallback' }); toast(tt('已复制分享文案', 'Share text copied')); close();
+    };
+    d.querySelector('[data-share="copy"]').onclick = async () => { await copyText(message); track('share_copied', { channel: 'copy' }); toast(tt('已复制分享文案', 'Share text copied')); };
+    d.querySelectorAll('[data-share="wa"],[data-share="tg"]').forEach(a => a.onclick = () => track(event, { channel: a.dataset.share }));
+    document.body.appendChild(d); d.querySelector('.share-x').focus();
+  }
   // 选项标记：字母徽章（颜色 + 字母 + 底纹三重区分，不靠颜色也分得清）
   const SHAPES = ['A', 'B', 'C', 'D', 'E', 'F'];
   // 图标：Lucide（public/icons.svg）
@@ -102,6 +139,6 @@
   const mascot = (pose, size = 120) => `<img class="mascot" src="/mascot/${pose}.webp" width="${size}" height="${size}" alt="">`;
   // 头像：emoji，或者 card:<id>（收集到的卡片角色）
   const av = a => { const m = /^card:([a-z0-9]{1,20})$/.exec(String(a || '')); return m ? `<img class="av-img" src="/card-art/${m[1]}.webp" alt="">` : esc(a); };
-  window.VA = { av, mascot, t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, icon, subjectIcon, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak };
-  document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); passwordEyes(); });
+  window.VA = { av, mascot, t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, icon, subjectIcon, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak, shareMenu, track, attribution: ATTR };
+  document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); passwordEyes(); track('page_view'); });
 })();

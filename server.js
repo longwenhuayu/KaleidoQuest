@@ -22,13 +22,28 @@ app.use((req, res, next) => { res.setHeader('X-Content-Type-Options', 'nosniff')
 
 // ── 账号 ──
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+function newReferralCode() {
+  let code;
+  do { code = `KQ-${crypto.randomBytes(4).toString('hex').toUpperCase()}`; } while (q('SELECT 1 FROM referral_codes WHERE code = ?').get(code));
+  return code;
+}
+function referralCodeFor(teacherId) {
+  const old = q('SELECT code FROM referral_codes WHERE teacher_id = ?').get(teacherId);
+  if (old) return old.code;
+  const code = newReferralCode();
+  q('INSERT INTO referral_codes (code, teacher_id, created) VALUES (?, ?, ?)').run(code, teacherId, Date.now());
+  return code;
+}
 app.post('/api/register', (req, res) => {
   const email = String(req.body.email || '').trim().toLowerCase(), name = String(req.body.name || '').trim().slice(0, 40), pw = String(req.body.password || '');
   if (!EMAIL.test(email)) return res.status(400).json({ error: 'email' });
   if (!name) return res.status(400).json({ error: 'name' });
   if (pw.length < 8) return res.status(400).json({ error: 'password' });
   if (q('SELECT 1 FROM teachers WHERE email = ?').get(email)) return res.status(409).json({ error: 'exists' });
-  const id = Number(q('INSERT INTO teachers (email, name, pw, created) VALUES (?, ?, ?, ?)').run(email, name, A.hash(pw), Date.now()).lastInsertRowid);
+  const ref = String(req.body.ref || '').trim().slice(0, 80);
+  const inviter = ref ? q('SELECT teacher_id FROM referral_codes WHERE code = ?').get(ref) : null;
+  const id = Number(q('INSERT INTO teachers (email, name, pw, created, referred_by) VALUES (?, ?, ?, ?, ?)').run(email, name, A.hash(pw), Date.now(), inviter?.teacher_id || null).lastInsertRowid);
+  referralCodeFor(id);
   A.startSession(res, id);
   res.json({ id, email, name });
 });
@@ -85,6 +100,28 @@ app.post('/api/reset', (req, res) => {
   res.json({ ok: true });
 });
 app.get('/api/me', (req, res) => { const t = A.teacherFrom(req); t ? res.json({ ...t, isAdmin: A.isAdmin(t) }) : res.status(401).json({ error: 'login_required' }); });
+app.get('/api/referral', A.requireTeacher, (req, res) => {
+  const code = referralCodeFor(req.teacher.id);
+  const invited = q(`SELECT name, created, first_game_at FROM teachers WHERE referred_by = ? ORDER BY created DESC`).all(req.teacher.id);
+  res.json({ code, url: `${process.env.APP_URL || `${req.protocol}://${req.get('host')}`}/?ref=${encodeURIComponent(code)}&from=teacher`, invited: invited.length, activated: invited.filter(x => x.first_game_at).length, bonusAi: q('SELECT coalesce(bonus_ai, 0) AS n FROM teachers WHERE id = ?').get(req.teacher.id).n, invitedList: invited.map(x => ({ name: x.name, created: x.created, activated: !!x.first_game_at })) });
+});
+
+// ── 轻量产品事件：只记录匿名页面/分享/转化，不记录学生姓名或答题内容 ──
+const EVENT_KINDS = new Set(['page_view', 'share_opened', 'share_sent', 'share_copied', 'signup_started', 'signup_completed', 'game_hosted', 'report_shared', 'homework_shared', 'referral_shared', 'gallery_shared', 'copy_landing_view', 'copy_try_clicked', 'copy_started', 'copy_completed']);
+const eventHits = new Map();
+app.post('/api/events', (req, res) => {
+  const now = Date.now(), ip = req.ip || 'unknown';
+  const hits = (eventHits.get(ip) || []).filter(t => now - t < 60e3);
+  if (hits.length >= 120) return res.status(429).end();
+  eventHits.set(ip, [...hits, now]);
+  const kind = String(req.body?.kind || '');
+  if (!EVENT_KINDS.has(kind)) return res.status(400).end();
+  const source = String(req.body?.source || '').slice(0, 40);
+  const ref = String(req.body?.ref || '').slice(0, 80);
+  const meta = req.body?.meta && typeof req.body.meta === 'object' ? JSON.stringify(req.body.meta).slice(0, 1000) : '{}';
+  q('INSERT INTO events (kind, source, ref, meta, created) VALUES (?, ?, ?, ?, ?)').run(kind, source, ref, meta, now);
+  res.status(204).end();
+});
 
 // ── 题包 ──
 const SUBJECTS = new Set(['chinese', 'math', 'english', 'science', 'general', 'malay', 'tamil']);
@@ -131,6 +168,7 @@ require('./lib/ai').routes(app);
 const S = require('./lib/students');
 S.routes(app);
 app.get(['/try/:id', '/hw/:code'], (req, res) => res.sendFile(path.join(__dirname, 'public', 'hw.html')));
+app.get('/copy/:id', (req, res) => res.sendFile(path.join(__dirname, 'public', 'copy.html')));
 require('./lib/admin')(app, { sendReset, rooms: G.rooms });
 
 app.get('/api/health', (req, res) => res.json({ ok: true, rooms: G.rooms.size }));

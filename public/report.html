@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KaleidoQuest · 赛后报告</title>
+<meta property="og:type" content="website"><meta property="og:title" content="KaleidoQuest · 课堂结果"><meta property="og:description" content="查看本次课堂游戏的参与情况和答题表现。"><meta property="og:image" content="https://kaleido.quest/icon.svg"><meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021d">
+<link rel="stylesheet" href="/css/app.css?v=20261022a">
 <style>
 h1{font-size:26px}
 .sum{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
@@ -38,7 +39,7 @@ td.y{background:#dcfce7;color:#166534}td.x{background:#fee2e2;color:#991b1b}td.z
 <body>
 <div class="topbar"><a class="logo" href="/teacher"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher#reports" data-i="back" id="backLink"></a></div>
 <div class="wrap" id="root"></div>
-<script src="/js/common.js?v=20261021d"></script>
+<script src="/js/common.js?v=20261022b"></script>
 <script>
 const { t, tt, api, $, esc, toast, icon } = VA;
 const RQ = new URLSearchParams(location.search), id = +RQ.get('id'), hwId = +RQ.get('hw');
@@ -63,6 +64,8 @@ function render() {
     ${hard.length ? `<h2>${icon('triangle-alert')} ${tt('最需要讲评的题', 'Questions to review')}</h2><div class="hard">${hard.map(q => `<div class="card"><b>${q.pct}%</b> · ${tt('第', 'Q')}${q.i + 1}${tt('题', '')}<div style="margin-top:4px;font-weight:700">${esc(q.prompt)}</div><div class="muted" style="font-size:13px">${tt('正确答案', 'Answer')}：${esc(q.answerText)}</div></div>`).join('')}</div>` : ''}
     <div class="acts">
       ${weak.length && G.setId ? `<button class="btn main" id="reviewBtn">${icon('repeat')} ${tt(`用 ${weak.length} 道错题生成复习题包`, `Make a review set from ${weak.length} weak questions`)}</button>` : ''}
+      <button class="btn ghost" id="shareReportBtn">${icon('send')} ${tt('分享给同事', 'Share with a colleague')}</button>
+      <button class="btn ghost" id="cardBtn">${icon('image')} ${tt('生成成绩卡', 'Make score card')}</button>
       <button class="btn ghost" id="csvBtn">${icon('download')} ${tt('导出 CSV', 'Export CSV')}</button>
     </div>
     <h2>${icon('list-ordered')} ${tt('每道题', 'By question')}</h2>
@@ -75,6 +78,20 @@ function render() {
     rows.push([], [tt('题目', 'Question'), tt('正确率', 'Accuracy'), tt('正确答案', 'Answer')], ...qs.map((q, i) => [q.prompt, acc[i] + '%', q.answerText]));
     const csv = '﻿' + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\r\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `${G.title}-report.csv`; a.click();
+  };
+  $('#shareReportBtn').onclick = () => VA.shareMenu({ title: `${G.title} · ${tt('课堂结果', 'Class result')}`, text: tt(`刚完成「${G.title}」课堂游戏：${n} 人参加，平均正确率 ${avg}%。同事也可以复制这套游戏来用。`, `We just finished “${G.title}”: ${n} players, ${avg}% average accuracy. A colleague can copy the game and use it too.`), url: `${location.origin}/gallery?from=report`, event: 'report_shared' });
+  $('#cardBtn').onclick = async () => {
+    const canvas = document.createElement('canvas'); canvas.width = 1200; canvas.height = 630;
+    const c = canvas.getContext('2d'); const g = c.createLinearGradient(0, 0, 1200, 630); g.addColorStop(0, '#312e81'); g.addColorStop(.55, '#7c3aed'); g.addColorStop(1, '#0891b2'); c.fillStyle = g; c.fillRect(0, 0, canvas.width, canvas.height);
+    c.fillStyle = 'rgba(255,255,255,.12)'; c.beginPath(); c.arc(1030, 110, 190, 0, Math.PI * 2); c.fill(); c.beginPath(); c.arc(160, 580, 240, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#fff'; c.font = '700 34px Fredoka, sans-serif'; c.fillText('KaleidoQuest', 72, 82); c.font = '900 54px Noto Sans SC, sans-serif'; c.fillText(tt('课堂完成！', 'Class complete!'), 72, 190); c.font = '700 32px Noto Sans SC, sans-serif'; c.fillText(String(G.title).slice(0, 24), 72, 250);
+    c.font = '900 72px Fredoka, sans-serif'; c.fillText(`${avg}%`, 72, 390); c.font = '700 25px Noto Sans SC, sans-serif'; c.fillText(tt('平均正确率', 'Average accuracy'), 285, 385); c.font = '700 25px Noto Sans SC, sans-serif'; c.fillText(`${n} ${tt('人参加', 'players')}`, 285, 430); c.font = '600 24px Noto Sans SC, sans-serif'; c.fillStyle = 'rgba(255,255,255,.82)'; c.fillText(tt('下一局：复制这套游戏，改成自己的课堂', 'Next: copy this game for your own class'), 72, 550);
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) return;
+    const file = new File([blob], 'kaleidoquest-score.png', { type: 'image/png' });
+    VA.track('report_shared', { channel: 'score_card' });
+    if (navigator.share && navigator.canShare?.({ files: [file] })) { try { await navigator.share({ title: `${G.title} · KaleidoQuest`, text: tt('课堂完成！', 'Class complete!'), files: [file] }); return; } catch (e) { if (e.name === 'AbortError') return; } }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'kaleidoquest-score.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast(tt('成绩卡已下载，可以发到班级群', 'Score card downloaded — share it with your class'));
   };
   if ($('#reviewBtn')) $('#reviewBtn').onclick = async () => {
     try {

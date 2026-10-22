@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/app.css?v=20261021d">
+<link rel="stylesheet" href="/css/app.css?v=20261022a">
 <style>
 html,body{height:100%}
 body{display:flex;flex-direction:column;overscroll-behavior:none}
@@ -38,11 +38,11 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 .qhead{display:flex;align-items:center;gap:10px;font-weight:800}
 .tbar{flex:1;height:10px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
 .tbar i{display:block;height:100%;background:var(--accent);width:100%}
-.qtext{background:#fff;color:var(--ink);border-radius:16px;padding:12px 16px;font-size:20px;font-weight:800;text-align:center}
+.qtext{background:#fff;color:var(--ink);border-radius:16px;padding:12px 16px;font-size:20px;font-weight:800;text-align:center;overflow-wrap:anywhere;min-width:0}
 .qimg{max-height:24vh;max-width:100%;border-radius:12px;align-self:center;background:#fff}
 .choices{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0}
 .choices.one{grid-template-columns:1fr}
-.choice{border:0;border-radius:18px;color:#fff;font-size:22px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;box-shadow:0 6px 0 rgba(0,0,0,.25);cursor:pointer;min-height:70px;word-break:break-word}
+.choice{border:0;border-radius:18px;color:#fff;font-size:clamp(18px,5vw,22px);font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;box-shadow:0 6px 0 rgba(0,0,0,.25);cursor:pointer;min-height:70px;min-width:0;overflow-wrap:anywhere;word-break:break-word}
 .choice:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .choice .shape{font-size:32px}
 .typebox{display:flex;flex-direction:column;gap:10px}
@@ -75,6 +75,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 .picklist button b{margin-left:auto;font-family:"Fredoka",sans-serif}
 .hitbar{position:fixed;left:12px;right:12px;top:62px;z-index:50;background:#fff;color:var(--ink);border-radius:14px;padding:12px 16px;font-weight:900;font-size:17px;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:pop .3s}
 .clock{font-family:"Fredoka",sans-serif;background:rgba(255,255,255,.14);border-radius:999px;padding:3px 10px}
+@media (max-width:420px){.top{gap:6px;padding-left:10px;padding-right:10px}.top .logo i{width:32px;height:32px}#gameTitle{font-size:13px}.top .me{max-width:27vw;padding-right:8px}.top .me b{max-width:13vw;overflow:hidden;text-overflow:ellipsis}.view{padding:10px}.qtext{font-size:18px;padding:11px 12px}.choice{border-radius:14px;padding:10px 8px}}
 </style>
 </head>
 <body class="night">
@@ -110,7 +111,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 <div class="view" id="vEnd"><div class="mid"><div class="medal" id="endMedal"></div><div class="h" id="endRank"></div><div class="pts" id="endScore"></div><div class="sub" id="endStats"></div><div id="endCards"></div><a class="btn ghost" href="/play" id="endAgain" style="margin-top:10px"></a></div></div>
 <div class="view" id="vMsg"><div class="mid"><div class="h" id="msgText"></div><a class="btn go" href="/play" id="msgBtn"></a></div></div>
 
-<script src="/js/common.js?v=20261021d"></script>
+<script src="/js/common.js?v=20261022b"></script>
 <script src="/js/cards-ui.js?v=20261020b"></script>
 <script>
 const { tt, $, esc, SHAPES, sfx, icon } = VA;
