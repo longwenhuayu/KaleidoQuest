@@ -8,7 +8,7 @@
 ## 当前状态
 
 - 生产环境已上线，健康检查：`GET /api/health` 返回 `{"ok":true,"rooms":0}`。
-- GitHub `main` 已推送，最近提交：`4de6066 Improve mobile UX and add growth referral features`。
+- GitHub `main` 已推送，最近提交：`7139972 Add admin exports audit logs and stability checks`。
 - `.DS_Store` 是本地已有改动，未提交、未上传。
 - 部署脚本：`deploy/push.sh`。
 - 生产服务器：`root@103.253.146.222:/opt/kaleido/`，PM2 应用名：`kaleido`，端口：`3048`。
@@ -40,6 +40,26 @@
 - 展示真实邀请排行榜，仅管理员可见。
 - 展示最近 30 天分享渠道来源。
 - 后端接口：`GET /api/admin/growth`，需要管理员权限。
+- Growth 支持按 7/30/90 天和渠道筛选，并通过 `GET /api/admin/growth.csv` 导出 CSV。
+- Growth 新增首次登录引导完成、跳过等转化指标。
+- System 页面展示最近管理员操作日志。
+- `admin_logs` 记录增长导出、教师启用/禁用、删除和重置密码等操作。
+- 教师列表在手机端切换为卡片布局，桌面端保留表格布局。
+
+### 首次登录与首局转化
+
+- `public/teacher.html` 提供首次登录 3 步引导：年级、学科/主题、立即开局。
+- 新用户可跳过引导；完成和跳过都会记录事件。
+- 新建游戏页面支持读取 URL 中的 `grade`、`subject`、`topic` 参数并预填。
+- 首局正式游戏转化可在 Growth 面板观察。
+
+### 稳定性与部署
+
+- `/api/health` 会实际探测 SQLite，数据库不可用时返回 HTTP 503。
+- `server.js` 增加 `unhandledRejection` 日志和 `uncaughtException` 退出机制，由 PM2 负责拉起。
+- `deploy/push.sh` 部署完成后同时检查本机和线上健康接口。
+- 新增 `deploy/healthcheck.sh`，检查健康接口、首页和复制游戏页面。
+- 2026-10-22 已完成线上部署，`https://kaleido.quest` 健康检查通过，Admin 返回 HTTP 200。
 
 ## 关键文件
 
@@ -54,6 +74,8 @@
 - `public/report.html`：赛后报告和成绩卡生成。
 - `public/admin.html`：管理员后台和增长面板。
 - `public/js/common.js`：多语言、API、分享弹层、事件追踪、归因信息。
+- `deploy/healthcheck.sh`：线上基础可用性检查。
+- `docs/DEVELOPMENT_MEMORY.md`：断点续开发记忆。
 
 ## 验证与部署
 
@@ -78,6 +100,7 @@ npm test
 ```bash
 curl -sS https://kaleido.quest/api/health
 curl -sS -o /dev/null -w '%{http_code}' https://kaleido.quest/copy/dv-english
+bash deploy/healthcheck.sh https://kaleido.quest
 ```
 
 ## 已知注意事项
@@ -94,8 +117,8 @@ git -c http.version=HTTP/1.1 -c http.postBuffer=524288000 push
 ## 下一步建议
 
 1. 观察 7 天真实数据，确认邀请点击、注册、首局激活和复制转化漏斗。
-2. 增加管理员增长报表 CSV 导出。
-3. 增加邀请排行榜时间筛选和按渠道筛选。
-4. 做首次登录 3 步引导：选年级、选主题、立即开局。
-5. 增加错误监控、启动失败告警和数据库恢复演练。
+2. 为邀请排行榜增加时间筛选、渠道筛选和榜单分享链接。
+3. 接入正式错误监控与 PM2 重启告警，区分前端、API、数据库错误。
+4. 完成生产数据库备份恢复演练，并记录恢复耗时和回滚步骤。
+5. 根据手机端真实访问数据继续优化 Admin 表单、筛选器和批量操作。
 
