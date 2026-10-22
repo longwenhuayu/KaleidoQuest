@@ -2,10 +2,12 @@
 (function () {
   const { tt, esc, icon, subjectIcon, api, toast } = VA;
   const SUBJ = [['all', '全部', 'All'], ['chinese', '华文', 'Chinese'], ['math', '数学', 'Math'], ['english', '英文', 'English'], ['science', '科学', 'Science'], ['general', '综合', 'General']];
+  const games = new Map();
   let me = undefined;
   const who = async () => { if (me === undefined) { try { me = await api('/api/me'); } catch (e) { me = null; } } return me; };
 
   function card(g) {
+    games.set(g.id, g);
     const name = tt(g.title[0], g.title[1]), desc = tt(g.desc[0], g.desc[1]), grade = tt(g.grade[0], g.grade[1]);
     return `<article class="gcard s-${esc(g.subject)}" data-id="${esc(g.id)}">
       <a class="gcover" href="/try/${esc(g.id)}" tabindex="-1" aria-hidden="true"><img src="/gallery-covers/${esc(g.id)}.webp?v=20261022b" alt="" loading="lazy" onerror="this.parentNode.remove()"></a>
@@ -24,6 +26,7 @@
   async function onClick(e) {
     const b = e.target.closest('[data-g]'); if (!b) return;
     const id = b.closest('.gcard').dataset.id;
+    const g = games.get(id); if (!g) return;
     if (b.dataset.g === 'host') return VA.pickMode(id, { gallery: true });
     if (b.dataset.g === 'share') {
       return VA.shareMenu({
