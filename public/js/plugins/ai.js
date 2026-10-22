@@ -7,7 +7,7 @@
   function panel(el, add) {
     el.innerHTML = `
       <div class="muted">${tt('写一个主题，或者把课文贴进来，AI 会按上面选的学科和年级出题。出完请检查一遍再用。', 'Give a topic or paste your lesson text. AI writes questions for the subject and level above — please check them before use.')}</div>
-      <input class="in" id="aiTopic" maxlength="200" placeholder="${tt('主题，例如：植物的部分 / 第五课《小猫钓鱼》生字', 'Topic, e.g. parts of a plant / past tense verbs')}">
+      <input class="in" id="aiTopic" maxlength="200" value="${VA.esc(new URLSearchParams(location.search).get('topic') || '')}" placeholder="${tt('主题，例如：植物的部分 / 第五课《小猫钓鱼》生字', 'Topic, e.g. parts of a plant / past tense verbs')}">
       <textarea class="in" id="aiText" maxlength="4000" placeholder="${tt('（选填）贴上课文，题目只从课文里出', '(Optional) paste lesson text — questions will come only from it')}"></textarea>
       <div class="row" style="align-items:center;gap:8px">
         <select class="in" id="aiLang" style="width:auto">${[['zh', '中文题目', 'In Chinese'], ['en', '英文题目', 'In English'], ['ms', '马来文题目', 'In Malay'], ['ta', '淡米尔文题目', 'In Tamil']].map(([k, zh, en]) => `<option value="${k}">${tt(zh, en)}</option>`).join('')}</select>

@@ -53,6 +53,11 @@
 .referral-note{grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;color:#9a3412;font-size:13px;line-height:1.5}
 .referral-note b{font-size:14px;color:#7c2d12}
 .referral-note .sp{flex:1}
+.onboard{grid-column:1/-1;padding:20px 22px;background:linear-gradient(135deg,#fff,#f7f3ff);border:1px solid #ddd6fe;border-radius:20px;box-shadow:0 10px 28px rgba(76,29,149,.08)}
+.onboard-head{display:flex;align-items:flex-start;gap:12px}.onboard-head .sp{flex:1}.onboard h2{font-size:20px}.onboard p{color:var(--muted);font-size:14px;line-height:1.55;margin-top:4px}.onboard .skip{border:0;background:none;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;padding:4px 0}
+.onboard-steps{display:flex;gap:8px;margin:16px 0 14px}.onboard-step{height:6px;flex:1;border-radius:9px;background:#e9e3ff}.onboard-step.on{background:var(--brand2)}
+.onboard-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.onboard-choice{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;color:var(--ink)}.onboard-choice:hover,.onboard-choice.on{border-color:var(--brand2);background:#f3f0ff;color:var(--brand2)}
+.onboard-actions{display:flex;align-items:center;gap:10px;margin-top:16px}.onboard-actions .sp{flex:1}.onboard-topic{width:min(560px,100%);margin-top:12px}
 @media (max-width:820px){.start{grid-template-columns:minmax(0,1fr)}}
 .ctab{width:100%;border-collapse:collapse;font-size:14px}
 .ctab th,.ctab td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
@@ -85,6 +90,7 @@
 <script>
 const { t, tt, api, $, esc, toast, SUBJECT_ICON } = VA;
 let sets = [], reports = [], hws = [], classes = [], referral = null;
+let onboardState = { step: 1, grade: '小三 / P3', subject: 'chinese', topic: '第五课生字复习' };
 const when = ms => new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 function renderSets() {
   $('#sets').innerHTML = sets.length ? sets.map(s => `<div class="card set" data-id="${s.id}">
@@ -185,6 +191,8 @@ function renderStart() {
   ];
   const n = steps.filter(s => s[0]).length;
   let hidden = false; try { hidden = localStorage.getItem('kq_start_hide') === '1'; } catch (e) {}
+  const firstRun = !sets.length && !hidden && (() => { try { return localStorage.getItem('kq_onboarding_done') !== '1'; } catch (e) { return true; } })();
+  const onboarding = firstRun ? renderOnboarding() : '';
   const todo = n === steps.length || hidden ? '' : `<div class="card todo"><button class="hide" type="button" id="startHide">${tt('隐藏', 'Hide')}</button>
     <h2>${VA.icon('award')} ${tt(`开始使用 · 完成 ${n} / ${steps.length}`, `Get started · ${n} of ${steps.length} done`)}</h2><div class="bar"><i style="width:${n / steps.length * 100}%"></i></div>
     ${steps.map(([done, ic, label, href]) => `<a href="${href}" class="${done ? 'done' : ''}" data-step="${href}"><span class="ck">${done ? VA.icon('check') : ''}</span>${VA.icon(ic)} ${label}${done ? '' : `<span class="go">${VA.icon('arrow-right')}</span>`}</a>`).join('')}</div>`;
@@ -195,7 +203,8 @@ function renderStart() {
     ['#referral', 'send', '#db2777,#7c3aed', tt('邀请同事', 'Invite a colleague'), referral ? tt(`${referral.invited} 位已加入 · ${referral.activated} 位已开第一局 · 奖励 ${referral.bonusAi} 次 AI`, `${referral.invited} joined · ${referral.activated} hosted · ${referral.bonusAi} AI bonus`) : tt('对方开出第一局，你和对方各得 5 次 AI 出题', 'You both get 5 AI generations after their first game')]];
   const referralNote = referral && referral.invited ? `<div class="referral-note">${VA.icon('gift')}<span><b>${tt('邀请进度', 'Referral progress')}</b><br>${tt(`${referral.activated} / ${referral.invited} 位同事已完成第一局`, `${referral.activated} of ${referral.invited} colleagues hosted their first game`)}</span><span class="sp"></span><button class="btn ghost sm" type="button" id="referralQuick">${tt('继续邀请', 'Invite more')}</button></div>` : '';
   $('#start').className = todo ? 'start' : '';
-  $('#start').innerHTML = todo + `<div class="tools"${todo ? '' : ' style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:22px"'}>${tools.map(([href, ic, g, h, s]) => `<a class="tool" href="${href}" style="background:linear-gradient(135deg,${g})"><b>${VA.icon(ic)} ${h}</b><span>${s}</span></a>`).join('')}${referralNote}</div>`;
+  $('#start').innerHTML = onboarding + todo + `<div class="tools"${todo ? '' : ' style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:22px"'}>${tools.map(([href, ic, g, h, s]) => `<a class="tool" href="${href}" style="background:linear-gradient(135deg,${g})"><b>${VA.icon(ic)} ${h}</b><span>${s}</span></a>`).join('')}${referralNote}</div>`;
+  bindOnboarding();
   const hide = $('#startHide'); if (hide) hide.onclick = () => { try { localStorage.setItem('kq_start_hide', '1'); } catch (e) {} renderStart(); };
   $('#referralQuick')?.addEventListener('click', shareReferral);
   $('#start').querySelectorAll('[href^="#"]').forEach(a => a.onclick = e => {
@@ -207,6 +216,21 @@ function renderStart() {
     const s = sets.find(x => x.n) || sets[0];
     if (h === '#play') VA.pickMode(s.id); else assign(s);
   });
+}
+function renderOnboarding() {
+  const s = onboardState, subjects = [['chinese', '华文', 'Chinese'], ['math', '数学', 'Math'], ['english', '英文', 'English'], ['science', '科学', 'Science']];
+  const step = s.step === 1 ? `<h2>${tt('先选一个年级', 'Choose a level')}</h2><p>${tt('我们会用它帮助 AI 控制题目难度。之后仍然可以修改。', 'This helps AI set the right difficulty. You can change it later.')}</p><div class="onboard-options">${['小一 / P1', '小二 / P2', '小三 / P3', '小四 / P4', '小五 / P5', '小六 / P6'].map(x => `<button class="onboard-choice${x === s.grade ? ' on' : ''}" data-ob-grade="${esc(x)}">${x}</button>`).join('')}</div><div class="onboard-actions"><span class="sp"></span><button class="btn main" data-ob="next">${tt('下一步', 'Next')} ${VA.icon('arrow-right')}</button></div>` : s.step === 2 ? `<h2>${tt('你准备教什么？', 'What are you teaching?')}</h2><p>${tt('选择学科，AI 会自动匹配题型和语言。', 'Pick a subject and AI will match the language and question style.')}</p><div class="onboard-options">${subjects.map(([id, zh, en]) => `<button class="onboard-choice${id === s.subject ? ' on' : ''}" data-ob-subject="${id}">${VA.icon(VA.SUBJECT_ICON[id])} ${tt(zh, en)}</button>`).join('')}</div><div class="onboard-actions"><button class="btn ghost" data-ob="back">${VA.icon('arrow-left')} ${tt('上一步', 'Back')}</button><span class="sp"></span><button class="btn main" data-ob="next">${tt('下一步', 'Next')} ${VA.icon('arrow-right')}</button></div>` : `<h2>${tt('给这套题一个主题', 'Name your first quiz')}</h2><p>${tt('写一个正在教的主题，下一步会打开 AI 出题器并自动填好。', 'Enter a lesson topic. The AI editor will open with these settings filled in.')}</p><input class="in onboard-topic" id="onboardTopic" maxlength="120" value="${esc(s.topic)}" placeholder="${tt('例如：植物的部分 / 第五课生字', 'e.g. parts of a plant / past tense verbs')}"><div class="onboard-actions"><button class="btn ghost" data-ob="back">${VA.icon('arrow-left')} ${tt('上一步', 'Back')}</button><span class="sp"></span><button class="btn main" data-ob="start">${VA.icon('sparkles')} ${tt('开始生成题目', 'Start generating')}</button></div>`;
+  return `<section class="onboard"><div class="onboard-head"><div><h2>${VA.icon('sparkles')} ${tt('3 步开出第一局', 'Your first game in 3 steps')}</h2><p>${tt('不用从空白开始，先让 AI 帮你搭好第一套题。', 'Start with an AI-assisted quiz instead of a blank page.')}</p></div><span class="sp"></span><button class="skip" data-ob="skip">${tt('跳过引导', 'Skip guide')}</button></div><div class="onboard-steps">${[1, 2, 3].map(i => `<i class="onboard-step${i <= s.step ? ' on' : ''}"></i>`).join('')}</div>${step}</section>`;
+}
+function bindOnboarding() {
+  const root = $('#start'); if (!root.querySelector('.onboard')) return;
+  root.querySelectorAll('[data-ob-grade]').forEach(b => b.onclick = () => { onboardState.grade = b.dataset.obGrade; renderStart(); });
+  root.querySelectorAll('[data-ob-subject]').forEach(b => b.onclick = () => { onboardState.subject = b.dataset.obSubject; renderStart(); });
+  root.querySelector('[data-ob="next"]')?.addEventListener('click', () => { onboardState.topic = $('#onboardTopic')?.value?.trim() || onboardState.topic; onboardState.step++; renderStart(); });
+  root.querySelector('[data-ob="back"]')?.addEventListener('click', () => { onboardState.topic = $('#onboardTopic')?.value?.trim() || onboardState.topic; onboardState.step--; renderStart(); });
+  root.querySelector('#onboardTopic')?.addEventListener('input', e => { onboardState.topic = e.target.value; });
+  root.querySelector('[data-ob="skip"]')?.addEventListener('click', () => { try { localStorage.setItem('kq_onboarding_done', '1'); } catch (e) {} VA.track('onboarding_skipped'); renderStart(); });
+  root.querySelector('[data-ob="start"]')?.addEventListener('click', () => { onboardState.topic = $('#onboardTopic').value.trim() || onboardState.topic; try { localStorage.setItem('kq_onboarding_done', '1'); } catch (e) {} VA.track('onboarding_completed', { subject: onboardState.subject }); location.href = `/edit?p=ai&subject=${encodeURIComponent(onboardState.subject)}&grade=${encodeURIComponent(onboardState.grade)}&topic=${encodeURIComponent(onboardState.topic)}`; });
 }
 async function shareReferral() {
   try {

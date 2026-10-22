@@ -107,7 +107,7 @@ app.get('/api/referral', A.requireTeacher, (req, res) => {
 });
 
 // ── 轻量产品事件：只记录匿名页面/分享/转化，不记录学生姓名或答题内容 ──
-const EVENT_KINDS = new Set(['page_view', 'share_opened', 'share_sent', 'share_copied', 'signup_started', 'signup_completed', 'game_hosted', 'report_shared', 'homework_shared', 'referral_shared', 'gallery_shared', 'copy_landing_view', 'copy_try_clicked', 'copy_started', 'copy_completed']);
+const EVENT_KINDS = new Set(['page_view', 'share_opened', 'share_sent', 'share_copied', 'signup_started', 'signup_completed', 'game_hosted', 'report_shared', 'homework_shared', 'referral_shared', 'gallery_shared', 'copy_landing_view', 'copy_try_clicked', 'copy_started', 'copy_completed', 'onboarding_skipped', 'onboarding_completed']);
 const eventHits = new Map();
 app.post('/api/events', (req, res) => {
   const now = Date.now(), ip = req.ip || 'unknown';
