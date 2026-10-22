@@ -3325,6 +3325,1151 @@
   ]
  },
  {
+  "id": "zh-reading",
+  "subject": "chinese",
+  "grade": [
+   "小二 – 小六",
+   "P2 – P6"
+  ],
+  "title": [
+   "华文阅读理解",
+   "Chinese reading"
+  ],
+  "desc": [
+   "读短文，找出主旨、细节和事情的先后",
+   "Read short passages and find the main idea"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "短文：小鸟受伤了，小明把它带回家，包扎好翅膀，第二天才放它回到树上。小明是一个怎样的人？",
+    "time": 20,
+    "options": [
+     "很吵闹",
+     "很粗心",
+     "有爱心",
+     "很贪吃"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "上题中，小明为什么第二天才放走小鸟？",
+    "time": 20,
+    "options": [
+     "因为小鸟不会飞",
+     "因为天黑了",
+     "因为要先照顾它的伤口",
+     "因为他想养鸟"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「春天来了，小花、小草和树木都长出了嫩芽。」这句话主要写什么？",
+    "time": 20,
+    "options": [
+     "一场运动会",
+     "春天的景象",
+     "冬天的天气",
+     "动物的叫声"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「小华先洗手，然后吃早餐，最后背上书包去上学。」第一件事是什么？",
+    "time": 20,
+    "options": [
+     "吃早餐",
+     "洗手",
+     "去上学",
+     "背书包"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「这本书不但有趣，而且让我学到了很多知识。」这句话说明这本书？",
+    "time": 20,
+    "options": [
+     "有趣又有知识",
+     "只有图画",
+     "很难读",
+     "非常短"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "「小河里的水清清的，鱼儿在水中自由地游来游去。」这句话写的是小河的什么？",
+    "time": 30,
+    "answer": [
+     "景色",
+     "景象"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "阅读短文时，可以先看看题目，再带着问题找答案。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "「小雨越下越大，大家赶快跑进屋里。」事情的结果是？",
+    "time": 20,
+    "options": [
+     "大家去游泳",
+     "太阳出来了",
+     "雨停了",
+     "大家跑进屋里"
+    ],
+    "answer": [
+     3
+    ]
+   }
+  ]
+ },
+ {
+  "id": "zh-synonyms",
+  "subject": "chinese",
+  "grade": [
+   "小二 – 小四",
+   "P2 – P4"
+  ],
+  "title": [
+   "近义词与反义词",
+   "Synonyms & antonyms"
+  ],
+  "desc": [
+   "找意思相近或相反的词语",
+   "Match words with similar or opposite meanings"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "「美丽」的近义词是？",
+    "time": 20,
+    "options": [
+     "寒冷",
+     "漂亮",
+     "安静",
+     "难看"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「开始」的反义词是？",
+    "time": 20,
+    "options": [
+     "继续",
+     "结束",
+     "马上",
+     "准备"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「快乐」的近义词是？",
+    "time": 20,
+    "options": [
+     "开心",
+     "紧张",
+     "生气",
+     "悲伤"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「高」的反义词是？",
+    "time": 20,
+    "options": [
+     "低",
+     "快",
+     "大",
+     "远"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「安静」的反义词是？",
+    "time": 20,
+    "options": [
+     "明亮",
+     "干净",
+     "热闹",
+     "整齐"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「勇敢」的反义词是？",
+    "time": 20,
+    "options": [
+     "努力",
+     "胆小",
+     "聪明",
+     "诚实"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「帮助」的近义词是？",
+    "time": 20,
+    "options": [
+     "比赛",
+     "等待",
+     "协助",
+     "拒绝"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "「炎热」的反义词是？",
+    "time": 20,
+    "options": [
+     "湿润",
+     "温暖",
+     "明亮",
+     "寒冷"
+    ],
+    "answer": [
+     3
+    ]
+   }
+  ]
+ },
+ {
+  "id": "zh-picture-sentences",
+  "subject": "chinese",
+  "grade": [
+   "小一 – 小三",
+   "P1 – P3"
+  ],
+  "title": [
+   "看图写句",
+   "Picture sentences"
+  ],
+  "desc": [
+   "根据场景选择合适的词语和句子",
+   "Choose words and sentences for a picture"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "图中小朋友正在公园里___风筝。",
+    "time": 20,
+    "options": [
+     "喝",
+     "穿",
+     "放",
+     "听"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "图中桌上有一本书和一支___。",
+    "time": 20,
+    "options": [
+     "帽子",
+     "鞋子",
+     "铅笔",
+     "雨伞"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "小猫躺在椅子___。",
+    "time": 20,
+    "options": [
+     "下面",
+     "昨天",
+     "很快",
+     "因为"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "太阳出来了，天气变得很___。",
+    "time": 20,
+    "options": [
+     "锋利",
+     "吵闹",
+     "晴朗",
+     "黑暗"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "把一幅「植树」图的句子排好顺序",
+    "time": 30,
+    "options": [
+     "小朋友挖了一个洞。",
+     "他们把小树苗放进去。",
+     "大家一起把泥土填好。",
+     "小树苗在阳光下长大。"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "哪一句最适合描述「孩子们在图书馆看书」？",
+    "time": 20,
+    "options": [
+     "孩子们在雨中游泳。",
+     "孩子们在操场上踢球。",
+     "孩子们安静地看书。",
+     "孩子们在厨房煮饭。"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "「一 ___ 小鸟」应该填什么量词？",
+    "time": 30,
+    "answer": [
+     "只"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "写看图句子时，要注意人物正在做什么。",
+    "time": 15,
+    "answer": true
+   }
+  ]
+ },
+ {
+  "id": "m-time",
+  "subject": "math",
+  "grade": [
+   "小二 – 小四",
+   "P2 – P4"
+  ],
+  "title": [
+   "时间与日历",
+   "Time & calendar"
+  ],
+  "desc": [
+   "读钟、算时间差，认识星期和月份",
+   "Read clocks and calculate time intervals"
+  ],
+  "questions": [
+   {
+    "type": "input",
+    "prompt": "上午 8 时 30 分到 9 时，一共多少分钟？",
+    "time": 30,
+    "answer": [
+     "30",
+     "30分钟",
+     "30 分钟"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "电影下午 2:15 开始，3:45 结束，一共多少分钟？",
+    "time": 30,
+    "answer": [
+     "90",
+     "90分钟",
+     "90 分钟"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "如果今天是星期三，三天后是星期几？",
+    "time": 20,
+    "options": [
+     "星期五",
+     "星期六",
+     "星期四",
+     "星期日"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "一年有多少个月？",
+    "time": 30,
+    "answer": [
+     "12",
+     "十二"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "4 月有多少天？",
+    "time": 20,
+    "options": [
+     "28 天",
+     "31 天",
+     "30 天",
+     "29 天"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "小美晚上 9 时睡觉，早上 7 时起床，她睡了几小时？",
+    "time": 30,
+    "answer": [
+     "10",
+     "10小时",
+     "10 小时"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "1 小时等于 60 分钟。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "火车 10:20 出发，10:05 应该提前多少分钟到站？",
+    "time": 20,
+    "options": [
+     "25 分钟",
+     "15 分钟",
+     "5 分钟",
+     "60 分钟"
+    ],
+    "answer": [
+     1
+    ]
+   }
+  ]
+ },
+ {
+  "id": "m-units",
+  "subject": "math",
+  "grade": [
+   "小二 – 小五",
+   "P2 – P5"
+  ],
+  "title": [
+   "长度、重量与容量",
+   "Measures"
+  ],
+  "desc": [
+   "厘米、米、千克和升的生活应用",
+   "Length, mass and capacity in daily life"
+  ],
+  "questions": [
+   {
+    "type": "input",
+    "prompt": "1 米等于多少厘米？",
+    "time": 30,
+    "answer": [
+     "100",
+     "100厘米",
+     "100 厘米"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一支铅笔的长度最适合用什么单位量？",
+    "time": 20,
+    "options": [
+     "厘米",
+     "千克",
+     "千米",
+     "升"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "2 米 30 厘米等于多少厘米？",
+    "time": 30,
+    "answer": [
+     "230",
+     "230厘米",
+     "230 厘米"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一袋米的重量最适合用什么单位量？",
+    "time": 20,
+    "options": [
+     "厘米",
+     "毫升",
+     "千克",
+     "米"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "2 千克苹果和 3 千克橙子合起来有多少千克？",
+    "time": 30,
+    "answer": [
+     "5",
+     "5千克",
+     "5 千克"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "一瓶水的容量最适合用什么单位量？",
+    "time": 20,
+    "options": [
+     "米",
+     "千克",
+     "厘米",
+     "毫升"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "1 升等于多少毫升？",
+    "time": 30,
+    "answer": [
+     "1000",
+     "1000毫升",
+     "1000 毫升"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "一辆汽车从新加坡开到马来西亚，路程适合用千米来量。",
+    "time": 15,
+    "answer": true
+   }
+  ]
+ },
+ {
+  "id": "m-geometry",
+  "subject": "math",
+  "grade": [
+   "小三 – 小六",
+   "P3 – P6"
+  ],
+  "title": [
+   "几何图形",
+   "Geometry"
+  ],
+  "desc": [
+   "角、对称、周长、面积和立体图形",
+   "Angles, symmetry, perimeter and area"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "三条边组成的图形叫？",
+    "time": 20,
+    "options": [
+     "三角形",
+     "圆形",
+     "正方形",
+     "长方形"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "正方形有几条相等的边？",
+    "time": 20,
+    "options": [
+     "3 条",
+     "5 条",
+     "4 条",
+     "2 条"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "长方形长 8 厘米，宽 3 厘米，周长是多少厘米？",
+    "time": 30,
+    "answer": [
+     "22",
+     "22厘米",
+     "22 厘米"
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "正方形边长 5 厘米，面积是多少平方厘米？",
+    "time": 30,
+    "answer": [
+     "25",
+     "25平方厘米",
+     "25 平方厘米"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "哪一个图形有 4 条相等的边和 4 个直角？",
+    "time": 20,
+    "options": [
+     "圆形",
+     "三角形",
+     "正方形",
+     "梯形"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "圆形没有角。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "一个图形沿着一条线折叠后两边完全重合，这个图形是？",
+    "time": 20,
+    "options": [
+     "对称图形",
+     "立体图形",
+     "透明图形",
+     "弯曲图形"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "order",
+    "prompt": "从平面到立体，哪一组顺序合理？",
+    "time": 30,
+    "options": [
+     "正方形",
+     "正方体的一个面",
+     "完整的正方体"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "en-reading",
+  "subject": "english",
+  "grade": [
+   "P3 – P6",
+   "P3 – P6"
+  ],
+  "title": [
+   "English reading comprehension",
+   "English reading comprehension"
+  ],
+  "desc": [
+   "Read short passages and answer questions",
+   "Read, understand and infer"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "Passage: Mia planted a seed. She watered it every day. After a week, a small green leaf appeared. What did Mia do every day?",
+    "time": 20,
+    "options": [
+     "She picked the leaf.",
+     "She bought a tree.",
+     "She painted the pot.",
+     "She watered the seed."
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "What appeared after a week?",
+    "time": 20,
+    "options": [
+     "A small green leaf.",
+     "A red flower.",
+     "A big tree.",
+     "A yellow fruit."
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "“The puppy hid under the table because it was raining.” Why did the puppy hide?",
+    "time": 20,
+    "options": [
+     "It was sunny.",
+     "It was hungry.",
+     "It was raining.",
+     "It was playing."
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which word best describes the puppy?",
+    "time": 20,
+    "options": [
+     "Huge",
+     "Old",
+     "Loud",
+     "Small"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "“First, wash the apple. Next, cut it. Finally, eat it.” What happens second?",
+    "time": 20,
+    "options": [
+     "Cut the apple.",
+     "Buy the apple.",
+     "Eat the apple.",
+     "Wash the apple."
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "A title can give us a clue about what a passage is about.",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "Which sentence is a fact?",
+    "time": 20,
+    "options": [
+     "Blue is the best colour.",
+     "Birds have feathers.",
+     "Rainy days are boring.",
+     "Birds are the cutest animals."
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "If a character shares her umbrella, she is probably being ___.",
+    "time": 20,
+    "options": [
+     "selfish",
+     "angry",
+     "careless",
+     "kind"
+    ],
+    "answer": [
+     3
+    ]
+   }
+  ]
+ },
+ {
+  "id": "en-prepositions",
+  "subject": "english",
+  "grade": [
+   "P2 – P4",
+   "P2 – P4"
+  ],
+  "title": [
+   "Prepositions & sentence patterns",
+   "Prepositions & sentence patterns"
+  ],
+  "desc": [
+   "Practise in, on, under, between and everyday sentence patterns",
+   "Use common prepositions correctly"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "The book is ___ the desk.",
+    "time": 20,
+    "options": [
+     "under",
+     "between",
+     "on",
+     "in"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "The cat is hiding ___ the chair.",
+    "time": 20,
+    "options": [
+     "at",
+     "between",
+     "under",
+     "on"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "The girl is standing ___ two friends.",
+    "time": 20,
+    "options": [
+     "between",
+     "under",
+     "on",
+     "in"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "We go to school ___ Monday.",
+    "time": 20,
+    "options": [
+     "on",
+     "at",
+     "under",
+     "in"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "The meeting starts ___ 9 o’clock.",
+    "time": 20,
+    "options": [
+     "on",
+     "in",
+     "between",
+     "at"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "There ___ three apples in the basket.",
+    "time": 20,
+    "options": [
+     "am",
+     "are",
+     "is",
+     "be"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "___ there a pencil in your bag?",
+    "time": 20,
+    "options": [
+     "Is",
+     "Are",
+     "Be",
+     "Am"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "We say “I am happy” with the verb “am”.",
+    "time": 15,
+    "answer": true
+   }
+  ]
+ },
+ {
+  "id": "sci-foodchain",
+  "subject": "science",
+  "grade": [
+   "P3 – P5",
+   "P3 – P5"
+  ],
+  "title": [
+   "食物链与生态",
+   "Food chains"
+  ],
+  "desc": [
+   "认识生产者、消费者和食物链",
+   "Producers, consumers and simple food chains"
+  ],
+  "questions": [
+   {
+    "type": "order",
+    "prompt": "把食物链排好顺序",
+    "time": 30,
+    "options": [
+     "太阳",
+     "草",
+     "兔子",
+     "鹰"
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "食物链中，植物通常是？",
+    "time": 20,
+    "options": [
+     "生产者",
+     "捕食者",
+     "无生命物体",
+     "分解者"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "下面哪一种动物吃植物？",
+    "time": 20,
+    "options": [
+     "狮子",
+     "猫头鹰",
+     "老鹰",
+     "兔子"
+    ],
+    "answer": [
+     3
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "如果草变少，兔子的食物会怎样？",
+    "time": 20,
+    "options": [
+     "变多",
+     "变成水",
+     "变少",
+     "没有变化"
+    ],
+    "answer": [
+     2
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "食物链通常从植物开始。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "蘑菇和细菌在生态系统中常常帮助分解什么？",
+    "time": 20,
+    "options": [
+     "死去的生物",
+     "阳光",
+     "空气",
+     "石头"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "下面哪一条食物链比较合理？",
+    "time": 20,
+    "options": [
+     "石头 → 兔子 → 草 → 鹰",
+     "草 → 蚱蜢 → 青蛙 → 蛇",
+     "青蛙 → 太阳 → 草 → 蛇",
+     "蛇 → 草 → 青蛙 → 蚱蜢"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "生态系统中的生物彼此之间没有关系。",
+    "time": 15,
+    "note": "生物会通过食物、栖息地和竞争互相影响。",
+    "answer": false
+   }
+  ]
+ },
+ {
+  "id": "sci-energy",
+  "subject": "science",
+  "grade": [
+   "P4 – P6",
+   "P4 – P6"
+  ],
+  "title": [
+   "能源与环保",
+   "Energy & environment"
+  ],
+  "desc": [
+   "认识能源、节约资源和保护环境",
+   "Energy sources, saving resources and caring for Earth"
+  ],
+  "questions": [
+   {
+    "type": "mcq",
+    "prompt": "太阳能来自哪里？",
+    "time": 20,
+    "options": [
+     "海水",
+     "太阳",
+     "土壤",
+     "月亮"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "下面哪一种是可再生能源？",
+    "time": 20,
+    "options": [
+     "煤",
+     "风能",
+     "天然气",
+     "石油"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "关掉不用的电灯可以节约能源。",
+    "time": 15,
+    "answer": true
+   },
+   {
+    "type": "mcq",
+    "prompt": "用过的纸张最好怎样处理？",
+    "time": 20,
+    "options": [
+     "回收再利用",
+     "全部丢进河里",
+     "烧掉所有纸张",
+     "藏在抽屉里"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "植物吸收空气中的哪一种气体来制造食物？",
+    "time": 20,
+    "options": [
+     "二氧化碳",
+     "氧气",
+     "水蒸气",
+     "氮气"
+    ],
+    "answer": [
+     0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "下面哪一个做法最环保？",
+    "time": 20,
+    "options": [
+     "一直使用一次性杯子",
+     "自带水瓶",
+     "让水龙头一直开着",
+     "把垃圾丢在地上"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "input",
+    "prompt": "地球被称为「蓝色星球」，因为表面有很多什么？",
+    "time": 30,
+    "answer": [
+     "水"
+    ]
+   },
+   {
+    "type": "tf",
+    "prompt": "塑料垃圾可能会伤害海洋动物。",
+    "time": 15,
+    "answer": true
+   }
+  ]
+ },
+ {
   "id": "hw-culture",
   "subject": "general",
   "grade": [
@@ -3346,12 +4491,12 @@
     "time": 20,
     "options": [
      "12 月 31 日",
-     "10 月 1 日",
      "10 月 31 日",
+     "10 月 1 日",
      "11 月 11 日"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -3359,13 +4504,13 @@
     "prompt": "万圣节常见的橙色蔬菜是？",
     "time": 20,
     "options": [
+     "黄瓜",
      "玉米",
      "西瓜",
-     "南瓜",
-     "黄瓜"
+     "南瓜"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -3374,12 +4519,12 @@
     "time": 20,
     "options": [
      "一朵花",
-     "吓人的笑脸",
      "睡着的脸",
+     "吓人的笑脸",
      "哭泣的小鸟"
     ],
     "answer": [
-     1
+     2
     ]
    },
    {
@@ -3387,13 +4532,13 @@
     "prompt": "孩子们挨家挨户说什么来要糖果？",
     "time": 20,
     "options": [
-     "新年快乐",
-     "不给糖就捣蛋",
+     "生日快乐",
      "早上好",
-     "生日快乐"
+     "不给糖就捣蛋",
+     "新年快乐"
     ],
     "answer": [
-     1
+     2
     ]
    },
    {
@@ -3407,13 +4552,13 @@
     "prompt": "下面哪一个最像万圣节的装饰？",
     "time": 20,
     "options": [
-     "蜘蛛网",
      "灯笼鱼",
      "春联",
+     "蜘蛛网",
      "雪橇"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -3421,9 +4566,9 @@
     "prompt": "哪一种动物常常出现在万圣节故事里？",
     "time": 20,
     "options": [
-     "长颈鹿",
      "海豚",
      "企鹅",
+     "长颈鹿",
      "蝙蝠"
     ],
     "answer": [
@@ -3460,9 +4605,9 @@
     "prompt": "A carved pumpkin is called a ___",
     "time": 20,
     "options": [
-     "rainbow",
-     "jack-o'-lantern",
      "firework",
+     "jack-o'-lantern",
+     "rainbow",
      "snowman"
     ],
     "answer": [
@@ -3474,13 +4619,13 @@
     "prompt": "Children say “Trick or ___!”",
     "time": 20,
     "options": [
-     "train",
-     "treat",
      "tree",
-     "trip"
+     "train",
+     "trip",
+     "treat"
     ],
     "answer": [
-     1
+     3
     ]
    },
    {
@@ -3489,9 +4634,9 @@
     "time": 20,
     "options": [
      "witch",
-     "chef",
+     "pilot",
      "farmer",
-     "pilot"
+     "chef"
     ],
     "answer": [
      0
@@ -3502,13 +4647,13 @@
     "prompt": "A white, spooky spirit is a ___",
     "time": 20,
     "options": [
-     "ghost",
      "rocket",
+     "ghost",
      "robot",
      "rabbit"
     ],
     "answer": [
-     0
+     1
     ]
    },
    {
@@ -3517,12 +4662,12 @@
     "time": 20,
     "options": [
      "giraffe",
-     "panda",
      "bat",
+     "panda",
      "dolphin"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -3576,8 +4721,8 @@
     "options": [
      "丰收节",
      "光明节",
-     "开斋节",
-     "卫塞节"
+     "卫塞节",
+     "开斋节"
     ],
     "answer": [
      1
@@ -3588,13 +4733,13 @@
     "prompt": "屠妖节点的传统小油灯叫什么？",
     "time": 20,
     "options": [
-     "圣诞彩灯",
      "孔明灯",
-     "陶土油灯（diya）",
-     "纸灯笼"
+     "纸灯笼",
+     "圣诞彩灯",
+     "陶土油灯（diya）"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -3603,12 +4748,12 @@
     "time": 20,
     "options": [
      "门神",
-     "春联",
      "剪纸",
-     "彩绘图案（rangoli / kolam）"
+     "彩绘图案（rangoli / kolam）",
+     "春联"
     ],
     "answer": [
-     3
+     2
     ]
    },
    {
@@ -3616,13 +4761,13 @@
     "prompt": "新加坡哪里每年有屠妖节灯饰？",
     "time": 20,
     "options": [
-     "牛车水",
-     "芽笼士乃",
+     "乌节路",
      "小印度（实龙岗路）",
-     "乌节路"
+     "牛车水",
+     "芽笼士乃"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -3636,13 +4781,13 @@
     "prompt": "屠妖节主要是哪个宗教的节日？",
     "time": 20,
     "options": [
-     "基督教",
+     "伊斯兰教",
      "佛教",
-     "印度教",
-     "伊斯兰教"
+     "基督教",
+     "印度教"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -3656,13 +4801,13 @@
     "prompt": "过屠妖节时，人们常常会怎么做？",
     "time": 20,
     "options": [
+     "划龙舟",
      "穿新衣、拜访亲友",
      "吃月饼、赏月",
-     "划龙舟",
      "堆雪人"
     ],
     "answer": [
-     0
+     1
     ]
    }
   ],
@@ -3689,13 +4834,13 @@
     "prompt": "Deepavali is also called the Festival of ___.",
     "time": 20,
     "options": [
-     "Boats",
-     "Harvest",
      "Lights",
+     "Harvest",
+     "Boats",
      "Lanterns"
     ],
     "answer": [
-     2
+     0
     ]
    },
    {
@@ -3717,13 +4862,13 @@
     "prompt": "Colourful patterns drawn on the floor near the door are called ___.",
     "time": 20,
     "options": [
+     "mosaic",
      "origami",
      "rangoli",
-     "mosaic",
      "graffiti"
     ],
     "answer": [
-     1
+     2
     ]
    },
    {
@@ -3731,10 +4876,10 @@
     "prompt": "Little India is decorated with bright ___ during Deepavali.",
     "time": 20,
     "options": [
+     "pumpkins",
      "snowflakes",
-     "mooncakes",
      "lights",
-     "pumpkins"
+     "mooncakes"
     ],
     "answer": [
      2
@@ -3752,12 +4897,12 @@
     "time": 20,
     "options": [
      "shadow",
-     "light",
      "night",
-     "smoke"
+     "smoke",
+     "light"
     ],
     "answer": [
-     1
+     3
     ]
    },
    {
@@ -3828,8 +4973,8 @@
     "time": 20,
     "options": [
      "正方形",
-     "字母 F",
      "数字 7",
+     "字母 F",
      "一块不规则的石头"
     ],
     "answer": [
@@ -3857,9 +5002,9 @@
     "time": 20,
     "options": [
      "28 元",
-     "22 元",
+     "82 元",
      "18 元",
-     "82 元"
+     "22 元"
     ],
     "answer": [
      2
@@ -3897,24 +5042,10 @@
     "prompt": "圣诞节在每年的哪个月？",
     "time": 20,
     "options": [
+     "十二月",
      "十一月",
      "一月",
-     "十月",
-     "十二月"
-    ],
-    "answer": [
-     3
-    ]
-   },
-   {
-    "type": "mcq",
-    "prompt": "传说中，圣诞老人的雪橇由什么动物拉？",
-    "time": 20,
-    "options": [
-     "驯鹿",
-     "狗",
-     "马",
-     "骆驼"
+     "十月"
     ],
     "answer": [
      0
@@ -3922,16 +5053,30 @@
    },
    {
     "type": "mcq",
+    "prompt": "传说中，圣诞老人的雪橇由什么动物拉？",
+    "time": 20,
+    "options": [
+     "马",
+     "驯鹿",
+     "骆驼",
+     "狗"
+    ],
+    "answer": [
+     1
+    ]
+   },
+   {
+    "type": "mcq",
     "prompt": "新加坡哪条街每年年底有圣诞灯饰？",
     "time": 20,
     "options": [
-     "芽笼士乃",
-     "牛车水",
      "乌节路",
-     "实龙岗路"
+     "实龙岗路",
+     "牛车水",
+     "芽笼士乃"
     ],
     "answer": [
-     2
+     0
     ]
    },
    {
@@ -3946,10 +5091,10 @@
     "prompt": "圣诞节常见的装饰树是什么树？",
     "time": 20,
     "options": [
-     "榕树",
      "椰子树",
+     "竹子",
      "松树（圣诞树）",
-     "竹子"
+     "榕树"
     ],
     "answer": [
      2
@@ -3960,13 +5105,13 @@
     "prompt": "一年的最后一天是几月几日？",
     "time": 20,
     "options": [
-     "12 月 31 日",
      "1 月 1 日",
-     "12 月 25 日",
-     "12 月 30 日"
+     "12 月 31 日",
+     "12 月 30 日",
+     "12 月 25 日"
     ],
     "answer": [
-     0
+     1
     ]
    },
    {
@@ -3974,9 +5119,9 @@
     "prompt": "新年的第一天是几月几日？",
     "time": 20,
     "options": [
-     "1 月 31 日",
-     "12 月 31 日",
      "2 月 1 日",
+     "12 月 31 日",
+     "1 月 31 日",
      "1 月 1 日"
     ],
     "answer": [
@@ -4014,9 +5159,9 @@
     "time": 20,
     "options": [
      "reindeer",
-     "horses",
+     "camels",
      "dogs",
-     "camels"
+     "horses"
     ],
     "answer": [
      0
@@ -4027,13 +5172,13 @@
     "prompt": "One present, two ___.",
     "time": 20,
     "options": [
+     "present",
      "presentss",
      "presentes",
-     "presents",
-     "present"
+     "presents"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -4041,13 +5186,13 @@
     "prompt": "Christmas Day is on 25 ___.",
     "time": 20,
     "options": [
-     "November",
+     "December",
      "October",
      "January",
-     "December"
+     "November"
     ],
     "answer": [
-     3
+     0
     ]
    },
    {
@@ -4073,13 +5218,13 @@
     "prompt": "Which word is the opposite of \"first\"?",
     "time": 20,
     "options": [
-     "last",
      "begin",
+     "next",
      "early",
-     "next"
+     "last"
     ],
     "answer": [
-     0
+     3
     ]
    },
    {
@@ -4096,12 +5241,12 @@
     "time": 20,
     "options": [
      "Big",
-     "New",
      "First",
-     "Old"
+     "Old",
+     "New"
     ],
     "answer": [
-     1
+     3
     ]
    }
   ],
@@ -4152,13 +5297,13 @@
     "prompt": "从 12 月 25 日到 12 月 31 日，一共几天？（两头都算）",
     "time": 20,
     "options": [
-     "6 天",
-     "5 天",
      "8 天",
-     "7 天"
+     "5 天",
+     "7 天",
+     "6 天"
     ],
     "answer": [
-     3
+     2
     ]
    },
    {
@@ -4180,13 +5325,13 @@
     "prompt": "1 小时等于多少分钟？",
     "time": 20,
     "options": [
-     "24 分钟",
+     "100 分钟",
      "30 分钟",
-     "60 分钟",
-     "100 分钟"
+     "24 分钟",
+     "60 分钟"
     ],
     "answer": [
-     2
+     3
     ]
    },
    {
@@ -4221,13 +5366,13 @@
     "prompt": "拜年时，常说的一句吉祥话是？",
     "time": 20,
     "options": [
-     "圣诞快乐",
-     "生日快乐",
+     "中秋快乐",
      "恭喜发财",
-     "中秋快乐"
+     "圣诞快乐",
+     "生日快乐"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -4235,13 +5380,13 @@
     "prompt": "除夕晚上全家一起吃的饭叫什么？",
     "time": 20,
     "options": [
-     "团圆饭",
      "早餐",
-     "夜宵",
-     "下午茶"
+     "下午茶",
+     "团圆饭",
+     "夜宵"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -4249,13 +5394,13 @@
     "prompt": "新加坡人过年时常一起「捞」什么？",
     "time": 20,
     "options": [
-     "鱼生",
-     "粥",
      "米粉",
-     "面线"
+     "鱼生",
+     "面线",
+     "粥"
     ],
     "answer": [
-     0
+     1
     ]
    },
    {
@@ -4277,13 +5422,13 @@
     "prompt": "贴在门上、写着吉祥话的红纸叫什么？",
     "time": 20,
     "options": [
-     "灯笼",
-     "春联",
      "红包",
-     "贺卡"
+     "贺卡",
+     "灯笼",
+     "春联"
     ],
     "answer": [
-     1
+     3
     ]
    },
    {
@@ -4291,13 +5436,13 @@
     "prompt": "过年时，牛车水常见的表演是？",
     "time": 20,
     "options": [
-     "舞狮",
-     "划龙舟",
+     "放风筝",
      "堆雪人",
-     "放风筝"
+     "舞狮",
+     "划龙舟"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {
@@ -4312,13 +5457,13 @@
     "time": 20,
     "note": "「余」和「鱼」同音。",
     "options": [
+     "鸡",
      "鱼",
      "狗",
-     "鸡",
      "猫"
     ],
     "answer": [
-     0
+     1
     ]
    }
   ],
@@ -4389,22 +5534,8 @@
     "options": [
      "龙",
      "猪",
-     "牛",
-     "鼠"
-    ],
-    "answer": [
-     3
-    ]
-   },
-   {
-    "type": "mcq",
-    "prompt": "「龙」后面是哪个生肖？",
-    "time": 20,
-    "options": [
-     "马",
-     "虎",
-     "蛇",
-     "兔"
+     "鼠",
+     "牛"
     ],
     "answer": [
      2
@@ -4412,16 +5543,30 @@
    },
    {
     "type": "mcq",
-    "prompt": "十二生肖里，哪一个是传说中的动物？",
+    "prompt": "「龙」后面是哪个生肖？",
     "time": 20,
     "options": [
-     "龙",
      "蛇",
      "马",
-     "猴"
+     "兔",
+     "虎"
     ],
     "answer": [
      0
+    ]
+   },
+   {
+    "type": "mcq",
+    "prompt": "十二生肖里，哪一个是传说中的动物？",
+    "time": 20,
+    "options": [
+     "猴",
+     "蛇",
+     "龙",
+     "马"
+    ],
+    "answer": [
+     2
     ]
    },
    {
@@ -4472,8 +5617,8 @@
     "options": [
      "14 个",
      "12 个",
-     "6 个",
-     "8 个"
+     "8 个",
+     "6 个"
     ],
     "answer": [
      1
@@ -4506,9 +5651,9 @@
     "prompt": "舞狮队有 4 头狮子，每头狮子由 2 个人舞，一共几个人？",
     "time": 20,
     "options": [
-     "4 人",
-     "8 人",
      "10 人",
+     "8 人",
+     "4 人",
      "6 人"
     ],
     "answer": [
@@ -4548,13 +5693,13 @@
     "prompt": "开斋节之前，穆斯林斋戒的那个月叫什么？",
     "time": 20,
     "options": [
-     "腊月",
      "斋月（Ramadan）",
      "中秋月",
-     "正月"
+     "正月",
+     "腊月"
     ],
     "answer": [
-     1
+     0
     ]
    },
    {
@@ -4562,13 +5707,13 @@
     "prompt": "开斋节主要是哪些人的节日？",
     "time": 20,
     "options": [
-     "穆斯林",
-     "印度教徒",
+     "基督徒",
      "佛教徒",
-     "基督徒"
+     "印度教徒",
+     "穆斯林"
     ],
     "answer": [
-     0
+     3
     ]
    },
    {
@@ -4576,13 +5721,13 @@
     "prompt": "新加坡哪里每年有开斋节灯饰和市集？",
     "time": 20,
     "options": [
-     "芽笼士乃",
-     "小印度",
      "乌节路",
-     "牛车水"
+     "芽笼士乃",
+     "牛车水",
+     "小印度"
     ],
     "answer": [
-     0
+     1
     ]
    },
    {
@@ -4590,9 +5735,9 @@
     "prompt": "用椰叶编成小方格、里面包着米饭的食物叫什么？",
     "time": 20,
     "options": [
-     "粽子",
-     "马来粽（ketupat）",
      "年糕",
+     "马来粽（ketupat）",
+     "粽子",
      "月饼"
     ],
     "answer": [
@@ -4604,13 +5749,13 @@
     "prompt": "开斋节的问候语是？",
     "time": 20,
     "options": [
-     "Merry Christmas",
-     "Selamat Hari Raya",
+     "Happy Deepavali",
      "Gong Xi Fa Cai",
-     "Happy Deepavali"
+     "Merry Christmas",
+     "Selamat Hari Raya"
     ],
     "answer": [
-     1
+     3
     ]
    },
    {
@@ -4631,9 +5776,9 @@
     "prompt": "开斋节时，马来男士常穿的传统服装是？",
     "time": 20,
     "options": [
+     "旗袍",
      "纱丽",
      "和服",
-     "旗袍",
      "Baju Melayu"
     ],
     "answer": [
@@ -4664,10 +5809,10 @@
     "prompt": "Hari Raya Puasa marks the end of the fasting month of ___.",
     "time": 20,
     "options": [
+     "Deepavali",
      "spring",
-     "December",
      "Ramadan",
-     "Deepavali"
+     "December"
     ],
     "answer": [
      2
@@ -4678,13 +5823,13 @@
     "prompt": "Rice wrapped in woven coconut leaves is called ___.",
     "time": 20,
     "options": [
-     "dumpling",
-     "pizza",
      "ketupat",
+     "pizza",
+     "dumpling",
      "mooncake"
     ],
     "answer": [
-     2
+     0
     ]
    },
    {
@@ -4698,13 +5843,13 @@
     "prompt": "\"Selamat Hari Raya\" is a ___.",
     "time": 20,
     "options": [
-     "dance",
-     "food",
+     "game",
      "greeting",
-     "game"
+     "food",
+     "dance"
     ],
     "answer": [
-     2
+     1
     ]
    },
    {
@@ -4723,9 +5868,9 @@
     "prompt": "We wear our ___ clothes on Hari Raya.",
     "time": 20,
     "options": [
-     "knew",
      "news",
      "newly",
+     "knew",
      "new"
     ],
     "answer": [
@@ -4745,13 +5890,13 @@
     "prompt": "Which word is the opposite of \"sunrise\"?",
     "time": 20,
     "options": [
-     "sunlight",
      "sunset",
+     "sunlight",
      "sunny",
      "sunshine"
     ],
     "answer": [
-     1
+     0
     ]
    }
   ],
@@ -4794,13 +5939,13 @@
     "prompt": "市集有 8 排摊位，每排 9 个，一共几个摊位？",
     "time": 20,
     "options": [
-     "81 个",
-     "64 个",
      "17 个",
-     "72 个"
+     "81 个",
+     "72 个",
+     "64 个"
     ],
     "answer": [
-     3
+     2
     ]
    },
    {
@@ -4830,13 +5975,13 @@
     "prompt": "收到 10 元、5 元、2 元的绿包，一共多少元？",
     "time": 20,
     "options": [
-     "17 元",
      "15 元",
      "12 元",
+     "17 元",
      "20 元"
     ],
     "answer": [
-     0
+     2
     ]
    },
    {

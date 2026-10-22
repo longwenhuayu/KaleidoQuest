@@ -197,7 +197,7 @@ function renderStart() {
     <h2>${VA.icon('award')} ${tt(`开始使用 · 完成 ${n} / ${steps.length}`, `Get started · ${n} of ${steps.length} done`)}</h2><div class="bar"><i style="width:${n / steps.length * 100}%"></i></div>
     ${steps.map(([done, ic, label, href]) => `<a href="${href}" class="${done ? 'done' : ''}" data-step="${href}"><span class="ck">${done ? VA.icon('check') : ''}</span>${VA.icon(ic)} ${label}${done ? '' : `<span class="go">${VA.icon('arrow-right')}</span>`}</a>`).join('')}</div>`;
   const tools = [['/edit?p=ai', 'sparkles', '#7c3aed,#db2777', tt('AI 出题', 'AI questions'), tt('写个主题或贴课文，几十秒出一套题', 'A quiz from a topic or your lesson text')],
-    ['/gallery', 'layout-grid', '#2563eb,#0891b2', tt('游戏库', 'Gallery'), tt('42 个现成游戏，复制来改', '42 ready-made games to copy')],
+    ['/gallery', 'layout-grid', '#2563eb,#0891b2', tt('游戏库', 'Gallery'), tt('52 个现成游戏，复制来改', '52 ready-made games to copy')],
     ['#classes', 'school', '#16a34a,#0891b2', tt('班级', 'Classes'), tt('学生密码登录，卡册永久保存', 'Student PINs, saved card books')],
     ['/guide', 'circle-help', '#f59e0b,#ea580c', tt('上手指南', 'Teacher guide'), tt('10 分钟学会所有功能', 'Everything in 10 minutes')],
     ['#referral', 'send', '#db2777,#7c3aed', tt('邀请同事', 'Invite a colleague'), referral ? tt(`${referral.invited} 位已加入 · ${referral.activated} 位已开第一局 · 奖励 ${referral.bonusAi} 次 AI`, `${referral.invited} joined · ${referral.activated} hosted · ${referral.bonusAi} AI bonus`) : tt('对方开出第一局，你和对方各得 5 次 AI 出题', 'You both get 5 AI generations after their first game')]];

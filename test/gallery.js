@@ -24,8 +24,8 @@ const wait = async (ws, t, ms = 8000) => { const end = Date.now() + ms; for (;;)
   await new Promise(r => server.on('listening', r));
   const list = await (await fetch(BASE + '/api/gallery')).json();
   const base = list.filter(x => !x.collection);
-  assert.equal(base.length, 28);
-  for (const [subj, n] of Object.entries({ chinese: 6, math: 6, english: 5, science: 6, general: 5 })) assert.equal(base.filter(x => x.subject === subj).length, n, subj + ` ${n} 个`);
+  assert.equal(base.length, 38);
+  for (const [subj, n] of Object.entries({ chinese: 9, math: 9, english: 7, science: 8, general: 5 })) assert.equal(base.filter(x => x.subject === subj).length, n, subj + ` ${n} 个`);
   // 节日专题：5 个，每个 2 或 3 个游戏，正在进行的排第一
   const colls = await (await fetch(BASE + '/api/collections')).json();
   assert.equal(colls.length, 5); colls.forEach(c => assert.equal(list.filter(x => x.collection === c.id).length, c.id === 'halloween' ? 2 : 3, c.id));
@@ -77,6 +77,6 @@ const wait = async (ws, t, ms = 8000) => { const end = Date.now() + ms; for (;;)
   const hx = await open(); hx.sendj({ t: 'host', gallery: 'g-space' }); assert.equal((await wait(hx, 'error')).error, 'too_many');
   // 登录的老师不受这个限制
   const ht = await open(cookie); ht.sendj({ t: 'host', gallery: 'g-space' }); assert.equal((await wait(ht, 'room')).guest, false);
-  console.log('✅ Gallery 通过：28 个基础游戏 + 5 个节日专题，全部能全对通关并得卡、续玩、复制要登录、访客开局不写报告、令牌重连、访客限流');
+  console.log('✅ Gallery 通过：38 个基础游戏 + 5 个节日专题，全部能全对通关并得卡、续玩、复制要登录、访客开局不写报告、令牌重连、访客限流');
   process.exit(0);
 })().catch(e => { console.error('❌', e); process.exit(1); });

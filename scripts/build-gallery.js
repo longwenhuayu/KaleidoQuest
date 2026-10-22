@@ -300,6 +300,110 @@ add('sci-weather', 'science', ['P3 – P5', 'P3 – P5'], ['天气观察站', 'W
   order('水循环的简单顺序', ['太阳加热水面', '水蒸气上升冷却', '云中形成小水滴', '雨水落回地面'])
 ]);
 
+add('zh-reading', 'chinese', ['小二 – 小六', 'P2 – P6'], ['华文阅读理解', 'Chinese reading'], ['读短文，找出主旨、细节和事情的先后', 'Read short passages and find the main idea'], [
+  mcq('短文：小鸟受伤了，小明把它带回家，包扎好翅膀，第二天才放它回到树上。小明是一个怎样的人？', '有爱心', ['很粗心', '很贪吃', '很吵闹']),
+  mcq('上题中，小明为什么第二天才放走小鸟？', '因为要先照顾它的伤口', ['因为天黑了', '因为他想养鸟', '因为小鸟不会飞']),
+  mcq('「春天来了，小花、小草和树木都长出了嫩芽。」这句话主要写什么？', '春天的景象', ['冬天的天气', '动物的叫声', '一场运动会']),
+  mcq('「小华先洗手，然后吃早餐，最后背上书包去上学。」第一件事是什么？', '洗手', ['吃早餐', '背书包', '去上学']),
+  mcq('「这本书不但有趣，而且让我学到了很多知识。」这句话说明这本书？', '有趣又有知识', ['很难读', '只有图画', '非常短']),
+  input('「小河里的水清清的，鱼儿在水中自由地游来游去。」这句话写的是小河的什么？', ['景色', '景象']),
+  tf('阅读短文时，可以先看看题目，再带着问题找答案。', true),
+  mcq('「小雨越下越大，大家赶快跑进屋里。」事情的结果是？', '大家跑进屋里', ['雨停了', '大家去游泳', '太阳出来了'])
+]);
+add('zh-synonyms', 'chinese', ['小二 – 小四', 'P2 – P4'], ['近义词与反义词', 'Synonyms & antonyms'], ['找意思相近或相反的词语', 'Match words with similar or opposite meanings'], [
+  mcq('「美丽」的近义词是？', '漂亮', ['难看', '安静', '寒冷']),
+  mcq('「开始」的反义词是？', '结束', ['继续', '马上', '准备']),
+  mcq('「快乐」的近义词是？', '开心', ['悲伤', '生气', '紧张']),
+  mcq('「高」的反义词是？', '低', ['大', '远', '快']),
+  mcq('「安静」的反义词是？', '热闹', ['整齐', '干净', '明亮']),
+  mcq('「勇敢」的反义词是？', '胆小', ['聪明', '努力', '诚实']),
+  mcq('「帮助」的近义词是？', '协助', ['拒绝', '等待', '比赛']),
+  mcq('「炎热」的反义词是？', '寒冷', ['温暖', '明亮', '湿润'])
+]);
+add('zh-picture-sentences', 'chinese', ['小一 – 小三', 'P1 – P3'], ['看图写句', 'Picture sentences'], ['根据场景选择合适的词语和句子', 'Choose words and sentences for a picture'], [
+  mcq('图中小朋友正在公园里___风筝。', '放', ['喝', '穿', '听']),
+  mcq('图中桌上有一本书和一支___。', '铅笔', ['雨伞', '鞋子', '帽子']),
+  mcq('小猫躺在椅子___。', '下面', ['昨天', '很快', '因为']),
+  mcq('太阳出来了，天气变得很___。', '晴朗', ['黑暗', '吵闹', '锋利']),
+  order('把一幅「植树」图的句子排好顺序', ['小朋友挖了一个洞。', '他们把小树苗放进去。', '大家一起把泥土填好。', '小树苗在阳光下长大。']),
+  mcq('哪一句最适合描述「孩子们在图书馆看书」？', '孩子们安静地看书。', ['孩子们在操场上踢球。', '孩子们在厨房煮饭。', '孩子们在雨中游泳。']),
+  input('「一 ___ 小鸟」应该填什么量词？', ['只']),
+  tf('写看图句子时，要注意人物正在做什么。', true)
+]);
+
+add('m-time', 'math', ['小二 – 小四', 'P2 – P4'], ['时间与日历', 'Time & calendar'], ['读钟、算时间差，认识星期和月份', 'Read clocks and calculate time intervals'], [
+  input('上午 8 时 30 分到 9 时，一共多少分钟？', ['30', '30分钟', '30 分钟']),
+  input('电影下午 2:15 开始，3:45 结束，一共多少分钟？', ['90', '90分钟', '90 分钟']),
+  mcq('如果今天是星期三，三天后是星期几？', '星期六', ['星期四', '星期五', '星期日']),
+  input('一年有多少个月？', ['12', '十二']),
+  mcq('4 月有多少天？', '30 天', ['28 天', '29 天', '31 天']),
+  input('小美晚上 9 时睡觉，早上 7 时起床，她睡了几小时？', ['10', '10小时', '10 小时']),
+  tf('1 小时等于 60 分钟。', true),
+  mcq('火车 10:20 出发，10:05 应该提前多少分钟到站？', '15 分钟', ['5 分钟', '25 分钟', '60 分钟'])
+]);
+add('m-units', 'math', ['小二 – 小五', 'P2 – P5'], ['长度、重量与容量', 'Measures'], ['厘米、米、千克和升的生活应用', 'Length, mass and capacity in daily life'], [
+  input('1 米等于多少厘米？', ['100', '100厘米', '100 厘米']),
+  mcq('一支铅笔的长度最适合用什么单位量？', '厘米', ['千米', '千克', '升']),
+  input('2 米 30 厘米等于多少厘米？', ['230', '230厘米', '230 厘米']),
+  mcq('一袋米的重量最适合用什么单位量？', '千克', ['厘米', '毫升', '米']),
+  input('2 千克苹果和 3 千克橙子合起来有多少千克？', ['5', '5千克', '5 千克']),
+  mcq('一瓶水的容量最适合用什么单位量？', '毫升', ['米', '千克', '厘米']),
+  input('1 升等于多少毫升？', ['1000', '1000毫升', '1000 毫升']),
+  tf('一辆汽车从新加坡开到马来西亚，路程适合用千米来量。', true)
+]);
+add('m-geometry', 'math', ['小三 – 小六', 'P3 – P6'], ['几何图形', 'Geometry'], ['角、对称、周长、面积和立体图形', 'Angles, symmetry, perimeter and area'], [
+  mcq('三条边组成的图形叫？', '三角形', ['正方形', '圆形', '长方形']),
+  mcq('正方形有几条相等的边？', '4 条', ['2 条', '3 条', '5 条']),
+  input('长方形长 8 厘米，宽 3 厘米，周长是多少厘米？', ['22', '22厘米', '22 厘米']),
+  input('正方形边长 5 厘米，面积是多少平方厘米？', ['25', '25平方厘米', '25 平方厘米']),
+  mcq('哪一个图形有 4 条相等的边和 4 个直角？', '正方形', ['三角形', '圆形', '梯形']),
+  tf('圆形没有角。', true),
+  mcq('一个图形沿着一条线折叠后两边完全重合，这个图形是？', '对称图形', ['透明图形', '立体图形', '弯曲图形']),
+  order('从平面到立体，哪一组顺序合理？', ['正方形', '正方体的一个面', '完整的正方体'])
+]);
+
+add('en-reading', 'english', ['P3 – P6', 'P3 – P6'], ['English reading comprehension', 'English reading comprehension'], ['Read short passages and answer questions', 'Read, understand and infer'], [
+  mcq('Passage: Mia planted a seed. She watered it every day. After a week, a small green leaf appeared. What did Mia do every day?', 'She watered the seed.', ['She picked the leaf.', 'She bought a tree.', 'She painted the pot.']),
+  mcq('What appeared after a week?', 'A small green leaf.', ['A red flower.', 'A big tree.', 'A yellow fruit.']),
+  mcq('“The puppy hid under the table because it was raining.” Why did the puppy hide?', 'It was raining.', ['It was hungry.', 'It was sunny.', 'It was playing.']),
+  mcq('Which word best describes the puppy?', 'Small', ['Huge', 'Loud', 'Old']),
+  mcq('“First, wash the apple. Next, cut it. Finally, eat it.” What happens second?', 'Cut the apple.', ['Wash the apple.', 'Eat the apple.', 'Buy the apple.']),
+  tf('A title can give us a clue about what a passage is about.', true),
+  mcq('Which sentence is a fact?', 'Birds have feathers.', ['Birds are the cutest animals.', 'Blue is the best colour.', 'Rainy days are boring.']),
+  mcq('If a character shares her umbrella, she is probably being ___.', 'kind', ['selfish', 'careless', 'angry'])
+]);
+add('en-prepositions', 'english', ['P2 – P4', 'P2 – P4'], ['Prepositions & sentence patterns', 'Prepositions & sentence patterns'], ['Practise in, on, under, between and everyday sentence patterns', 'Use common prepositions correctly'], [
+  mcq('The book is ___ the desk.', 'on', ['in', 'under', 'between']),
+  mcq('The cat is hiding ___ the chair.', 'under', ['on', 'at', 'between']),
+  mcq('The girl is standing ___ two friends.', 'between', ['under', 'in', 'on']),
+  mcq('We go to school ___ Monday.', 'on', ['in', 'at', 'under']),
+  mcq('The meeting starts ___ 9 o’clock.', 'at', ['on', 'in', 'between']),
+  mcq('There ___ three apples in the basket.', 'are', ['is', 'am', 'be']),
+  mcq('___ there a pencil in your bag?', 'Is', ['Are', 'Am', 'Be']),
+  tf('We say “I am happy” with the verb “am”.', true)
+]);
+
+add('sci-foodchain', 'science', ['P3 – P5', 'P3 – P5'], ['食物链与生态', 'Food chains'], ['认识生产者、消费者和食物链', 'Producers, consumers and simple food chains'], [
+  order('把食物链排好顺序', ['太阳', '草', '兔子', '鹰']),
+  mcq('食物链中，植物通常是？', '生产者', ['分解者', '捕食者', '无生命物体']),
+  mcq('下面哪一种动物吃植物？', '兔子', ['老鹰', '狮子', '猫头鹰']),
+  mcq('如果草变少，兔子的食物会怎样？', '变少', ['变多', '变成水', '没有变化']),
+  tf('食物链通常从植物开始。', true),
+  mcq('蘑菇和细菌在生态系统中常常帮助分解什么？', '死去的生物', ['阳光', '空气', '石头']),
+  mcq('下面哪一条食物链比较合理？', '草 → 蚱蜢 → 青蛙 → 蛇', ['蛇 → 草 → 青蛙 → 蚱蜢', '青蛙 → 太阳 → 草 → 蛇', '石头 → 兔子 → 草 → 鹰']),
+  tf('生态系统中的生物彼此之间没有关系。', false, { note: '生物会通过食物、栖息地和竞争互相影响。' })
+]);
+add('sci-energy', 'science', ['P4 – P6', 'P4 – P6'], ['能源与环保', 'Energy & environment'], ['认识能源、节约资源和保护环境', 'Energy sources, saving resources and caring for Earth'], [
+  mcq('太阳能来自哪里？', '太阳', ['月亮', '土壤', '海水']),
+  mcq('下面哪一种是可再生能源？', '风能', ['煤', '石油', '天然气']),
+  tf('关掉不用的电灯可以节约能源。', true),
+  mcq('用过的纸张最好怎样处理？', '回收再利用', ['全部丢进河里', '烧掉所有纸张', '藏在抽屉里']),
+  mcq('植物吸收空气中的哪一种气体来制造食物？', '二氧化碳', ['氧气', '氮气', '水蒸气']),
+  mcq('下面哪一个做法最环保？', '自带水瓶', ['一直使用一次性杯子', '让水龙头一直开着', '把垃圾丢在地上']),
+  input('地球被称为「蓝色星球」，因为表面有很多什么？', ['水']),
+  tf('塑料垃圾可能会伤害海洋动物。', true)
+]);
+
 // ── 万圣节专题 ──
 add('hw-culture', 'general', ['全年级', 'All levels'], ['万圣节探险', 'Halloween adventure'], ['南瓜灯、服装和不给糖就捣蛋：认识万圣节', 'Pumpkins, costumes and trick-or-treating'], [
   mcq('万圣节是哪一天？', '10 月 31 日', ['10 月 1 日', '11 月 11 日', '12 月 31 日']),
