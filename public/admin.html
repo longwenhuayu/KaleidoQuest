@@ -62,23 +62,24 @@ tr.click:hover td{background:#faf8ff}
 <div class="topbar"><a class="logo" href="/teacher"><i></i><span>KaleidoQuest</span></a><span class="tag" style="margin-left:6px"><svg class="ic" aria-hidden="true"><use href="/icons.svg#shield"></use></svg> Admin</span><span class="sp"></span><span class="muted" id="who"></span><button class="lang" type="button">EN</button><a class="btn ghost sm" href="/teacher" id="toDash"></a></div>
 <div class="wrap">
   <header class="admin-intro"><div><span class="eyebrow">KaleidoQuest / Operations</span><h1 id="adminTitle"></h1><p id="adminSub"></p></div><div class="admin-actions"><button class="btn ghost sm" id="refreshAll"><svg class="ic" aria-hidden="true"><use href="/icons.svg#rotate-ccw"></use></svg> <span id="refreshLabel"></span></button><a class="btn main sm" href="/teacher" id="dashAction"></a></div></header>
-  <div class="ttabs" role="tablist"><button data-v="ov" class="on" role="tab"></button><button data-v="growth" role="tab"></button><button data-v="tc" role="tab"></button><button data-v="sys" role="tab"></button></div>
+  <div class="ttabs" role="tablist"><button data-v="ov" class="on" role="tab"></button><button data-v="growth" role="tab"></button><button data-v="tc" role="tab"></button><button data-v="st" role="tab"></button><button data-v="sys" role="tab"></button></div>
   <section id="vov"></section>
   <section id="vgrowth" hidden></section>
   <section id="vtc" hidden><div class="section-head"><div><h2 id="teachersTitle"></h2><p id="teachersSub"></p></div><label class="search-wrap"><svg class="ic" aria-hidden="true"><use href="/icons.svg#search"></use></svg><input class="in" id="q"></label></div><div class="scroll teacher-table"><table id="tTable"></table></div><div class="teacher-cards" id="tCards"></div></section>
+  <section id="vst" hidden><div class="section-head"><div><h2 id="stTitle"></h2><p id="stSub"></p></div><div style="display:flex;gap:8px;align-items:center;width:min(500px,100%)"><select class="in" id="sk" style="width:auto;flex:none;margin:0"></select><label class="search-wrap" style="flex:1;min-width:0"><svg class="ic" aria-hidden="true"><use href="/icons.svg#search"></use></svg><input class="in" id="sq"></label></div></div><div class="scroll teacher-table"><table id="sTable"></table></div><div class="teacher-cards" id="sCards"></div></section>
   <section id="vsys" hidden></section>
 </div>
 <div class="tip" id="tip" hidden></div>
 <script src="/js/common.js?v=20261023a"></script>
 <script>
 const { t, tt, api, $, esc, toast, icon } = VA;
-let me = null, OV = null, GR = null, TC = [], SYS = null, tab = 'ov';
+let me = null, OV = null, GR = null, TC = [], ST = [], SYS = null, tab = 'ov';
 const date = ms => ms ? new Date(ms).toLocaleString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '–';
 const ago = ms => { if (!ms) return tt('从未', 'never'); const m = (Date.now() - ms) / 6e4; return m < 60 ? tt(`${m | 0} 分钟前`, `${m | 0} min ago`) : m < 1440 ? tt(`${m / 60 | 0} 小时前`, `${m / 60 | 0} h ago`) : tt(`${m / 1440 | 0} 天前`, `${m / 1440 | 0} d ago`); };
 
 function staticText() {
-  const [a, g, b, c] = document.querySelectorAll('.ttabs button');
-  a.innerHTML = icon('layout-dashboard') + ' ' + tt('总览', 'Overview'); g.innerHTML = icon('trending-up') + ' ' + tt('增长', 'Growth'); b.innerHTML = icon('users') + ' ' + tt('老师', 'Teachers'); c.innerHTML = icon('server') + ' ' + tt('系统', 'System');
+  const [a, g, b, st, c] = document.querySelectorAll('.ttabs button');
+  a.innerHTML = icon('layout-dashboard') + ' ' + tt('总览', 'Overview'); g.innerHTML = icon('trending-up') + ' ' + tt('增长', 'Growth'); b.innerHTML = icon('users') + ' ' + tt('老师', 'Teachers'); st.innerHTML = icon('graduation-cap') + ' ' + tt('学生', 'Students'); c.innerHTML = icon('server') + ' ' + tt('系统', 'System');
   $('#adminTitle').textContent = tt('运营工作台', 'Operations dashboard');
   $('#adminSub').textContent = tt('用真实使用数据判断哪里值得继续投入。', 'Use real product signals to decide what to improve next.');
   $('#refreshLabel').textContent = tt('刷新数据', 'Refresh data');
@@ -87,6 +88,11 @@ function staticText() {
   $('#teachersTitle').textContent = tt('老师账号', 'Teacher accounts');
   $('#teachersSub').textContent = tt('点击一行查看题包、游戏和作业；搜索不会改变数据。', 'Open a teacher to inspect sets, games and homework. Search is read-only.');
   $('#q').placeholder = tt('搜索邮箱或名字', 'Search email or name');
+  $('#stTitle').textContent = tt('学生账号', 'Student accounts');
+  $('#stSub').textContent = tt('老师建的（班级码 + 4 位密码）和自己注册的（用户名 + 密码）。点一行查看详情和学习记录。', 'Teacher-created (class code + PIN) and self-registered (username + password). Open one for details and learning record.');
+  $('#sq').placeholder = tt('搜索名字、用户名或班级', 'Search name, username or class');
+  const k = $('#sk').value || 'all';
+  $('#sk').innerHTML = [['all', tt('全部', 'All')], ['own', tt('自己注册的', 'Self-registered')], ['class', tt('老师建的', 'Teacher-created')]].map(([v, l]) => `<option value="${v}"${v === k ? ' selected' : ''}>${l}</option>`).join('');
 }
 
 // 单系列柱状图：一个颜色，柱顶圆角，悬停显示数字
@@ -121,6 +127,7 @@ function renderOv() {
     <div class="card tile"><b>${T.activeWeek}</b><span>${tt('7 天内活跃老师', 'Active (7 days)')}</span></div>
     <div class="card tile"><b>${T.games}</b><span>${tt('累计开局', 'Games played')}</span><small>${tt(`本周 ${o.week.games} · 今天 ${o.today.games}`, `${o.week.games} this week · ${o.today.games} today`)}</small></div>
     <div class="card tile"><b>${T.participations}</b><span>${tt('累计学生人次', 'Student plays')}</span><small>${tt(`本周 ${o.week.students}`, `${o.week.students} this week`)}</small></div>
+    <div class="card tile"><b>${T.students}</b><span>${tt('学生账号', 'Student accounts')}</span><small>${tt(`自己注册 ${T.studentsOwn} · 7 天活跃 ${T.studentsActiveWeek}`, `${T.studentsOwn} self-registered · ${T.studentsActiveWeek} active (7d)`)}</small></div>
     <div class="card tile"><b>${T.sets}</b><span>${tt('题包', 'Question sets')}</span></div>
     <div class="card tile"><b>${T.assignments}</b><span>${tt('作业', 'Homework')}</span></div></div>
     <div class="charts">
@@ -211,6 +218,64 @@ async function openTeacher(id) {
 async function refreshTc() { TC = await api('/api/admin/teachers?q=' + encodeURIComponent($('#q').value)); renderTc(); }
 async function loadGrowth() { GR = await api('/api/admin/growth'); renderGrowth(); }
 
+// ── 学生账号 ──
+const DECKS = [['zh', '字灵', 'Hanzi'], ['math', '数兽', 'Math'], ['science', '元素精灵', 'Science'], ['explorer', '探索者', 'Explorer']];
+const kindBadge = x => x.username ? `<span class="badge adm">${tt('自己注册', 'Self')}</span>` : `<span class="badge ok">${tt('老师建的', 'Teacher')}</span>`;
+const clsOf = x => x.className ? `${esc(x.className)} <small class="muted">· ${esc(x.teacher || '')}</small>` : `<span class="muted">${tt('没有班级', 'No class')}</span>`;
+function renderSt() {
+  const empty = `<div class="muted" style="text-align:center;padding:30px">${tt('没有找到', 'No match')}</div>`;
+  $('#sTable').innerHTML = `<tr><th>${tt('学生', 'Student')}</th><th>${tt('类型', 'Type')}</th><th>${tt('班级 · 老师', 'Class · Teacher')}</th><th>${tt('创建', 'Created')}</th><th>${tt('最后活跃', 'Last active')}</th><th class="num">${tt('卡片', 'Cards')}</th><th class="num">${tt('局数', 'Games')}</th></tr>` +
+    (ST.length ? ST.map(x => `<tr class="click" data-sid="${x.id}"><td><b>${esc(x.name)}</b>${x.username ? `<br><small class="muted">@${esc(x.username)}</small>` : ''}</td><td>${kindBadge(x)}</td><td>${clsOf(x)}</td><td>${date(x.created)}</td><td>${ago(x.last_seen)}</td><td class="num">${x.cards}</td><td class="num">${x.games}</td></tr>`).join('') : `<tr><td colspan="7">${empty}</td></tr>`);
+  $('#sCards').innerHTML = ST.length ? ST.map(x => `<article class="teacher-card click" data-sid="${x.id}"><div class="teacher-card-head"><div><b>${esc(x.name)}</b>${x.username ? `<br><small>@${esc(x.username)}</small>` : ''}</div><span class="sp"></span>${kindBadge(x)}</div><div style="margin-top:8px;font-size:14px">${clsOf(x)}</div><small>${tt('最后活跃', 'Last active')} ${ago(x.last_seen)} · ${x.cards} ${tt('张卡', 'cards')} · ${x.games} ${tt('局', 'games')}</small></article>`).join('') : empty;
+}
+async function loadSt() { ST = await api(`/api/admin/students?kind=${$('#sk').value || 'all'}&q=${encodeURIComponent($('#sq').value)}`); renderSt(); }
+let sqTimer = 0;
+$('#sq').oninput = () => { clearTimeout(sqTimer); sqTimer = setTimeout(loadSt, 250); };
+$('#sk').onchange = loadSt;
+const openStudentFromList = e => { const r = e.target.closest('[data-sid]'); if (r) openStudent(+r.dataset.sid); };
+$('#sTable').onclick = openStudentFromList;
+$('#sCards').onclick = openStudentFromList;
+
+async function openStudent(id) {
+  const d = await api('/api/admin/students/' + id);
+  document.querySelector('.drawer')?.remove();
+  const el = document.createElement('div'); el.className = 'drawer';
+  const own = !!d.username;
+  el.innerHTML = `<div class="panel">
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(d.name)}</h2><button class="btn ghost sm" data-x aria-label="${tt('关闭', 'Close')}">${icon('x')}</button></div>
+    <div class="muted" style="line-height:1.7">${kindBadge(d)} ${own ? `@${esc(d.username)} · ` : ''}${tt('创建', 'Created')} ${date(d.created)} · ${tt('最后活跃', 'Last active')} ${ago(d.last_seen)}<br>
+      ${icon('school')} ${d.className ? `${esc(d.className)}（${tt('班级码', 'code')} ${esc(d.classCode)}）· ${esc(d.teacher || '')}` : tt('没有班级', 'No class')}
+      ${own ? `<br>${icon('mail')} ${tt('家长邮箱', 'Parent email')}：${d.parentEmail ? esc(d.parentEmail) : tt('没填', 'none')}` : ''}</div>
+    <div class="acts">
+      <button class="btn ghost sm" data-a="pw">${icon('lock')} ${own ? tt('给临时密码', 'Temporary password') : tt('换新 PIN', 'New PIN')}</button>
+      ${own && d.parentEmail ? `<button class="btn ghost sm" data-a="mail">${icon('mail')} ${tt('发重设邮件给家长', 'Email reset link to parent')}</button>` : ''}
+      ${own && d.className ? `<button class="btn ghost sm" data-a="leave">${icon('log-out')} ${tt('移出班级', 'Remove from class')}</button>` : ''}
+      <button class="btn ghost sm danger" data-a="del">${icon('trash-2')} ${tt('删除账号', 'Delete account')}</button></div>
+    <div id="pwOut"></div>
+    <div class="user-edit"><h3>${icon('pencil')} ${tt('编辑资料', 'Edit profile')}</h3><div class="row"><label class="field"><span>${tt('名字', 'Name')}</span><input class="in" id="sName" value="${esc(d.name)}" maxlength="16"></label>${own ? `<label class="field"><span>${tt('家长邮箱（可清空）', 'Parent email (can be blank)')}</span><input class="in" id="sParent" type="email" value="${esc(d.parentEmail || '')}" maxlength="120"></label>` : ''}<button class="btn main sm" data-a="save">${tt('保存', 'Save')}</button></div></div>
+    <h3>${icon('layers')} ${tt('卡册', 'Card book')}</h3><div class="muted">${DECKS.map(([k, zh, en]) => `${tt(zh, en)} ${d.decks[k] || 0}`).join(' · ')}</div>
+    <h3>${icon('chart-column')} ${tt('学习记录', 'Learning record')}</h3><div class="card">${VA.history(d)}</div></div>`;
+  el.onclick = async e => {
+    if (e.target === el || e.target.closest('[data-x]')) return el.remove();
+    const b = e.target.closest('[data-a]'); if (!b) return;
+    try {
+      if (b.dataset.a === 'pw') {
+        const r = await api(`/api/admin/students/${id}/password`, { method: 'POST' });
+        el.querySelector('#pwOut').innerHTML = `<div class="li">${icon('lock')}<span>${r.password ? tt('临时密码', 'Temporary password') : tt('新 PIN', 'New PIN')}</span><b style="font-size:20px;letter-spacing:3px">${esc(r.password || r.pin)}</b><span class="sp"></span><small class="muted">${tt('旧登录已失效', 'Old sessions signed out')}</small></div>`;
+        return;
+      }
+      if (b.dataset.a === 'mail') { await api(`/api/admin/students/${id}/reset-email`, { method: 'POST' }); toast(tt('已发送重设邮件到家长邮箱', 'Reset email sent to parent')); return; }
+      if (b.dataset.a === 'save') { await api(`/api/admin/students/${id}`, { method: 'PATCH', body: { name: el.querySelector('#sName').value, ...(own ? { parentEmail: el.querySelector('#sParent').value } : {}) } }); await loadSt(); openStudent(id); toast(tt('已保存', 'Saved')); return; }
+      if (b.dataset.a === 'leave') { await api(`/api/admin/students/${id}/leave`, { method: 'POST' }); await loadSt(); openStudent(id); toast(tt('已移出班级', 'Removed from class')); return; }
+      if (b.dataset.a === 'del') {
+        if (!b.dataset.armed) { b.dataset.armed = 1; b.innerHTML = icon('triangle-alert') + ' ' + tt('再点一次：账号、卡册和学习记录都会永久删除', 'Click again — account, cards and record are deleted for good'); setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.innerHTML = icon('trash-2') + ' ' + tt('删除账号', 'Delete account'); } }, 3500); return; }
+        await api(`/api/admin/students/${id}`, { method: 'DELETE' }); el.remove(); await loadSt(); toast(tt('已删除', 'Deleted'));
+      }
+    } catch (x) { toast(({ name: tt('请填写名字', 'Name is required'), name_taken: tt('班里已经有同名的学生', 'Someone in that class already has this name'), email: tt('邮箱格式不对', 'Invalid email'), mail_failed: tt('邮件发送失败', 'Email failed'), no_parent_email: tt('没有家长邮箱', 'No parent email') })[x.message] || tt('出错了，请再试一次', 'Something went wrong')); }
+  };
+  document.body.appendChild(el);
+}
+
 function renderSys() {
   const s = SYS; if (!s) return;
   const up = s.uptime > 86400 ? tt(`${s.uptime / 86400 | 0} 天`, `${s.uptime / 86400 | 0} d`) : tt(`${s.uptime / 3600 | 0} 小时`, `${s.uptime / 3600 | 0} h`);
@@ -239,11 +304,12 @@ $('#refreshAll').onclick = refreshAll;
 
 document.querySelectorAll('.ttabs button').forEach(b => b.onclick = () => {
   tab = b.dataset.v; document.querySelectorAll('.ttabs button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
-  ['ov', 'growth', 'tc', 'sys'].forEach(v => $('#v' + v).hidden = v !== tab);
+  ['ov', 'growth', 'tc', 'st', 'sys'].forEach(v => $('#v' + v).hidden = v !== tab);
   if (tab === 'growth') loadGrowth();
+  if (tab === 'st') loadSt();
   if (tab === 'sys') loadSys();
 });
-document.addEventListener('langchange', () => { staticText(); renderOv(); renderGrowth(); renderTc(); renderSys(); });
+document.addEventListener('langchange', () => { staticText(); renderOv(); renderGrowth(); renderTc(); renderSt(); renderSys(); });
 (async () => {
   try { me = await api('/api/me'); } catch (e) { location.href = '/'; return; }
   if (!me.isAdmin) { document.querySelector('.wrap').innerHTML = `<div class="card" style="text-align:center;padding:40px">${tt('这个账号没有管理员权限。', 'This account is not an admin.')}</div>`; return; }
