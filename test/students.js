@@ -46,7 +46,7 @@ const count = book => Object.values(book).reduce((s, x) => s + x.n, 0);
   assert.equal((await req('/api/student/login', { body: { code: c.code, name: '小明', pin: wrong } })).status, 401);
   assert.equal((await req('/api/student/login', { body: { code: c.code, name: '没这人', pin: '1234' } })).status, 401);
   const S = cookieOf(await req('/api/student/login', { body: { code: c.code, name: '小明', pin: ming.pin } }));
-  assert.deepEqual(await json('/api/student/me', { cookie: S }), { name: '小明', className: '小三忠班' });
+  assert.deepEqual(await json('/api/student/me', { cookie: S }), { name: '小明', className: '小三忠班', username: null });
   assert.equal((await req('/api/student/me')).status, 401);
   assert.equal((await req('/api/student/me', { cookie: T })).status, 401, '老师 cookie 不是学生');
   // 单人试玩：卡存进账号

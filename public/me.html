@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0e0b26">
-<title>KaleidoQuest · 学生登录</title>
+<title>KaleidoQuest · 学生登录 / 注册</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -28,6 +28,13 @@ main{flex:1;display:grid;place-items:center;padding:16px}
 .muted{font-size:14px;line-height:1.6}
 .ctab th,.ctab td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
 .ctab th{font-size:12px;color:var(--muted);font-weight:800}
+.tabs{display:flex;gap:4px;background:#f3f0ff;border-radius:12px;padding:4px}
+.tabs button{flex:1;border:0;border-radius:9px;padding:8px 4px;min-height:44px;font-weight:800;background:transparent;color:var(--muted);cursor:pointer;font-size:14px}
+.tabs button.on{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(30,27,75,.15)}
+.sub{display:flex;flex-direction:column;gap:10px;width:100%}
+.lab{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--muted)}
+.link{background:none;border:0;color:var(--brand2);font-weight:800;font-size:14px;cursor:pointer;padding:0}
+.ok{color:var(--ok);font-weight:800;line-height:1.6}
 .lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
 </style>
 </head>
@@ -39,8 +46,16 @@ main{flex:1;display:grid;place-items:center;padding:16px}
 <script>
 const { tt, $, esc, api, icon } = VA;
 const QS = new URLSearchParams(location.search);
-let me = null, cls = null, results = null, code = (QS.get('c') || '').toLowerCase(), picked = '';
-const ERR = { not_found: ['找不到这个班级码，请问老师', "Class code not found — ask your teacher"], wrong: ['密码不对，再试一次', 'Wrong PIN — try again'], locked: ['错太多次了，请让老师帮你重设密码', 'Too many tries — ask your teacher to reset your PIN'], too_many: ['操作太频繁，请稍后再试', 'Too many tries — wait a bit'] };
+// mode：class 班级码 + 4 位密码；user 用户名登录；reg 自己注册；forgot 忘记密码
+let me = null, cls = null, results = null, code = (QS.get('c') || '').toLowerCase(), picked = '', mode = QS.get('reg') ? 'reg' : 'class', pwOpen = false;
+const ERR = {
+  not_found: ['找不到这个班级码，请问老师', "Class code not found — ask your teacher"], wrong: ['密码不对，再试一次', 'Wrong password — try again'],
+  locked: ['错太多次了，请让老师帮你重设密码', 'Too many tries — ask your teacher to reset your password'], too_many: ['操作太频繁，请稍后再试', 'Too many tries — wait a bit'],
+  username: ['用户名要 3–20 位，只能用英文字母、数字和下划线', 'Username: 3–20 letters, numbers or _'], username_taken: ['这个用户名已经有人用了，换一个吧', 'That username is taken — try another'],
+  password: ['密码至少 6 位', 'Password must be 6+ characters'], email: ['家长邮箱格式不对', "That parent email doesn't look right"],
+  name_taken: ['班里已经有同名的同学，请老师帮忙处理', 'Someone in that class already has your name — ask your teacher'], too_many_students: ['这个班已经满了（60 人）', 'That class is full (60 students)'],
+  mail_off: ['暂时无法发送邮件，请找班级老师重设密码', "Email isn't available right now — ask your teacher to reset it"]
+};
 // 本机卡册（没登录时收集的）：登录时并进账号，然后清掉，免得共用设备上下一个登录的同学也拿到；退出时也清掉
 const takeLocal = async () => {
   let book = {}; try { book = JSON.parse(localStorage.getItem('kq_cards')) || {}; } catch (x) {}
@@ -51,6 +66,14 @@ const takeLocal = async () => {
   if (r.merged) VA.toast(tt(`已把这台设备上的 ${r.merged} 种卡存进你的账号`, `Saved ${r.merged} cards from this device to your account`));
 };
 const err = x => { const m = ERR[x.message]; return m ? tt(m[0], m[1]) : tt('出错了，请再试一次', 'Something went wrong'); };
+// 登录 / 注册成功之后都走这里
+async function signedIn() {
+  me = await api('/api/student/me');
+  try { localStorage.setItem('kq_name', me.name); } catch (x) {}
+  await takeLocal().catch(() => {});
+  if (QS.get('next')) location.href = QS.get('next').startsWith('/') ? QS.get('next') : '/'; else render();
+}
+const tabs = () => `<div class="tabs">${[['class', tt('班级码登录', 'Class code')], ['user', tt('用户名登录', 'Username')], ['reg', tt('注册', 'Sign up')]].map(([k, l]) => `<button type="button" data-m="${k}"${mode === k ? ' class="on"' : ''}>${l}</button>`).join('')}</div>`;
 function render() {
   const b = $('#box');
   if (me && results) {
@@ -59,36 +82,80 @@ function render() {
     return;
   }
   if (me) {
-    b.innerHTML = `<div class="hello">${VA.mascot('cheer', 120)}<b>${esc(me.name)}</b><div class="muted">${esc(me.className)}</div>
+    // 自己注册的学生：显示用户名；还没加班级可以输入班级码加入；可以改密码
+    const own = !!me.username;
+    b.innerHTML = `<div class="hello">${VA.mascot('cheer', 120)}<b>${esc(me.name)}</b><div class="muted">${own ? `@${esc(me.username)} · ` : ''}${me.className ? esc(me.className) : tt('还没加入班级', 'Not in a class yet')}</div>
       <div class="muted">${tt('已经登录。在这台设备上玩游戏、做作业的成绩和得到的卡，都会存进你的账号，换设备登录也看得到。', "You're signed in. Your results and the cards you earn on this device are saved to your account — sign in on any device to see them.")}</div>
+      ${own && !me.className ? `<form id="fj" class="sub"><div class="muted">${tt('有老师给的班级码？加入班级后，老师就能看到你的学习记录：', 'Got a class code? Join so your teacher can see your progress:')}</div><div style="display:flex;gap:8px"><input class="in" id="jc" maxlength="6" autocomplete="off" autocapitalize="off" placeholder="abc234" value="${esc(code)}" style="flex:1"><button class="btn main">${tt('加入', 'Join')}</button></div><div class="err" id="ej"></div></form>` : ''}
       <a class="btn go" href="/play" style="width:100%">${icon('gamepad-2')} ${tt('加入游戏', 'Join a game')}</a>
       <a class="btn main" href="/cards" style="width:100%">${icon('layers')} ${tt('我的卡册', 'My card book')}</a>
       <button class="btn main" id="res" style="width:100%">${icon('chart-column')} ${tt('我的成绩', 'My results')}</button>
+      ${own ? (pwOpen ? `<form id="fp" class="sub"><input class="in" id="po" type="password" autocomplete="current-password" placeholder="${tt('现在的密码', 'Current password')}"><input class="in" id="pn" type="password" autocomplete="new-password" minlength="6" placeholder="${tt('新密码（至少 6 位）', 'New password (6+ characters)')}"><div class="err" id="ep"></div><button class="btn main">${tt('保存新密码', 'Save new password')}</button></form>` : `<button class="btn ghost sm" id="pwBtn">${icon('lock')} ${tt('改密码', 'Change password')}</button>`) : ''}
       <button class="btn ghost sm" id="out">${icon('log-out')} ${tt('退出登录', 'Sign out')}</button></div>`;
     $('#res').onclick = async () => { try { results = await api('/api/student/results'); render(); } catch (x) { VA.toast(err(x)); } };
-    $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); try { localStorage.removeItem('kq_cards'); } catch (x) {} me = null; render(); };
+    $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); try { localStorage.removeItem('kq_cards'); } catch (x) {} me = null; pwOpen = false; render(); };
+    if ($('#fj')) $('#fj').onsubmit = async e => { e.preventDefault(); try { const r = await api('/api/student/join', { method: 'POST', body: { code: $('#jc').value.trim().toLowerCase() } }); me.className = r.className; VA.toast(tt(`已加入「${r.className}」`, `Joined ${r.className}`)); render(); } catch (x) { $('#ej').textContent = err(x); } };
+    if ($('#pwBtn')) $('#pwBtn').onclick = () => { pwOpen = true; render(); $('#po').focus(); };
+    if ($('#fp')) $('#fp').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/password', { method: 'POST', body: { old: $('#po').value, password: $('#pn').value } }); pwOpen = false; VA.toast(tt('密码已更新', 'Password updated')); render(); } catch (x) { $('#ep').textContent = err(x); } };
     return;
   }
-  if (!cls) {
-    b.innerHTML = `${VA.mascot('hello', 96)}<h1>${icon('graduation-cap')} ${tt('学生登录', 'Student sign-in')}</h1>
-      <div class="muted">${tt('登录后，你收集的卡会一直保存，换设备也不会丢；这台设备上已经有的卡也会一起存进账号。输入老师给的班级码：', 'Sign in so your cards are saved for good — cards already on this device move into your account too. Enter the class code from your teacher:')}</div>
-      <form id="f1" style="display:flex;flex-direction:column;gap:10px"><input class="in code" id="code" maxlength="6" autocomplete="off" autocapitalize="off" placeholder="abc234" value="${esc(code)}"><div class="err" id="e1"></div><button class="btn go">${tt('下一步', 'Next')} ${icon('arrow-right')}</button></form>
-      <a href="/play" class="muted" style="text-align:center">${tt('不登录，直接加入游戏', 'Just join a game without signing in')}</a>`;
+  if (mode === 'class' && cls) {
+    b.innerHTML = `<h1>${icon('school')} ${esc(cls.name)}</h1>
+      <div class="muted">${tt('点你的名字：', 'Tap your name:')}</div>
+      <div class="names" id="names">${cls.students.map(n => `<button type="button"${n === picked ? ' class="on"' : ''}>${esc(n)}</button>`).join('') || `<span class="muted">${tt('这个班还没有学生，请问老师', 'No students yet — ask your teacher')}</span>`}</div>
+      <form id="f2" style="display:flex;flex-direction:column;gap:10px"${picked ? '' : ' hidden'}><div class="muted">${tt('输入你的 4 位密码：', 'Enter your 4-digit PIN:')}</div><input class="in pin" id="pin" inputmode="numeric" maxlength="4" autocomplete="off"><div class="err" id="e2"></div><button class="btn go">${tt('登录', 'Sign in')}</button></form>
+      <div class="muted" style="font-size:13px">${tt('自己注册的同学，请用', 'Signed up yourself? Use')} <button type="button" class="link" id="toUser">${tt('用户名登录', 'username sign-in')}</button></div>
+      <button class="btn ghost sm" id="back">${icon('arrow-left')} ${tt('换一个班级码', 'Use another code')}</button>`;
+    $('#names').onclick = e => { const x = e.target.closest('button'); if (!x) return; picked = x.textContent; render(); setTimeout(() => $('#pin').focus(), 30); };
+    $('#back').onclick = () => { cls = null; picked = ''; render(); };
+    $('#toUser').onclick = () => { cls = null; picked = ''; mode = 'user'; render(); };
+    $('#pin').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
+    $('#f2').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/login', { method: 'POST', body: { code, name: picked, pin: $('#pin').value } }); await signedIn(); } catch (x) { $('#e2').textContent = err(x); $('#pin').value = ''; } };
+    return;
+  }
+  const head = `${VA.mascot('hello', 96)}<h1>${icon('graduation-cap')} ${mode === 'reg' ? tt('学生注册', 'Student sign-up') : mode === 'forgot' ? tt('忘记密码', 'Forgot password') : tt('学生登录', 'Student sign-in')}</h1>`;
+  const foot = `<a href="/play" class="muted" style="text-align:center">${tt('不登录，直接加入游戏', 'Just join a game without signing in')}</a>`;
+  if (mode === 'forgot') {
+    b.innerHTML = `${head}<div class="muted">${tt('输入你的用户名。如果注册时填了家长邮箱，我们会把重设密码的链接发到家长邮箱；没填的话，请找班级老师帮你重设。', "Enter your username. If you gave a parent's email when signing up, we'll send them a reset link. Otherwise, ask your class teacher to reset it.")}</div>
+      <form id="ff" class="sub"><input class="in" id="fu" autocomplete="username" autocapitalize="off" placeholder="${tt('用户名', 'Username')}"><div class="err" id="ef"></div><button class="btn main" id="fb">${tt('发送重设链接', 'Send reset link')}</button></form>
+      <button class="btn ghost sm" id="fx">${icon('arrow-left')} ${tt('返回登录', 'Back to sign-in')}</button>`;
+    $('#fx').onclick = () => { mode = 'user'; render(); };
+    $('#ff').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/forgot', { method: 'POST', body: { username: $('#fu').value } }); $('#ff').outerHTML = `<div class="ok">${tt('如果这个用户名填过家长邮箱，重设链接已经发出（1 小时内有效）。没收到的话，请找班级老师重设。', "If that username has a parent email, a reset link is on its way (valid for 1 hour). If nothing arrives, ask your teacher.")}</div>`; } catch (x) { $('#ef').textContent = err(x); } };
+    return;
+  }
+  if (mode === 'user') {
+    b.innerHTML = `${head}${tabs()}<form id="fu1" class="sub"><input class="in" id="un" autocomplete="username" autocapitalize="off" placeholder="${tt('用户名', 'Username')}"><input class="in" id="up" type="password" autocomplete="current-password" placeholder="${tt('密码', 'Password')}"><div class="err" id="eu"></div><button class="btn go">${tt('登录', 'Sign in')}</button></form>
+      <button type="button" class="link" id="fg">${tt('忘记密码？', 'Forgot password?')}</button>${foot}`;
+    $('#fg').onclick = () => { mode = 'forgot'; render(); };
+    $('#fu1').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/login-user', { method: 'POST', body: { username: $('#un').value, password: $('#up').value } }); await signedIn(); } catch (x) { $('#eu').textContent = err(x); $('#up').value = ''; } };
+  } else if (mode === 'reg') {
+    b.innerHTML = `${head}${tabs()}<form id="fr" class="sub">
+      <label class="lab">${tt('用户名（登录用，3–20 位英文字母、数字或下划线）', 'Username (to sign in; 3–20 letters, numbers or _)')}<input class="in" id="ru" autocomplete="username" autocapitalize="off" maxlength="20" placeholder="xiaoming2015"></label>
+      <label class="lab">${tt('你的名字或昵称（老师和同学看到的，可以不填）', 'Your name or nickname (what your teacher sees; optional)')}<input class="in" id="rn" maxlength="16" placeholder="${tt('小明', 'Mei')}"></label>
+      <label class="lab">${tt('密码（至少 6 位，请记好）', 'Password (6+ characters — remember it!)')}<input class="in" id="rp" type="password" autocomplete="new-password" minlength="6"></label>
+      <label class="lab">${tt('家长邮箱（选填，忘记密码时用来重设）', "Parent's email (optional — for password resets)")}<input class="in" id="re" type="email" autocomplete="email" maxlength="120"></label>
+      <label class="lab">${tt('班级码（选填，老师给的）', 'Class code (optional, from your teacher)')}<input class="in" id="rc" maxlength="6" autocomplete="off" autocapitalize="off" value="${esc(code)}" placeholder="abc234"></label>
+      <div class="muted" style="font-size:13px">${tt('没填家长邮箱的话，忘记密码只能请班级老师重设。', "Without a parent's email, only your class teacher can reset a forgotten password.")}</div>
+      <div class="err" id="er"></div><button class="btn go">${tt('注册并登录', 'Sign up')}</button></form>${foot}`;
+    $('#fr').onsubmit = async e => {
+      e.preventDefault(); $('#er').textContent = '';
+      try { await api('/api/student/register', { method: 'POST', body: { username: $('#ru').value, name: $('#rn').value, password: $('#rp').value, parentEmail: $('#re').value } }); }
+      catch (x) { $('#er').textContent = err(x); return; }
+      // 填了班级码就顺便加入；加入失败不影响注册（登录后还能再加）
+      const c = $('#rc').value.trim().toLowerCase();
+      if (c) { code = c; try { await api('/api/student/join', { method: 'POST', body: { code: c } }); } catch (x) { VA.toast(err(x)); } }
+      await signedIn();
+    };
+  } else {
+    b.innerHTML = `${head}${tabs()}<div class="muted">${tt('登录后，你收集的卡和成绩会一直保存，换设备也不会丢；这台设备上已经有的卡也会一起存进账号。输入老师给的班级码：', 'Sign in so your cards and results are saved for good — cards already on this device move into your account too. Enter the class code from your teacher:')}</div>
+      <form id="f1" class="sub"><input class="in code" id="code" maxlength="6" autocomplete="off" autocapitalize="off" placeholder="abc234" value="${esc(code)}"><div class="err" id="e1"></div><button class="btn go">${tt('下一步', 'Next')} ${icon('arrow-right')}</button></form>
+      <div class="muted" style="font-size:13px;text-align:center">${tt('没有登录条？可以', 'No sign-in slip? You can')} <button type="button" class="link" data-m="reg">${tt('自己注册', 'sign up yourself')}</button></div>${foot}`;
     $('#f1').onsubmit = async e => { e.preventDefault(); code = $('#code').value.trim().toLowerCase(); try { cls = await api(`/api/class/${encodeURIComponent(code)}`); render(); } catch (x) { $('#e1').textContent = err(x); } };
-    return;
   }
-  b.innerHTML = `<h1>${icon('school')} ${esc(cls.name)}</h1>
-    <div class="muted">${tt('点你的名字：', 'Tap your name:')}</div>
-    <div class="names" id="names">${cls.students.map(n => `<button type="button"${n === picked ? ' class="on"' : ''}>${esc(n)}</button>`).join('') || `<span class="muted">${tt('这个班还没有学生，请问老师', 'No students yet — ask your teacher')}</span>`}</div>
-    <form id="f2" style="display:flex;flex-direction:column;gap:10px"${picked ? '' : ' hidden'}><div class="muted">${tt('输入你的 4 位密码：', 'Enter your 4-digit PIN:')}</div><input class="in pin" id="pin" inputmode="numeric" maxlength="4" autocomplete="off"><div class="err" id="e2"></div><button class="btn go">${tt('登录', 'Sign in')}</button></form>
-    <button class="btn ghost sm" id="back">${icon('arrow-left')} ${tt('换一个班级码', 'Use another code')}</button>`;
-  $('#names').onclick = e => { const x = e.target.closest('button'); if (!x) return; picked = x.textContent; render(); setTimeout(() => $('#pin').focus(), 30); };
-  $('#back').onclick = () => { cls = null; picked = ''; render(); };
-  $('#pin').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
-  $('#f2').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/login', { method: 'POST', body: { code, name: picked, pin: $('#pin').value } }); me = await api('/api/student/me'); try { localStorage.setItem('kq_name', me.name); } catch (x) {} await takeLocal().catch(() => {}); if (QS.get('next')) location.href = QS.get('next').startsWith('/') ? QS.get('next') : '/'; else render(); } catch (x) { $('#e2').textContent = err(x); $('#pin').value = ''; } };
+  b.querySelectorAll('[data-m]').forEach(x => x.onclick = () => { mode = x.dataset.m; render(); });
 }
 document.addEventListener('langchange', render);
-api('/api/student/me').then(d => { me = d; }).catch(() => {}).finally(() => { if (code && !me) api(`/api/class/${encodeURIComponent(code)}`).then(d => { cls = d; }).catch(() => {}).finally(render); else render(); });
+api('/api/student/me').then(d => { me = d; }).catch(() => {}).finally(() => { if (code && !me && mode === 'class') api(`/api/class/${encodeURIComponent(code)}`).then(d => { cls = d; }).catch(() => {}).finally(render); else render(); });
 </script>
 </body>
 </html>

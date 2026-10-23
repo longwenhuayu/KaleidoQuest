@@ -128,7 +128,7 @@
 <section class="stu-sec" id="students">
   <h2 class="sec-h" id="stuH"></h2><div class="sec-sub" id="stuSub"></div>
   <div class="steps" id="stuSteps"></div>
-  <div class="cta" style="margin-top:22px"><a class="btn main" href="/me" id="stuGo"></a><a class="btn ghost" href="/play" id="stuJoin"></a></div>
+  <div class="cta" style="margin-top:22px"><a class="btn main" href="/me" id="stuGo"></a><a class="btn ghost" href="/me?reg=1" id="stuReg"></a><a class="btn ghost" href="/play" id="stuJoin"></a></div>
   <div class="stu-note" id="stuNote"></div>
 </section>
 <section class="gal" id="fest" hidden>
@@ -191,14 +191,15 @@ function renderText() {
   $('#loginBtn').textContent = tt('老师登录', 'Teacher log in');
   $('#stuTop').innerHTML = VA.icon('graduation-cap') + `<span class="lg"> ${tt('学生登录', 'Student sign-in')}</span><span class="sm"> ${tt('学生', 'Student')}</span>`;
   $('#stuTop').title = tt('学生登录', 'Student sign-in');
-  $('#stuH').innerHTML = VA.icon('graduation-cap') + ' ' + tt('学生：登录后，卡和成绩都存进账号', 'Students: sign in to keep your cards and results');
+  $('#stuH').innerHTML = VA.icon('graduation-cap') + ' ' + tt('学生：注册登录后，卡和成绩都存进账号', 'Students: sign in to keep your cards and results');
   $('#stuSub').textContent = tt('不登录也能用昵称直接玩；登录以后，收集的卡和每局成绩都会保存，换手机、换平板也看得到。', 'You can always play with just a nickname. Sign in and your cards and game results are saved — on any phone or tablet.');
   $('#stuSteps').innerHTML = [
-    [tt('向老师拿登录条', 'Get your sign-in slip'), tt('学生不用自己注册。老师在后台「班级」里建好班，每人会有一个<code>班级码</code>和一个 4 位<code>密码</code>。', "No sign-up needed. Your teacher creates the class and gives you a <code>class code</code> and a 4-digit <code>PIN</code>.")],
-    [tt('打开 kaleido.quest/me', 'Go to kaleido.quest/me'), tt('输入班级码，点自己的名字，再输入 4 位密码。也可以直接扫登录条上的二维码。', 'Enter the class code, tap your name and type your PIN — or scan the QR code on your slip.')],
+    [tt('拿登录条，或者自己注册', 'Get a sign-in slip, or sign up'), tt('老师建了班级的，每人有一个<code>班级码</code>和 4 位<code>密码</code>。没有的话，自己注册一个<code>用户名</code>就行，不用邮箱；家长邮箱选填，忘记密码时用。', "If your teacher made a class, you'll get a <code>class code</code> and a 4-digit <code>PIN</code>. If not, sign up with a <code>username</code> — no email needed; a parent's email is optional, for password resets.")],
+    [tt('打开 kaleido.quest/me', 'Go to kaleido.quest/me'), tt('有登录条：输入班级码、点名字、输入密码，或者扫登录条上的二维码。自己注册的：用用户名登录，再输入老师给的班级码就能加入班级。', 'With a slip: enter the class code, tap your name and type your PIN, or scan the QR code. Signed up yourself: sign in with your username, then enter a class code to join your class.')],
     [tt('照常玩游戏、做作业', 'Play and do homework as usual'), tt('得到的卡进「我的卡册」，每局成绩进「我的成绩」。这台设备上之前收集的卡，登录时也会一起存进账号。', 'Cards go to “My card book” and scores to “My results”. Cards already on this device move into your account when you sign in.')]
   ].map(([h, d]) => `<div class="step"><b>${h}</b><span>${d}</span></div>`).join('');
   $('#stuGo').innerHTML = VA.icon('graduation-cap') + ' ' + tt('学生登录', 'Student sign-in');
+  $('#stuReg').innerHTML = VA.icon('user-plus') + ' ' + tt('学生自己注册', 'Student sign-up');
   $('#stuJoin').innerHTML = VA.icon('gamepad-2') + ' ' + tt('不登录，直接加入游戏', 'Join without signing in');
   $('#stuNote').innerHTML = tt('老师：在后台「班级」里贴上学生名单，就能一键打印登录条，还能看到每个学生的学习记录和常错的题。', "Teachers: paste your class list under “Classes” to print sign-in slips and see each student's record and often-missed questions.") + ` <a href="/guide">${tt('看上手指南', 'Teacher guide')}</a>`;
   $('#zh').textContent = tt('每一门课，都是一场闯关', 'Every lesson becomes a game');

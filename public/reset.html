@@ -31,10 +31,13 @@ main{flex:1;display:grid;place-items:center;padding:20px}
 <script src="/js/common.js?v=20261023a"></script>
 <script>
 const { tt, api, $ } = VA;
-const token = new URLSearchParams(location.search).get('token') || '';
+const QS = new URLSearchParams(location.search), token = QS.get('token') || '';
+// 学生账号（家长邮箱收到的链接）：密码至少 6 位，重设后去学生页
+const STU = QS.get('student') === '1', MIN = STU ? 6 : 8;
+$('#pw').minLength = $('#pw2').minLength = MIN;
 function text() {
   $('#h').textContent = tt('设置新密码', 'Choose a new password');
-  $('#pw').placeholder = tt('新密码（至少 8 位）', 'New password (8+ characters)');
+  $('#pw').placeholder = tt(`新密码（至少 ${MIN} 位）`, `New password (${MIN}+ characters)`);
   $('#pw2').placeholder = tt('再输入一次', 'Type it again');
   $('#go').textContent = tt('保存并登录', 'Save and log in');
 }
@@ -44,11 +47,11 @@ $('#form').onsubmit = async e => {
   e.preventDefault(); $('#err').textContent = '';
   if ($('#pw').value !== $('#pw2').value) { $('#err').textContent = tt('两次输入的密码不一样', "Passwords don't match"); return; }
   try {
-    await api('/api/reset', { method: 'POST', body: { token, password: $('#pw').value } });
-    location.href = '/teacher';
+    await api(STU ? '/api/student/reset' : '/api/reset', { method: 'POST', body: { token, password: $('#pw').value } });
+    location.href = STU ? '/me' : '/teacher';
   } catch (x) {
     $('#err').textContent = x.message === 'expired' ? tt('链接已过期或已经用过，请回首页重新申请', 'This link has expired or was already used — request a new one from the home page')
-      : x.message === 'password' ? tt('密码至少 8 位', 'Password must be 8+ characters') : tt('出错了，请再试一次', 'Something went wrong — please try again');
+      : x.message === 'password' ? tt(`密码至少 ${MIN} 位`, `Password must be ${MIN}+ characters`) : tt('出错了，请再试一次', 'Something went wrong — please try again');
   }
 };
 </script>

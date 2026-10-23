@@ -26,8 +26,8 @@
 
 ```bash
 DB_PATH=/tmp/claude-501/kq.db PORT=3048 node --disable-warning=ExperimentalWarning server.js   # 本地服务器（测试库放 /tmp）
-npm test        # sim / treasure / homework / admin / gallery / students / plugins，看退出码，不要只 grep
-node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-avatar  e2e-admin  eye  reset-ui   # 浏览器测试，截图在 test/shots/
+npm test        # sim / treasure / homework / admin / gallery / students / self-register / plugins，看退出码，不要只 grep
+node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-self-register  e2e-avatar  e2e-admin  eye  reset-ui   # 浏览器测试，截图在 test/shots/
 ```
 - Playwright 借用 `~/Desktop/工具开发/xiaohongshu-loop/node_modules/playwright`（channel: chrome）；sharp 借用 `~/Desktop/工具开发/board-game-studio/node_modules/sharp`。本机没有 ffmpeg。
 - `e2e-classes` 加 `AI=1` 会真的调用 AI 出题。`reset-ui` 需要 `SERVER_LOG` 指向服务器日志，并且库里先有 me@x.sg。
@@ -65,7 +65,7 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-ava
 
 ## 已完成（按时间）
 
-课堂擂台 → 夺宝 → 作业 → 收集卡 → 找回密码 → 管理后台 → 品牌重做 / Lucide 图标 → 游戏库 25 个 + 免登录试玩 / 访客投屏 → 首页配色 → 44 张 AI 卡片插画 → 上手指南 / 海报 / 推广文案 → AI 出题 → 班级与学生账号 → 第一批（首页改版、动图、封面）→ 第二批（吉祥物、卡片头像）→ 第三批（后台新手清单、功能入口、不计速度）→ 第四批（4 个节日专题 12 个游戏、游戏库搜索）→ 学生学习记录（2026-10-23：班级表加局数/正确率/最近，点名字看记录和常错题；学生 /me「我的成绩」）→ 登录时合并本机卡册（`POST /api/student/cards/merge`，`cards.cardById()` 只认真实 id、内容服务器重建、张数取较大值封顶 20；合并后和退出时清掉本机 `kq_cards`，防共用设备串号）→ 首页加「学生登录」顶栏入口和三步登录引导区（#students）
+课堂擂台 → 夺宝 → 作业 → 收集卡 → 找回密码 → 管理后台 → 品牌重做 / Lucide 图标 → 游戏库 25 个 + 免登录试玩 / 访客投屏 → 首页配色 → 44 张 AI 卡片插画 → 上手指南 / 海报 / 推广文案 → AI 出题 → 班级与学生账号 → 第一批（首页改版、动图、封面）→ 第二批（吉祥物、卡片头像）→ 第三批（后台新手清单、功能入口、不计速度）→ 第四批（4 个节日专题 12 个游戏、游戏库搜索）→ 学生学习记录（2026-10-23：班级表加局数/正确率/最近，点名字看记录和常错题；学生 /me「我的成绩」）→ 登录时合并本机卡册（`POST /api/student/cards/merge`，`cards.cardById()` 只认真实 id、内容服务器重建、张数取较大值封顶 20；合并后和退出时清掉本机 `kq_cards`，防共用设备串号）→ 首页加「学生登录」顶栏入口和三步登录引导区（#students）→ 学生自己注册（2026-10-23）：students 表两种账号——老师建的（pin，class_id 必有）和自注册的（username 全站唯一不分大小写 + scrypt pw + 选填 parent_email，class_id 可空）；`/api/student/register|login-user|join|password|forgot|reset`；家长邮箱找回走 `/reset?student=1`；老师重设自注册学生给 6 位临时密码；删学生 / 删班级 / 删老师时自注册账号只退出班级（trigger `classes_keep_own_accounts`）；PIN 名单和打印登录条不含自注册学生。迁移前线上库备份在 `/opt/kaleido/backups/pre-self-register-20261023.db`
 
 ## 待办 / 未决
 
@@ -74,5 +74,6 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-ava
 - 马来文、淡米尔文游戏：等母语老师审内容
 - 没登录的学生选卡片头像时服务器无法核实是否拥有（影响小）
 - SMTP 密码曾在对话里出现过且和别处共用，建议更换（用户说先搁置）
-- 正式收费前请律师看用户条款和学生隐私
+- 正式收费前请律师看用户条款和学生隐私（现在学生可以自己注册，且未做年龄限制 / 家长同意，用户决定 2026-10-23）
+- 自注册学生没有自助删除账号的入口，目前要写信请管理员删
 - 以后可做：英文 / 科学出题插件、全班守城模式、更多节日专题、卡片与头像的更多玩法

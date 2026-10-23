@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning server.js",
-    "test": "node --disable-warning=ExperimentalWarning test/sim.js && node --disable-warning=ExperimentalWarning test/treasure.js && node --disable-warning=ExperimentalWarning test/homework.js && node --disable-warning=ExperimentalWarning test/admin.js && node --disable-warning=ExperimentalWarning test/gallery.js && node --disable-warning=ExperimentalWarning test/students.js && node test/plugins.js"
+    "test": "node --disable-warning=ExperimentalWarning test/sim.js && node --disable-warning=ExperimentalWarning test/treasure.js && node --disable-warning=ExperimentalWarning test/homework.js && node --disable-warning=ExperimentalWarning test/admin.js && node --disable-warning=ExperimentalWarning test/gallery.js && node --disable-warning=ExperimentalWarning test/students.js && node --disable-warning=ExperimentalWarning test/self-register.js && node test/plugins.js"
   },
   "engines": {
     "node": ">=22.5"
