@@ -11,7 +11,7 @@
     $('#clsTab').textContent = tt('班级', 'Classes');
     if (open) return detail();
     $('#vClasses').innerHTML = `<div class="head"><h1>${tt('班级', 'Classes')}</h1><button class="btn main" id="clsNew">${icon('plus')} ${tt('新建班级', 'New class')}</button></div>
-      <div class="muted" style="margin:-6px 0 14px;line-height:1.6">${tt('建好班级后，每个学生有一个 4 位密码。学生在 kaleido.quest/me 登录，玩游戏、做作业得到的卡就存进账号，换设备也不丢；你在这里能看到全班的收集进度。学生不登录也照样能玩。', 'Each student gets a 4-digit PIN. When they sign in at kaleido.quest/me, the cards they earn are saved to their account on any device, and you can see the class’s progress here. Students can still play without signing in.')}</div>
+      <div class="muted" style="margin:-6px 0 14px;line-height:1.6">${tt('建好班级后，每个学生有一个 4 位密码。学生在 kaleido.quest/me 登录，玩游戏、做作业的成绩和得到的卡就存进账号，换设备也不丢；你在这里能看到每个学生的学习记录和常错的题。学生不登录也照样能玩，只是不记个人成绩。', 'Each student gets a 4-digit PIN. When they sign in at kaleido.quest/me, their scores and the cards they earn are saved to their account on any device, and you can see each student’s record and often-missed questions here. Students can still play without signing in — their results just aren’t saved.')}</div>
       ${list.length ? `<div class="sets">${list.map(c => `<div class="card set" data-cls="${c.id}" style="cursor:pointer"><h3><span class="subj" style="background:#ede9fe;color:#6d28d9">${icon('school')}</span><span>${esc(c.name)}</span></h3><div class="meta"><span>${c.n} ${tt('名学生', 'students')}</span><span>· ${tt('班级码', 'Code')} <b style="letter-spacing:1px">${esc(c.code)}</b></span></div></div>`).join('')}</div>` : `<div class="empty">${VA.mascot('hello', 100)}${tt('还没有班级。新建一个，把学生名字贴进去就行。', 'No classes yet — create one and paste in your students’ names.')}</div>`}`;
     $('#clsNew').onclick = create;
     $('#vClasses').querySelectorAll('[data-cls]').forEach(el => el.onclick = async () => { open = await api(`/api/classes/${el.dataset.cls}`); render(); });
@@ -33,8 +33,8 @@
     $('#vClasses').innerHTML = `<div class="head"><button class="btn ghost sm" id="clsBack">${icon('arrow-left')}</button><h1>${esc(c.name)}</h1>
         <button class="btn ghost sm" id="clsPrint">${icon('download')} ${tt('打印登录条', 'Print sign-in slips')}</button><button class="btn ghost sm" id="clsAdd">${icon('plus')} ${tt('添加学生', 'Add students')}</button></div>
       <div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px"><div style="flex:1;min-width:220px;line-height:1.7">${tt('学生打开', 'Students go to')} <b>${esc(location.host)}/me</b><br>${tt('班级码', 'Class code')} <b style="font-size:22px;letter-spacing:3px">${esc(c.code)}</b> · ${tt('再点自己的名字、输入 4 位密码', 'then tap their name and enter their PIN')}</div><div class="qr" id="clsQr" style="line-height:0"></div></div>
-      ${c.students.length ? `<div class="card" style="padding:0;overflow:auto"><table class="ctab"><thead><tr><th>${tt('学生', 'Student')}</th><th>${tt('密码', 'PIN')}</th>${DECKS.map(([, zh, en]) => `<th>${tt(zh, en)}</th>`).join('')}<th></th></tr></thead><tbody>
-        ${c.students.map(s => `<tr data-sid="${s.id}"><td><b>${esc(s.name)}</b></td><td class="pin">${esc(s.pin)}</td>${DECKS.map(([k]) => `<td>${s.cards[k] || 0}${total(k) ? `<span class="muted"> / ${total(k)}</span>` : ''}</td>`).join('')}
+      ${c.students.length ? `<div class="card" style="padding:0;overflow:auto"><table class="ctab"><thead><tr><th>${tt('学生', 'Student')}</th><th>${tt('密码', 'PIN')}</th><th>${tt('局数', 'Games')}</th><th>${tt('正确率', 'Accuracy')}</th><th>${tt('最近', 'Last')}</th>${DECKS.map(([, zh, en]) => `<th>${tt(zh, en)}</th>`).join('')}<th></th></tr></thead><tbody>
+        ${c.students.map(s => `<tr data-sid="${s.id}"><td><a href="#" data-hist title="${tt('看学习记录', 'View record')}"><b>${esc(s.name)}</b></a></td><td class="pin">${esc(s.pin)}</td><td>${s.stats.games}</td><td>${s.stats.rate == null ? '–' : s.stats.rate + '%'}</td><td class="muted">${s.stats.last ? new Date(s.stats.last).toLocaleDateString(VA.lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric' }) : '–'}</td>${DECKS.map(([k]) => `<td>${s.cards[k] || 0}${total(k) ? `<span class="muted"> / ${total(k)}</span>` : ''}</td>`).join('')}
           <td style="white-space:nowrap"><button class="btn ghost sm" data-s="pin" title="${tt('重设密码', 'Reset PIN')}">${icon('rotate-ccw')}</button> <button class="btn ghost sm danger" data-s="del" title="${tt('删除', 'Remove')}">${icon('trash-2')}</button></td></tr>`).join('')}
       </tbody></table></div>` : `<div class="empty">${tt('还没有学生，点「添加学生」。', 'No students yet — click “Add students”.')}</div>`}
       <div style="margin-top:20px;text-align:right"><button class="btn ghost sm danger" id="clsDel">${icon('trash-2')} ${tt('删除这个班级', 'Delete this class')}</button></div>`;
@@ -52,6 +52,11 @@
       if (!e.currentTarget.dataset.armed) { e.currentTarget.dataset.armed = 1; e.currentTarget.innerHTML = icon('triangle-alert') + ' ' + tt('再点一次：学生账号和卡册都会删除', 'Click again: student accounts and cards will be deleted'); return; }
       await api(`/api/classes/${c.id}`, { method: 'DELETE' }); open = null; load();
     };
+    $('#vClasses').querySelectorAll('[data-hist]').forEach(a => a.onclick = async e => {
+      e.preventDefault();
+      const d = await api(`/api/classes/${c.id}/students/${a.closest('tr').dataset.sid}/results`);
+      modal(`<h2>${icon('chart-column')} ${esc(d.name)} · ${tt('学习记录', 'Learning record')}</h2>${VA.history(d)}<div class="row" style="justify-content:flex-end"><button class="btn ghost sm mp-x" type="button">${tt('关闭', 'Close')}</button></div>`);
+    });
     $('#vClasses').querySelectorAll('[data-s]').forEach(b => b.onclick = async () => {
       const sid = b.closest('tr').dataset.sid, s = c.students.find(x => x.id == sid);
       if (!b.dataset.armed) { b.dataset.armed = 1; b.classList.add('main'); b.title = b.dataset.s === 'pin' ? tt(`再点一次：给 ${s.name} 换新密码`, `Click again to give ${s.name} a new PIN`) : tt(`再点一次：删除 ${s.name} 和他的卡册`, `Click again to remove ${s.name} and their cards`); toast(b.title); setTimeout(() => { delete b.dataset.armed; b.classList.remove('main'); }, 3000); return; }

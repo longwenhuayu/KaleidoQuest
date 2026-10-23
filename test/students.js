@@ -85,11 +85,30 @@ const count = book => Object.values(book).reduce((s, x) => s + x.n, 0);
   const before = count(book);
   book = await json('/api/student/cards', { cookie: S });
   assert.equal(count(book), before + r.reward.cards.length, '作业得卡记进账号');
+  // 学习记录：试玩、课堂、作业各一条；没登录的路人不记
+  const { q: dbq } = require('../lib/db');
+  assert.equal(dbq('SELECT count(*) n FROM student_results').get().n, 3, '只记登录的学生');
+  let mine = await json('/api/student/results', { cookie: S });
+  assert.deepEqual(mine.results.map(x => x.kind).sort(), ['classic', 'homework', 'try']);
+  const cl = mine.results.find(x => x.kind === 'classic');
+  assert.equal(cl.correct, 8); assert.equal(cl.total, 8); assert.equal(cl.score, end1.score);
+  const hwr = mine.results.find(x => x.kind === 'homework');
+  assert.equal(hwr.correct, r.correct, '作业对题数'); assert.equal(hwr.total, 8);
+  assert.ok(mine.missed.length && mine.missed.every(m => m.wrong >= 1 && m.prompt), '常错的题');
+  assert.equal((await req('/api/student/results')).status, 401);
+  await json(`/api/hw/${hw.code}/answer`, { body: { token: ht, pos: 8, ans: 0 } }); // 做完再提交不重复记
+  assert.equal(dbq('SELECT count(*) n FROM student_results').get().n, 3);
   // 老师看进度
   c = await json(`/api/classes/${cid}`, { cookie: T });
   const prog = c.students.find(s => s.name === '小明').cards;
   assert.ok(prog.math >= 1 && (prog.explorer || 0) + (prog.science || 0) >= 1, JSON.stringify(prog));
   assert.deepEqual(c.students.find(s => s.name === '小红').cards, {});
+  const mst = c.students.find(s => s.name === '小明').stats;
+  assert.equal(mst.games, 3); assert.ok(mst.rate > 0 && mst.rate <= 100 && mst.last);
+  assert.deepEqual(c.students.find(s => s.name === '小红').stats, { games: 0, rate: null, last: null });
+  const tv = await json(`/api/classes/${cid}/students/${ming.id}/results`, { cookie: T });
+  assert.equal(tv.name, '小明'); assert.equal(tv.results.length, 3);
+  assert.equal((await req(`/api/classes/${cid}/students/${ming.id}/results`, { cookie: T2 })).status, 404, '别的老师看不到成绩');
   // 重设密码：旧会话失效
   const { pin: newPin } = await json(`/api/classes/${cid}/students/${ming.id}/pin`, { body: {}, cookie: T });
   assert.equal((await req('/api/student/me', { cookie: S })).status, 401, '重设后旧登录失效');
@@ -110,6 +129,7 @@ const count = book => Object.values(book).reduce((s, x) => s + x.n, 0);
   assert.equal((await json('/api/classes', { cookie: T })).length, 0);
   const { q } = require('../lib/db');
   assert.equal(q('SELECT count(*) n FROM student_cards').get().n, 0, '卡册连带删除');
+  assert.equal(q('SELECT count(*) n FROM student_results').get().n, 0, '学习记录连带删除');
   // 擂台「不计速度」：快慢都是 1000 分
   const T3 = cookieOf(await req('/api/register', { body: { email: 's3@x.com', name: '速度', password: 'secret123' } }));
   const set3 = await json('/api/gallery/m-order/copy', { body: {}, cookie: T3 });

@@ -1,6 +1,6 @@
 # KaleidoQuest 开发记忆
 
-> 续做前先读这份；结束前把新进展、新坑、待办更新到这里。最后更新：2026-10-21
+> 续做前先读这份；结束前把新进展、新坑、待办更新到这里。最后更新：2026-10-23
 
 **KaleidoQuest — Every subject is a quest.** 课堂实时答题游戏，by Vision Chinese Academy 文心书院（2026-10-21 曾短暂改名 Dragon Chinese，已恢复）。页脚和海报底部写「© Vision Chinese Academy 文心书院 · visionchinese.com」。
 线上 https://kaleido.quest · 负责人 朱海滨（回复用中文）。本地目录叫 `vision-arena`（旧名 Vision Arena），对外一律用 KaleidoQuest。
@@ -31,7 +31,7 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-ava
 ```
 - Playwright 借用 `~/Desktop/工具开发/xiaohongshu-loop/node_modules/playwright`（channel: chrome）；sharp 借用 `~/Desktop/工具开发/board-game-studio/node_modules/sharp`。本机没有 ffmpeg。
 - `e2e-classes` 加 `AI=1` 会真的调用 AI 出题。`reset-ui` 需要 `SERVER_LOG` 指向服务器日志，并且库里先有 me@x.sg。
-- 端口 8766 是别的会话的，别杀。
+- 端口 8766 是别的会话的，别杀。本机 3048 常被一个旧的开发服务器占着（2026-10-20 起），新起的会 EADDRINUSE 静默失败、测试打到旧代码上 → 本地测试换端口（如 3149）并用 `BASE=http://127.0.0.1:3149`。
 
 ## 结构
 
@@ -42,7 +42,7 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-ava
 - `lib/game.js` 擂台抢答引擎（含「不计速度」`room.accuracy`、卡片头像校验 `cardAvatar`）；`lib/treasure.js` 夺宝模式
 - `lib/homework.js` 作业（/hw/:code，attempts 表含 student_id）
 - `lib/gallery.js` 游戏库：`/api/gallery`、`/api/collections`（按新加坡日期判断节日专题）、复制、免登录试玩 `/try/:id`（内存）、访客投屏限流
-- `lib/students.js` 班级 / 学生 4 位 PIN / cookie `kq_student` / 服务器卡册 `award()`（按 reward id 去重）
+- `lib/students.js` 班级 / 学生 4 位 PIN / cookie `kq_student` / 服务器卡册 `award()`（按 reward id 去重）/ 学习记录 `record()` 写 `student_results`（擂台、夺宝、作业、试玩四个结算点都调用；按 ref 去重；没登录不记）→ 老师 `/api/classes/:id/students/:sid/results`、学生 `/api/student/results`，前端共用 `VA.history()`
 - `lib/ai.js` AI 出题（SiliconFlow `deepseek-ai/DeepSeek-V3`，每位老师每天 30 次，记在内存里，重启清零）
 - `lib/cards.js` + `lib/data/hanzi-ety.json` 收集卡抽卡；`lib/admin.js` 管理后台；`lib/mail.js`
 - `lib/data/gallery.json` / `collections.json` 由 `scripts/build-gallery.js` 生成（**改题改这个脚本再跑**；用固定种子，新游戏只能往后加，否则旧游戏选项顺序会变）
@@ -65,7 +65,7 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-ava
 
 ## 已完成（按时间）
 
-课堂擂台 → 夺宝 → 作业 → 收集卡 → 找回密码 → 管理后台 → 品牌重做 / Lucide 图标 → 游戏库 25 个 + 免登录试玩 / 访客投屏 → 首页配色 → 44 张 AI 卡片插画 → 上手指南 / 海报 / 推广文案 → AI 出题 → 班级与学生账号 → 第一批（首页改版、动图、封面）→ 第二批（吉祥物、卡片头像）→ 第三批（后台新手清单、功能入口、不计速度）→ 第四批（4 个节日专题 12 个游戏、游戏库搜索）
+课堂擂台 → 夺宝 → 作业 → 收集卡 → 找回密码 → 管理后台 → 品牌重做 / Lucide 图标 → 游戏库 25 个 + 免登录试玩 / 访客投屏 → 首页配色 → 44 张 AI 卡片插画 → 上手指南 / 海报 / 推广文案 → AI 出题 → 班级与学生账号 → 第一批（首页改版、动图、封面）→ 第二批（吉祥物、卡片头像）→ 第三批（后台新手清单、功能入口、不计速度）→ 第四批（4 个节日专题 12 个游戏、游戏库搜索）→ 学生学习记录（2026-10-23：班级表加局数/正确率/最近，点名字看记录和常错题；学生 /me「我的成绩」）
 
 ## 待办 / 未决
 

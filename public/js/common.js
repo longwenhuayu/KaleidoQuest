@@ -139,6 +139,17 @@
   const mascot = (pose, size = 120) => `<img class="mascot" src="/mascot/${pose}.webp" width="${size}" height="${size}" alt="">`;
   // 头像：emoji，或者 card:<id>（收集到的卡片角色）
   const av = a => { const m = /^card:([a-z0-9]{1,20})$/.exec(String(a || '')); return m ? `<img class="av-img" src="/card-art/${m[1]}.webp" alt="">` : esc(a); };
-  window.VA = { av, mascot, t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, icon, subjectIcon, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak, shareMenu, track, attribution: ATTR };
+  // 学习记录（老师看学生、学生看自己共用）：d = { results, missed }
+  const KINDS = { classic: ['擂台', 'Live'], treasure: ['夺宝', 'Treasure'], homework: ['作业', 'Homework'], try: ['试玩', 'Practice'] };
+  function history(d) {
+    if (!d.results.length) return `<div class="muted" style="padding:12px 0">${tt('还没有记录。登录后玩游戏、做作业，成绩会记在这里。', 'No records yet. Games and homework played while signed in show up here.')}</div>`;
+    const pct = r => r.total ? Math.round(r.correct * 100 / r.total) + '%' : '–';
+    const day = at => new Date(at).toLocaleDateString(lang === 'en' ? 'en-SG' : 'zh-CN', { month: 'short', day: 'numeric' });
+    return `${d.missed.length ? `<h3 style="font-size:15px;margin:4px 0 6px">${tt('常错的题', 'Often missed')}</h3><ul style="margin:0 0 14px;padding-left:18px;line-height:1.7">${d.missed.map(m => `<li>${esc(m.prompt)} <span class="muted">· ${tt(`错 ${m.wrong} / ${m.seen} 次`, `missed ${m.wrong} of ${m.seen}`)}</span></li>`).join('')}</ul>` : ''}
+      <h3 style="font-size:15px;margin:4px 0 6px">${tt(`最近 ${d.results.length} 局`, `Last ${d.results.length} games`)}</h3>
+      <div style="max-height:320px;overflow:auto"><table class="ctab" style="width:100%;border-collapse:collapse;font-size:14px"><thead><tr><th>${tt('日期', 'Date')}</th><th>${tt('游戏', 'Game')}</th><th>${tt('答对', 'Correct')}</th><th>${tt('得分', 'Score')}</th></tr></thead><tbody>
+      ${d.results.map(r => `<tr><td style="white-space:nowrap">${day(r.at)}</td><td>${esc(r.title)} <span class="muted">· ${tt(...KINDS[r.kind])}</span></td><td style="white-space:nowrap">${r.correct}/${r.total} <span class="muted">${pct(r)}</span></td><td>${r.score}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  window.VA = { av, mascot, t, tt, get lang() { return lang; }, setLang, applyI18n, api, $, esc, toast, pickMode, passwordEyes, icon, subjectIcon, SHAPES, SUBJECT_ICON, wsUrl, sfx, tone, get muted() { return muted; }, setMuted, speak, shareMenu, track, attribution: ATTR, history };
   document.addEventListener('DOMContentLoaded', () => { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; applyI18n(); passwordEyes(); track('page_view'); });
 })();

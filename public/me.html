@@ -26,6 +26,8 @@ main{flex:1;display:grid;place-items:center;padding:16px}
 .hello .av{font-size:64px;line-height:1}
 .hello b{font-size:24px}
 .muted{font-size:14px;line-height:1.6}
+.ctab th,.ctab td{padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
+.ctab th{font-size:12px;color:var(--muted);font-weight:800}
 .lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
 </style>
 </head>
@@ -33,21 +35,28 @@ main{flex:1;display:grid;place-items:center;padding:16px}
 <header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
 <main><div class="box" id="box"></div></main>
 <div style="text-align:center;padding:0 16px 24px;font-size:13px"><a href="/privacy" style="color:#c4b5fd">隐私说明 Privacy</a></div>
-<script src="/js/common.js?v=20261022b"></script>
+<script src="/js/common.js?v=20261023a"></script>
 <script>
 const { tt, $, esc, api, icon } = VA;
 const QS = new URLSearchParams(location.search);
-let me = null, cls = null, code = (QS.get('c') || '').toLowerCase(), picked = '';
+let me = null, cls = null, results = null, code = (QS.get('c') || '').toLowerCase(), picked = '';
 const ERR = { not_found: ['找不到这个班级码，请问老师', "Class code not found — ask your teacher"], wrong: ['密码不对，再试一次', 'Wrong PIN — try again'], locked: ['错太多次了，请让老师帮你重设密码', 'Too many tries — ask your teacher to reset your PIN'], too_many: ['操作太频繁，请稍后再试', 'Too many tries — wait a bit'] };
 const err = x => { const m = ERR[x.message]; return m ? tt(m[0], m[1]) : tt('出错了，请再试一次', 'Something went wrong'); };
 function render() {
   const b = $('#box');
+  if (me && results) {
+    b.innerHTML = `<h1>${icon('chart-column')} ${tt('我的成绩', 'My results')}</h1>${VA.history(results)}<button class="btn ghost sm" id="back">${icon('arrow-left')} ${tt('返回', 'Back')}</button>`;
+    $('#back').onclick = () => { results = null; render(); };
+    return;
+  }
   if (me) {
     b.innerHTML = `<div class="hello">${VA.mascot('cheer', 120)}<b>${esc(me.name)}</b><div class="muted">${esc(me.className)}</div>
-      <div class="muted">${tt('已经登录。在这台设备上玩游戏、做作业得到的卡，都会存进你的卡册，换设备登录也看得到。', "You're signed in. Cards you earn on this device are saved to your account — sign in on any device to see them.")}</div>
+      <div class="muted">${tt('已经登录。在这台设备上玩游戏、做作业的成绩和得到的卡，都会存进你的账号，换设备登录也看得到。', "You're signed in. Your results and the cards you earn on this device are saved to your account — sign in on any device to see them.")}</div>
       <a class="btn go" href="/play" style="width:100%">${icon('gamepad-2')} ${tt('加入游戏', 'Join a game')}</a>
       <a class="btn main" href="/cards" style="width:100%">${icon('layers')} ${tt('我的卡册', 'My card book')}</a>
+      <button class="btn main" id="res" style="width:100%">${icon('chart-column')} ${tt('我的成绩', 'My results')}</button>
       <button class="btn ghost sm" id="out">${icon('log-out')} ${tt('退出登录', 'Sign out')}</button></div>`;
+    $('#res').onclick = async () => { try { results = await api('/api/student/results'); render(); } catch (x) { VA.toast(err(x)); } };
     $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); me = null; render(); };
     return;
   }

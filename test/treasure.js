@@ -27,10 +27,15 @@ const until = async (fn, ms = 8000) => { const end = Date.now() + ms; while (!fn
   const pin = host.inbox.find(m => m.t === 'room').pin;
   assert.equal(host.inbox.find(m => m.t === 'room').mode, 'treasure');
   const right = { 0: 0, 1: true, 2: '42' }, wrong = { 0: 1, 1: false, 2: '7' };
+  // S0 是登录的学生：结束后成绩记进他的账号
+  const post = (u, body, c) => fetch(BASE + u, { method: 'POST', headers: { 'content-type': 'application/json', ...(c ? { cookie: c } : {}) }, body: JSON.stringify(body) });
+  const { id: cid } = await (await post('/api/classes', { name: 'C', names: 'S0' }, cookie)).json();
+  const cls = await (await fetch(BASE + `/api/classes/${cid}`, { headers: { cookie } })).json();
+  const stu = (await post('/api/student/login', { code: cls.code, name: 'S0', pin: cls.students[0].pin })).headers.get('set-cookie').split(';')[0];
   const N = 12, ps = [];
   let stealSum = 0, stolenSum = 0, earlyNext = 0;
   for (let i = 0; i < N; i++) {
-    const p = await open();
+    const p = await open(i === 0 ? stu : undefined);
     p.k = i; p.sendj({ t: 'join', pin, name: 'S' + i });
     p.onmsg = m => {
       if (m.t === 'tq') { const bad = p.k % 3 === 0 && Math.random() < .5; setTimeout(() => p.sendj({ t: 'answer', qi: m.qi, ans: (bad ? wrong : right)[m.qi] }), 5 + Math.random() * 30); }
@@ -65,6 +70,10 @@ const until = async (fn, ms = 8000) => { const end = Date.now() + ms; while (!fn
   const wrongers = rep.report.players.filter(p => +p.name.slice(1) % 3 === 0), others = rep.report.players.filter(p => +p.name.slice(1) % 3 !== 0);
   const avg = a => a.reduce((s, p) => s + p.tries, 0) / a.length;
   assert.ok(avg(wrongers) < avg(others), `答错要等：${avg(wrongers).toFixed(1)} < ${avg(others).toFixed(1)}`);
+  const mine = await (await fetch(BASE + '/api/student/results', { headers: { cookie: stu } })).json();
+  const s0 = rep.report.players.find(p => p.name === 'S0');
+  assert.equal(mine.results.length, 1); assert.equal(mine.results[0].kind, 'treasure');
+  assert.deepEqual([mine.results[0].correct, mine.results[0].total, mine.results[0].score], [s0.correct, s0.tries, s0.score], '夺宝成绩记进学生账号');
   // 主持人重连拿到同一份结果
   const host2 = await open(cookie); host2.sendj({ t: 'host_resume', pin });
   await until(() => host2.inbox.some(m => m.t === 'end'));

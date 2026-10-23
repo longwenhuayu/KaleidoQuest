@@ -40,10 +40,16 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   await shot(S, '73-cards-signed-in');
   await S.goto(BASE + '/play'); await S.waitForTimeout(600);
   const playName = await S.inputValue('#nameIn');
+  // 学生看自己的成绩
+  await S.goto(BASE + '/me'); await S.waitForSelector('#res'); await S.click('#res'); await S.waitForSelector('.box .ctab');
+  const myRes = await S.textContent('.box'); await shot(S, '76-me-results');
   // 老师看进度
   await T.reload(); await T.click('[data-v=classes]'); await T.click('[data-cls]'); await T.waitForSelector('.ctab');
   const row = await T.evaluate(() => [...document.querySelectorAll('.ctab tr')].find(r => r.textContent.includes('小明')).textContent);
   await shot(T, '74-class-progress');
+  // 老师点名字看学习记录
+  await T.click('.ctab tr:has-text("小明") [data-hist]'); await T.waitForSelector('.mp-box .ctab');
+  const tRes = await T.textContent('.mp-box'); await T.waitForTimeout(400); await shot(T, '77-class-record'); await T.click('.mp-box .mp-x');
   // 编辑器 AI 面板
   await T.goto(BASE + '/edit'); await T.waitForSelector('#ptabs'); await T.selectOption('#subject', 'science'); await T.click('[data-p=ai]');
   const aiLang = await T.inputValue('#aiLang');
@@ -54,7 +60,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   }
   await shot(T, '75-editor-ai');
   await b.close();
-  const ok = galBtn && /不对|Wrong/.test(wrongMsg) && nameFilled === '小明' && /小明/.test(note) && serverCards >= 1 && /已登录|Signed in/.test(cardNote) && playName === '小明' && /小明\s*\d{4}\s*0\s*[12]/.test(row) && aiLang === 'en' && (!process.env.AI || aiN > 0) && !errs.length;
-  console.log({ galBtn, wrongMsg, nameFilled, note, serverCards, cardNote: cardNote.slice(0, 40), playName, row, aiLang, aiN, errs });
+  const ok = galBtn && /不对|Wrong/.test(wrongMsg) && nameFilled === '小明' && /小明/.test(note) && serverCards >= 1 && /已登录|Signed in/.test(cardNote) && playName === '小明' && /小明\s*\d{4}\s*1\s*\d+%.+?0\s*[12]/.test(row) && /试玩|Practice/.test(myRes) && /常错|Often missed/.test(myRes) && /学习记录|Learning record/.test(tRes) && /试玩|Practice/.test(tRes) && aiLang === 'en' && (!process.env.AI || aiN > 0) && !errs.length;
+  console.log({ galBtn, wrongMsg, nameFilled, note, serverCards, cardNote: cardNote.slice(0, 40), playName, row, myRes: myRes.slice(0, 80), tRes: tRes.slice(0, 80), aiLang, aiN, errs });
   console.log(ok ? '✅ 班级浏览器测试通过' : '❌ 失败'); process.exit(ok ? 0 : 1);
 })().catch(e => { console.error(e.message); process.exit(1); });
