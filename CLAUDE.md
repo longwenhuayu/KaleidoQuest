@@ -65,14 +65,14 @@ node test/e2e.cjs  e2e-treasure  e2e-homework  e2e-gallery  e2e-classes  e2e-sel
 
 ## 已完成（按时间）
 
-课堂擂台 → 夺宝 → 作业 → 收集卡 → 找回密码 → 管理后台 → 品牌重做 / Lucide 图标 → 游戏库 25 个 + 免登录试玩 / 访客投屏 → 首页配色 → 44 张 AI 卡片插画 → 上手指南 / 海报 / 推广文案 → AI 出题 → 班级与学生账号 → 第一批（首页改版、动图、封面）→ 第二批（吉祥物、卡片头像）→ 第三批（后台新手清单、功能入口、不计速度）→ 第四批（4 个节日专题 12 个游戏、游戏库搜索）→ 学生学习记录（2026-10-23：班级表加局数/正确率/最近，点名字看记录和常错题；学生 /me「我的成绩」）→ 登录时合并本机卡册（`POST /api/student/cards/merge`，`cards.cardById()` 只认真实 id、内容服务器重建、张数取较大值封顶 20；合并后和退出时清掉本机 `kq_cards`，防共用设备串号）→ 首页加「学生登录」顶栏入口和三步登录引导区（#students）→ 学生自己注册（2026-10-23）：students 表两种账号——老师建的（pin，class_id 必有）和自注册的（username 全站唯一不分大小写 + scrypt pw + 选填 parent_email，class_id 可空）；`/api/student/register|login-user|join|password|forgot|reset`；家长邮箱找回走 `/reset?student=1`；老师重设自注册学生给 6 位临时密码；删学生 / 删班级 / 删老师时自注册账号只退出班级（trigger `classes_keep_own_accounts`）；PIN 名单和打印登录条不含自注册学生。迁移前线上库备份在 `/opt/kaleido/backups/pre-self-register-20261023.db` → 管理后台「学生」标签（2026-10-23）：`/api/admin/students` 列表（搜名字 / 用户名 / 班级，kind=own|class 筛选）、详情（含家长邮箱、卡册、学习记录）、改名 / 家长邮箱、PIN 或临时密码重设、代发家长邮件、移出班级、删除，全部写 admin_logs；学生新增 `last_seen`（登录时和每 5 分钟记一次）；总览加学生账号方块
+课堂擂台 → 夺宝 → 作业 → 收集卡 → 找回密码 → 管理后台 → 品牌重做 / Lucide 图标 → 游戏库 25 个 + 免登录试玩 / 访客投屏 → 首页配色 → 44 张 AI 卡片插画 → 上手指南 / 海报 / 推广文案 → AI 出题 → 班级与学生账号 → 第一批（首页改版、动图、封面）→ 第二批（吉祥物、卡片头像）→ 第三批（后台新手清单、功能入口、不计速度）→ 第四批（4 个节日专题 12 个游戏、游戏库搜索）→ 学生学习记录（2026-10-23：班级表加局数/正确率/最近，点名字看记录和常错题；学生 /me「我的成绩」）→ 登录时合并本机卡册（`POST /api/student/cards/merge`，`cards.cardById()` 只认真实 id、内容服务器重建、张数取较大值封顶 20；合并后和退出时清掉本机 `kq_cards`，防共用设备串号）→ 首页加「学生登录」顶栏入口和三步登录引导区（#students）→ 学生自己注册（2026-10-23）：students 表两种账号——老师建的（pin，class_id 必有）和自注册的（username 全站唯一不分大小写 + scrypt pw + 选填 parent_email，class_id 可空）；`/api/student/register|login-user|join|password|forgot|reset`；家长邮箱找回走 `/reset?student=1`；老师重设自注册学生给 6 位临时密码；删学生 / 删班级 / 删老师时自注册账号只退出班级（trigger `classes_keep_own_accounts`）；PIN 名单和打印登录条不含自注册学生。迁移前线上库备份在 `/opt/kaleido/backups/pre-self-register-20261023.db` → 管理后台「学生」标签（2026-10-23）：`/api/admin/students` 列表（搜名字 / 用户名 / 班级，kind=own|class 筛选）、详情（含家长邮箱、卡册、学习记录）、改名 / 家长邮箱、PIN 或临时密码重设、代发家长邮件、移出班级、删除，全部写 admin_logs；学生新增 `last_seen`（登录时和每 5 分钟记一次）；总览加学生账号方块 → 学生换头像（2026-10-23）：`students.avatar`（null = 每局随机 / 动物 emoji / `card:<id>` 必须自己拥有，字灵不算），`POST /api/student/avatar`，`validAvatar()`；emoji 列表在 `lib/avatars.js` 和 `common.js` 的 `VA.AVATARS` 各一份，改要两边一起改；登录学生加入游戏时服务器核实卡片头像；/me「换头像」，/play 选了会存回账号；班级名单、后台显示头像
 
 ## 待办 / 未决
 
 - 等老师群的反馈（2026-10-20 已发推广文案），按反馈定下一步；留意管理后台的注册和开局数据
 - 节日专题的题（尤其屠妖节、开斋节）请熟悉的老师核对；农历节日的显示窗口每年按实际日期微调
 - 马来文、淡米尔文游戏：等母语老师审内容
-- 没登录的学生选卡片头像时服务器无法核实是否拥有（影响小）
+- 没登录的学生选卡片头像时服务器无法核实是否拥有（影响小；登录学生已核实）
 - SMTP 密码曾在对话里出现过且和别处共用，建议更换（用户说先搁置）
 - 正式收费前请律师看用户条款和学生隐私（现在学生可以自己注册，且未做年龄限制 / 家长同意，用户决定 2026-10-23）
 - 自注册学生没有自助删除账号的入口，目前写信后由管理员在后台「学生」里删

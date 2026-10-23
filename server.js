@@ -235,11 +235,12 @@ wss.on('connection', (ws, req) => {
         if (p.ws && p.ws !== ws) try { p.ws.close(); } catch (e) {}
         p.ws = ws;
       } else {
-        const res = G.join(r, m.name, ws, m.avatar);
+        // 登录了的学生：头像用这次选的（卡片要真的拥有），没选就用账号里存的；这一局得到的卡记到他的账号上
+        const stu = S.studentFrom(req);
+        const res = G.join(r, m.name, ws, stu ? S.validAvatar(stu.id, m.avatar) || stu.avatar : m.avatar);
         if (res.error) return G.send(ws, { t: 'error', error: res.error });
         p = res.player;
-        // 登录了的学生：这一局得到的卡记到他的账号上
-        const stu = S.studentFrom(req); if (stu) p.studentId = stu.id;
+        if (stu) p.studentId = stu.id;
       }
       room = r; player = p; r.touched = Date.now();
       G.send(ws, { t: 'joined', pin: r.pin, id: p.id, token: p.token, name: p.name, avatar: p.avatar, title: r.title, score: p.score, mode: r.mode });

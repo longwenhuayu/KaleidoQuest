@@ -35,6 +35,12 @@ main{flex:1;display:grid;place-items:center;padding:16px}
 .lab{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--muted)}
 .link{background:none;border:0;color:var(--brand2);font-weight:800;font-size:14px;cursor:pointer;padding:0}
 .ok{color:var(--ok);font-weight:800;line-height:1.6}
+.bigav{font-size:80px;line-height:1}
+.bigav .av-img{width:110px;height:110px;border-radius:26px;box-shadow:0 8px 24px rgba(30,27,75,.25);vertical-align:top}
+.avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px}
+.avgrid button{aspect-ratio:1;border:2px solid var(--line);background:#faf9ff;border-radius:14px;font-size:26px;cursor:pointer;display:grid;place-items:center;padding:0}
+.avgrid button .av-img{width:100%;height:100%;border-radius:12px;box-shadow:none}
+.avgrid button.on{border-color:var(--brand2);box-shadow:0 0 0 3px rgba(124,58,237,.25)}
 .lang{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
 </style>
 </head>
@@ -42,12 +48,12 @@ main{flex:1;display:grid;place-items:center;padding:16px}
 <header><a class="logo" href="/"><i></i><span>KaleidoQuest</span></a><span class="sp"></span><button class="lang" type="button">EN</button></header>
 <main><div class="box" id="box"></div></main>
 <div style="text-align:center;padding:0 16px 24px;font-size:13px"><a href="/privacy" style="color:#c4b5fd">隐私说明 Privacy</a></div>
-<script src="/js/common.js?v=20261023a"></script>
+<script src="/js/common.js?v=20261023b"></script>
 <script>
 const { tt, $, esc, api, icon } = VA;
 const QS = new URLSearchParams(location.search);
 // mode：class 班级码 + 4 位密码；user 用户名登录；reg 自己注册；forgot 忘记密码
-let me = null, cls = null, results = null, code = (QS.get('c') || '').toLowerCase(), picked = '', mode = QS.get('reg') ? 'reg' : 'class', pwOpen = false;
+let me = null, cls = null, results = null, avOpen = false, myCards = null, code = (QS.get('c') || '').toLowerCase(), picked = '', mode = QS.get('reg') ? 'reg' : 'class', pwOpen = false;
 const ERR = {
   not_found: ['找不到这个班级码，请问老师', "Class code not found — ask your teacher"], wrong: ['密码不对，再试一次', 'Wrong password — try again'],
   locked: ['错太多次了，请让老师帮你重设密码', 'Too many tries — ask your teacher to reset your password'], too_many: ['操作太频繁，请稍后再试', 'Too many tries — wait a bit'],
@@ -76,6 +82,22 @@ async function signedIn() {
 const tabs = () => `<div class="tabs">${[['class', tt('班级码登录', 'Class code')], ['user', tt('用户名登录', 'Username')], ['reg', tt('注册', 'Sign up')]].map(([k, l]) => `<button type="button" data-m="${k}"${mode === k ? ' class="on"' : ''}>${l}</button>`).join('')}</div>`;
 function render() {
   const b = $('#box');
+  if (me && avOpen) {
+    // 换头像：随机 / 动物 / 自己收集到的卡片（字灵没有插画，不算）
+    const cards = Object.keys(myCards || {}).filter(k => !k.startsWith('zh:')).map(k => 'card:' + k.split(':')[1]);
+    const btn = (a, inner, title) => `<button type="button" data-av="${esc(a)}"${(me.avatar || '') === a ? ' class="on"' : ''}${title ? ` title="${esc(title)}"` : ''}>${inner}</button>`;
+    b.innerHTML = `<h1>${icon('user')} ${tt('换头像', 'Change avatar')}</h1>
+      <div class="muted">${tt('选一个，加入游戏时就用它。', 'Pick one — it shows up when you join a game.')}</div>
+      <div class="avgrid">${btn('', '🎲', tt('每局随机', 'Random each game'))}${VA.AVATARS.map(a => btn(a, a)).join('')}</div>
+      <div class="muted">${tt('我收集到的卡片', 'From my cards')}</div>
+      <div class="avgrid">${cards.length ? cards.map(a => btn(a, VA.av(a))).join('') : `<span class="muted" style="grid-column:1/-1;font-size:14px">${tt('还没有卡片。玩游戏、做作业就能收集，收集到的角色都能当头像。', 'No cards yet — play games to collect characters you can use as avatars.')}</span>`}</div>
+      <button class="btn ghost sm" id="back">${icon('arrow-left')} ${tt('返回', 'Back')}</button>`;
+    $('#back').onclick = () => { avOpen = false; render(); };
+    b.querySelectorAll('[data-av]').forEach(x => x.onclick = async () => {
+      try { me.avatar = (await api('/api/student/avatar', { method: 'POST', body: { avatar: x.dataset.av } })).avatar; avOpen = false; render(); VA.toast(tt('头像已更新', 'Avatar updated')); } catch (e) { VA.toast(err(e)); }
+    });
+    return;
+  }
   if (me && results) {
     b.innerHTML = `<h1>${icon('chart-column')} ${tt('我的成绩', 'My results')}</h1>${VA.history(results)}<button class="btn ghost sm" id="back">${icon('arrow-left')} ${tt('返回', 'Back')}</button>`;
     $('#back').onclick = () => { results = null; render(); };
@@ -84,7 +106,7 @@ function render() {
   if (me) {
     // 自己注册的学生：显示用户名；还没加班级可以输入班级码加入；可以改密码
     const own = !!me.username;
-    b.innerHTML = `<div class="hello">${VA.mascot('cheer', 120)}<b>${esc(me.name)}</b><div class="muted">${own ? `@${esc(me.username)} · ` : ''}${me.className ? esc(me.className) : tt('还没加入班级', 'Not in a class yet')}</div>
+    b.innerHTML = `<div class="hello">${me.avatar ? `<div class="bigav">${VA.av(me.avatar)}</div>` : VA.mascot('cheer', 120)}<button class="btn ghost sm" id="avBtn">${icon('user')} ${tt('换头像', 'Change avatar')}</button><b>${esc(me.name)}</b><div class="muted">${own ? `@${esc(me.username)} · ` : ''}${me.className ? esc(me.className) : tt('还没加入班级', 'Not in a class yet')}</div>
       <div class="muted">${tt('已经登录。在这台设备上玩游戏、做作业的成绩和得到的卡，都会存进你的账号，换设备登录也看得到。', "You're signed in. Your results and the cards you earn on this device are saved to your account — sign in on any device to see them.")}</div>
       ${own && !me.className ? `<form id="fj" class="sub"><div class="muted">${tt('有老师给的班级码？加入班级后，老师就能看到你的学习记录：', 'Got a class code? Join so your teacher can see your progress:')}</div><div style="display:flex;gap:8px"><input class="in" id="jc" maxlength="6" autocomplete="off" autocapitalize="off" placeholder="abc234" value="${esc(code)}" style="flex:1"><button class="btn main">${tt('加入', 'Join')}</button></div><div class="err" id="ej"></div></form>` : ''}
       <a class="btn go" href="/play" style="width:100%">${icon('gamepad-2')} ${tt('加入游戏', 'Join a game')}</a>
@@ -92,8 +114,9 @@ function render() {
       <button class="btn main" id="res" style="width:100%">${icon('chart-column')} ${tt('我的成绩', 'My results')}</button>
       ${own ? (pwOpen ? `<form id="fp" class="sub"><input class="in" id="po" type="password" autocomplete="current-password" placeholder="${tt('现在的密码', 'Current password')}"><input class="in" id="pn" type="password" autocomplete="new-password" minlength="6" placeholder="${tt('新密码（至少 6 位）', 'New password (6+ characters)')}"><div class="err" id="ep"></div><button class="btn main">${tt('保存新密码', 'Save new password')}</button></form>` : `<button class="btn ghost sm" id="pwBtn">${icon('lock')} ${tt('改密码', 'Change password')}</button>`) : ''}
       <button class="btn ghost sm" id="out">${icon('log-out')} ${tt('退出登录', 'Sign out')}</button></div>`;
+    $('#avBtn').onclick = async () => { try { myCards = await api('/api/student/cards'); } catch (x) { myCards = {}; } avOpen = true; render(); };
     $('#res').onclick = async () => { try { results = await api('/api/student/results'); render(); } catch (x) { VA.toast(err(x)); } };
-    $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); try { localStorage.removeItem('kq_cards'); } catch (x) {} me = null; pwOpen = false; render(); };
+    $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); try { localStorage.removeItem('kq_cards'); } catch (x) {} me = null; pwOpen = false; avOpen = false; render(); };
     if ($('#fj')) $('#fj').onsubmit = async e => { e.preventDefault(); try { const r = await api('/api/student/join', { method: 'POST', body: { code: $('#jc').value.trim().toLowerCase() } }); me.className = r.className; VA.toast(tt(`已加入「${r.className}」`, `Joined ${r.className}`)); render(); } catch (x) { $('#ej').textContent = err(x); } };
     if ($('#pwBtn')) $('#pwBtn').onclick = () => { pwOpen = true; render(); $('#po').focus(); };
     if ($('#fp')) $('#fp').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/password', { method: 'POST', body: { old: $('#po').value, password: $('#pn').value } }); pwOpen = false; VA.toast(tt('密码已更新', 'Password updated')); render(); } catch (x) { $('#ep').textContent = err(x); } };

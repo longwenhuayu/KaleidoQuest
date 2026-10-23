@@ -111,7 +111,7 @@ body{display:flex;flex-direction:column;overscroll-behavior:none}
 <div class="view" id="vEnd"><div class="mid"><div class="medal" id="endMedal"></div><div class="h" id="endRank"></div><div class="pts" id="endScore"></div><div class="sub" id="endStats"></div><div id="endCards"></div><a class="btn ghost" href="/play" id="endAgain" style="margin-top:10px"></a></div></div>
 <div class="view" id="vMsg"><div class="mid"><div class="h" id="msgText"></div><a class="btn go" href="/play" id="msgBtn"></a></div></div>
 
-<script src="/js/common.js?v=20261023a"></script>
+<script src="/js/common.js?v=20261023b"></script>
 <script src="/js/cards-ui.js?v=20261020b"></script>
 <script>
 const { tt, $, esc, SHAPES, sfx, icon } = VA;
@@ -133,19 +133,26 @@ function renderStatic() {
 }
 // 登录了的学生：自动填上名字
 let student = null;
-VA.api('/api/student/me').then(async s => { student = s; if (!$('#nameIn').value) $('#nameIn').value = s.name; renderStatic(); try { server = await VA.api('/api/student/cards'); } catch (e) {} renderAvatars(); }).catch(() => {});
+VA.api('/api/student/me').then(async s => { student = s; avatar = s.avatar || ''; if (!$('#nameIn').value) $('#nameIn').value = s.name; renderStatic(); try { server = await VA.api('/api/student/cards'); } catch (e) {} renderAvatars(); }).catch(() => {});
 // 头像：用收集到的卡片角色（华文字灵没有插画，不算）；没选就是随机 emoji
+// 登录的学生：头像存在账号里（在 /me 还能选动物 emoji），这里选了也会存回账号
 let avatar = '', server = {};
 try { avatar = localStorage.getItem('kq_avatar') || ''; } catch (e) {}
 function renderAvatars() {
   const own = [...new Set(Object.keys({ ...KQC.all(), ...server }).filter(k => !k.startsWith('zh:')).map(k => k.split(':').pop()))];
-  if (!own.includes(avatar.replace('card:', ''))) avatar = '';
-  $('#avPick').hidden = !own.length;
-  $('#avLbl').textContent = tt('选一个头像（用你收集到的卡）', 'Pick an avatar from your cards');
-  $('#avRow').innerHTML = `<button type="button" data-a=""${avatar ? '' : ' class="on"'} title="${tt('随机', 'Random')}">🎲</button>` + own.map(id => `<button type="button" data-a="card:${id}"${avatar === 'card:' + id ? ' class="on"' : ''}><img src="/card-art/${id}.webp" alt=""></button>`).join('');
+  const emoji = student && VA.AVATARS.includes(avatar) ? avatar : '';
+  if (!emoji && !own.includes(avatar.replace('card:', ''))) avatar = '';
+  $('#avPick').hidden = !own.length && !emoji;
+  $('#avLbl').innerHTML = esc(tt('选一个头像（用你收集到的卡）', 'Pick an avatar from your cards')) + (student ? ` · <a href="/me">${tt('更多头像', 'More avatars')}</a>` : '');
+  $('#avRow').innerHTML = `<button type="button" data-a=""${avatar ? '' : ' class="on"'} title="${tt('随机', 'Random')}">🎲</button>` + (emoji ? `<button type="button" data-a="${emoji}" class="on" style="font-size:24px">${emoji}</button>` : '') + own.map(id => `<button type="button" data-a="card:${id}"${avatar === 'card:' + id ? ' class="on"' : ''}><img src="/card-art/${id}.webp" alt=""></button>`).join('');
 }
 document.addEventListener('langchange', renderAvatars);
-$('#avRow').onclick = e => { const b = e.target.closest('[data-a]'); if (!b) return; avatar = b.dataset.a; try { localStorage.setItem('kq_avatar', avatar); } catch (x) {} renderAvatars(); };
+$('#avRow').onclick = e => {
+  const b = e.target.closest('[data-a]'); if (!b) return; avatar = b.dataset.a;
+  if (student) VA.api('/api/student/avatar', { method: 'POST', body: { avatar } }).then(r => { student.avatar = r.avatar; }).catch(() => {});
+  else try { localStorage.setItem('kq_avatar', avatar); } catch (x) {}
+  renderAvatars();
+};
 renderAvatars();
 document.addEventListener('langchange', renderStatic); renderStatic();
 $('#pinIn').value = pin; if (pin) setTimeout(() => $('#nameIn').focus(), 100);

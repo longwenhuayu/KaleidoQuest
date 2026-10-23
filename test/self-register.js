@@ -44,7 +44,7 @@ const cookieOf = r => r.headers.get('set-cookie').split(';')[0];
   let r = await reg({ username: 'Ming01', password: 'secret1', name: '小明', parentEmail: 'Mum@X.com' });
   assert.equal(r.status, 200); const M = cookieOf(r);
   assert.equal((await reg({ username: 'MING01', password: 'secret1' })).status, 409, '用户名不分大小写');
-  assert.deepEqual(await json('/api/student/me', { cookie: M }), { name: '小明', className: null, username: 'ming01' });
+  assert.deepEqual(await json('/api/student/me', { cookie: M }), { name: '小明', className: null, username: 'ming01', avatar: null });
   r = await reg({ username: 'hong_02', password: 'secret2' }); const H = cookieOf(r);
   assert.equal((await json('/api/student/me', { cookie: H })).name, 'hong_02', '没填名字就用用户名');
   // 没加班级也能记卡和成绩

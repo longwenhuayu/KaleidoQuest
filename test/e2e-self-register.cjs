@@ -14,6 +14,13 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   await shot(S, '80-self-register');
   await S.click('#fr button'); await S.waitForSelector('.hello');
   const hello1 = await S.textContent('.hello'); await shot(S, '81-self-in-no-class');
+  // 换头像：选 🦊 → /me 显示，/play 预先选好
+  await S.click('#avBtn'); await S.waitForSelector('.avgrid'); await shot(S, '84-avatar-picker');
+  await S.click('[data-av="🦊"]'); await S.waitForSelector('.bigav');
+  const bigAv = await S.textContent('.bigav'); await shot(S, '85-avatar-set');
+  await S.goto(BASE + '/play'); await S.waitForSelector('#avRow .on'); await S.waitForTimeout(500);
+  const playAv = await S.textContent('#avRow .on');
+  await S.goto(BASE + '/me'); await S.waitForSelector('.hello');
   // 老师建班
   const T = await (await b.newContext({ viewport: { width: 1280, height: 860 } })).newPage(); watch(T, 'teacher');
   await T.goto(BASE + '/');
@@ -44,7 +51,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   // 家长邮箱里的链接打开的重设页：学生模式至少 6 位
   await S.goto(BASE + '/reset?student=1&token=x'); const ph = await S.getAttribute('#pw', 'placeholder');
   await b.close();
-  const ok = hello1.includes('@' + user) && /还没加入班级|Not in a class/.test(hello1) && hello2.includes('四爱班') && row.includes('@' + user) && /^[a-z0-9]{6}$/.test(temp) && relogin.includes('四爱班') && /家长邮箱|parent email/.test(forgot) && /6/.test(ph) && !errs.length;
-  console.log({ hello1: hello1.slice(0, 60), hello2: hello2.slice(0, 60), row, temp, forgot: forgot.slice(0, 40), ph, errs });
+  const ok = hello1.includes('@' + user) && /还没加入班级|Not in a class/.test(hello1) && hello2.includes('四爱班') && row.includes('@' + user) && row.includes('🦊') && bigAv === '🦊' && playAv === '🦊' && /^[a-z0-9]{6}$/.test(temp) && relogin.includes('四爱班') && /家长邮箱|parent email/.test(forgot) && /6/.test(ph) && !errs.length;
+  console.log({ hello1: hello1.slice(0, 60), hello2: hello2.slice(0, 60), row, bigAv, playAv, temp, forgot: forgot.slice(0, 40), ph, errs });
   console.log(ok ? '✅ 学生自己注册浏览器测试通过' : '❌ 失败'); process.exit(ok ? 0 : 1);
 })().catch(e => { console.error(e.message); process.exit(1); });

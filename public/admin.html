@@ -70,7 +70,7 @@ tr.click:hover td{background:#faf8ff}
   <section id="vsys" hidden></section>
 </div>
 <div class="tip" id="tip" hidden></div>
-<script src="/js/common.js?v=20261023a"></script>
+<script src="/js/common.js?v=20261023b"></script>
 <script>
 const { t, tt, api, $, esc, toast, icon } = VA;
 let me = null, OV = null, GR = null, TC = [], ST = [], SYS = null, tab = 'ov';
@@ -225,8 +225,8 @@ const clsOf = x => x.className ? `${esc(x.className)} <small class="muted">· ${
 function renderSt() {
   const empty = `<div class="muted" style="text-align:center;padding:30px">${tt('没有找到', 'No match')}</div>`;
   $('#sTable').innerHTML = `<tr><th>${tt('学生', 'Student')}</th><th>${tt('类型', 'Type')}</th><th>${tt('班级 · 老师', 'Class · Teacher')}</th><th>${tt('创建', 'Created')}</th><th>${tt('最后活跃', 'Last active')}</th><th class="num">${tt('卡片', 'Cards')}</th><th class="num">${tt('局数', 'Games')}</th></tr>` +
-    (ST.length ? ST.map(x => `<tr class="click" data-sid="${x.id}"><td><b>${esc(x.name)}</b>${x.username ? `<br><small class="muted">@${esc(x.username)}</small>` : ''}</td><td>${kindBadge(x)}</td><td>${clsOf(x)}</td><td>${date(x.created)}</td><td>${ago(x.last_seen)}</td><td class="num">${x.cards}</td><td class="num">${x.games}</td></tr>`).join('') : `<tr><td colspan="7">${empty}</td></tr>`);
-  $('#sCards').innerHTML = ST.length ? ST.map(x => `<article class="teacher-card click" data-sid="${x.id}"><div class="teacher-card-head"><div><b>${esc(x.name)}</b>${x.username ? `<br><small>@${esc(x.username)}</small>` : ''}</div><span class="sp"></span>${kindBadge(x)}</div><div style="margin-top:8px;font-size:14px">${clsOf(x)}</div><small>${tt('最后活跃', 'Last active')} ${ago(x.last_seen)} · ${x.cards} ${tt('张卡', 'cards')} · ${x.games} ${tt('局', 'games')}</small></article>`).join('') : empty;
+    (ST.length ? ST.map(x => `<tr class="click" data-sid="${x.id}"><td>${x.avatar ? VA.av(x.avatar) + ' ' : ''}<b>${esc(x.name)}</b>${x.username ? `<br><small class="muted">@${esc(x.username)}</small>` : ''}</td><td>${kindBadge(x)}</td><td>${clsOf(x)}</td><td>${date(x.created)}</td><td>${ago(x.last_seen)}</td><td class="num">${x.cards}</td><td class="num">${x.games}</td></tr>`).join('') : `<tr><td colspan="7">${empty}</td></tr>`);
+  $('#sCards').innerHTML = ST.length ? ST.map(x => `<article class="teacher-card click" data-sid="${x.id}"><div class="teacher-card-head"><div>${x.avatar ? VA.av(x.avatar) + ' ' : ''}<b>${esc(x.name)}</b>${x.username ? `<br><small>@${esc(x.username)}</small>` : ''}</div><span class="sp"></span>${kindBadge(x)}</div><div style="margin-top:8px;font-size:14px">${clsOf(x)}</div><small>${tt('最后活跃', 'Last active')} ${ago(x.last_seen)} · ${x.cards} ${tt('张卡', 'cards')} · ${x.games} ${tt('局', 'games')}</small></article>`).join('') : empty;
 }
 async function loadSt() { ST = await api(`/api/admin/students?kind=${$('#sk').value || 'all'}&q=${encodeURIComponent($('#sq').value)}`); renderSt(); }
 let sqTimer = 0;
@@ -242,7 +242,7 @@ async function openStudent(id) {
   const el = document.createElement('div'); el.className = 'drawer';
   const own = !!d.username;
   el.innerHTML = `<div class="panel">
-    <div class="row" style="justify-content:space-between;align-items:center"><h2>${esc(d.name)}</h2><button class="btn ghost sm" data-x aria-label="${tt('关闭', 'Close')}">${icon('x')}</button></div>
+    <div class="row" style="justify-content:space-between;align-items:center"><h2>${d.avatar ? VA.av(d.avatar) + ' ' : ''}${esc(d.name)}</h2><button class="btn ghost sm" data-x aria-label="${tt('关闭', 'Close')}">${icon('x')}</button></div>
     <div class="muted" style="line-height:1.7">${kindBadge(d)} ${own ? `@${esc(d.username)} · ` : ''}${tt('创建', 'Created')} ${date(d.created)} · ${tt('最后活跃', 'Last active')} ${ago(d.last_seen)}<br>
       ${icon('school')} ${d.className ? `${esc(d.className)}（${tt('班级码', 'code')} ${esc(d.classCode)}）· ${esc(d.teacher || '')}` : tt('没有班级', 'No class')}
       ${own ? `<br>${icon('mail')} ${tt('家长邮箱', 'Parent email')}：${d.parentEmail ? esc(d.parentEmail) : tt('没填', 'none')}` : ''}</div>
