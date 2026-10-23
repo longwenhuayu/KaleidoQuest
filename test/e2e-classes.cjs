@@ -23,7 +23,11 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   await S.click('#names button:has-text("小明")'); await shot(S, '71-me-pick');
   await S.fill('#pin', pin === '0000' ? '1111' : '0000'); await S.click('#f2 button'); await S.waitForTimeout(400);
   const wrongMsg = await S.textContent('#e2');
-  await S.fill('#pin', pin); await S.click('#f2 button'); await S.waitForSelector('.hello'); await shot(S, '72-me-in');
+  // 登录前这台设备上已有一张卡（没登录时收集的）：登录后并进账号，本机清掉
+  await S.evaluate(() => localStorage.setItem('kq_cards', JSON.stringify({ 'explorer:compass': { card: { id: 'explorer:compass', set: 'explorer' }, n: 2, first: 1 } })));
+  await S.fill('#pin', pin); await S.click('#f2 button'); await S.waitForSelector('.hello'); await S.waitForTimeout(500); await shot(S, '72-me-in');
+  const localLeft = await S.evaluate(() => localStorage.getItem('kq_cards'));
+  const merged = await S.evaluate(() => fetch('/api/student/cards').then(r => r.json()).then(b => b['explorer:compass'] && b['explorer:compass'].n));
   // 试玩得卡
   await S.goto(BASE + '/try/m-20'); await S.waitForSelector('#vIntro.on');
   const nameFilled = await S.inputValue('#name'), note = await S.textContent('#stuNote');
@@ -60,7 +64,7 @@ const shot = (p, n) => p.screenshot({ path: `test/shots/${n}.png` });
   }
   await shot(T, '75-editor-ai');
   await b.close();
-  const ok = galBtn && /不对|Wrong/.test(wrongMsg) && nameFilled === '小明' && /小明/.test(note) && serverCards >= 1 && /已登录|Signed in/.test(cardNote) && playName === '小明' && /小明\s*\d{4}\s*1\s*\d+%.+?0\s*[12]/.test(row) && /试玩|Practice/.test(myRes) && /常错|Often missed/.test(myRes) && /学习记录|Learning record/.test(tRes) && /试玩|Practice/.test(tRes) && aiLang === 'en' && (!process.env.AI || aiN > 0) && !errs.length;
-  console.log({ galBtn, wrongMsg, nameFilled, note, serverCards, cardNote: cardNote.slice(0, 40), playName, row, myRes: myRes.slice(0, 80), tRes: tRes.slice(0, 80), aiLang, aiN, errs });
+  const ok = galBtn && /不对|Wrong/.test(wrongMsg) && nameFilled === '小明' && /小明/.test(note) && serverCards >= 1 && /已登录|Signed in/.test(cardNote) && playName === '小明' && /小明\s*\d{4}\s*1\s*\d+%.+?0\s*[12]/.test(row) && /试玩|Practice/.test(myRes) && /常错|Often missed/.test(myRes) && /学习记录|Learning record/.test(tRes) && localLeft === null && merged === 2 && /试玩|Practice/.test(tRes) && aiLang === 'en' && (!process.env.AI || aiN > 0) && !errs.length;
+  console.log({ galBtn, wrongMsg, nameFilled, note, serverCards, cardNote: cardNote.slice(0, 40), playName, localLeft, merged, row, myRes: myRes.slice(0, 80), tRes: tRes.slice(0, 80), aiLang, aiN, errs });
   console.log(ok ? '✅ 班级浏览器测试通过' : '❌ 失败'); process.exit(ok ? 0 : 1);
 })().catch(e => { console.error(e.message); process.exit(1); });

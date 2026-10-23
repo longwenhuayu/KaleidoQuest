@@ -114,6 +114,19 @@ const count = book => Object.values(book).reduce((s, x) => s + x.n, 0);
   assert.equal((await req('/api/student/me', { cookie: S })).status, 401, '重设后旧登录失效');
   const S2 = cookieOf(await req('/api/student/login', { body: { code: c.code, name: '小明', pin: newPin } }));
   assert.equal(count(await json('/api/student/cards', { cookie: S2 })), count(book), '卡还在');
+  // 合并本机卡册：只认真实卡 id，内容以服务器为准，张数取较大值，最多 20
+  assert.equal((await req('/api/student/cards/merge', { body: { cards: [{ id: 'math:pi', n: 1 }] } })).status, 401);
+  const n0 = count(await json('/api/student/cards', { cookie: S2 }));
+  const fake = { id: 'math:pi', n: 3, card: { name: ['<b>假</b>'], rarity: 'e' } };
+  let mg = await json('/api/student/cards/merge', { body: { cards: [fake, { id: 'math:nope', n: 5 }, { id: 'zh:好', n: 2 }, { id: 'zh:好好', n: 1 }, { id: 'science:' + 'x'.repeat(3), n: 1 }, null, { id: 'explorer:' }, { id: 'zh:人', n: 999 }] }, cookie: S2 });
+  assert.equal(mg.merged, 3, '只收真实的卡');
+  book = await json('/api/student/cards', { cookie: S2 });
+  assert.equal(book['math:pi'].card.name[0], '圆周率 π', '卡片内容来自服务器');
+  assert.equal(book['zh:人'].n, 20, '张数封顶');
+  const n1 = count(book);
+  await json('/api/student/cards/merge', { body: { cards: [fake, { id: 'zh:好', n: 2 }] }, cookie: S2 });
+  assert.equal(count(await json('/api/student/cards', { cookie: S2 })), n1, '重复合并不翻倍');
+  assert.ok(n1 > n0);
   // 同一个学生错 8 次就锁
   const hb = hong.pin === '9999' ? '8888' : '9999';
   for (let i = 0; i < 8; i++) assert.equal((await req('/api/student/login', { body: { code: c.code, name: '小红', pin: hb } })).status, 401);

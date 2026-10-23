@@ -41,6 +41,15 @@ const { tt, $, esc, api, icon } = VA;
 const QS = new URLSearchParams(location.search);
 let me = null, cls = null, results = null, code = (QS.get('c') || '').toLowerCase(), picked = '';
 const ERR = { not_found: ['找不到这个班级码，请问老师', "Class code not found — ask your teacher"], wrong: ['密码不对，再试一次', 'Wrong PIN — try again'], locked: ['错太多次了，请让老师帮你重设密码', 'Too many tries — ask your teacher to reset your PIN'], too_many: ['操作太频繁，请稍后再试', 'Too many tries — wait a bit'] };
+// 本机卡册（没登录时收集的）：登录时并进账号，然后清掉，免得共用设备上下一个登录的同学也拿到；退出时也清掉
+const takeLocal = async () => {
+  let book = {}; try { book = JSON.parse(localStorage.getItem('kq_cards')) || {}; } catch (x) {}
+  const cards = Object.values(book).map(v => ({ id: v.card && v.card.id, n: v.n }));
+  if (!cards.length) return;
+  const r = await api('/api/student/cards/merge', { method: 'POST', body: { cards } });
+  try { localStorage.removeItem('kq_cards'); } catch (x) {}
+  if (r.merged) VA.toast(tt(`已把这台设备上的 ${r.merged} 种卡存进你的账号`, `Saved ${r.merged} cards from this device to your account`));
+};
 const err = x => { const m = ERR[x.message]; return m ? tt(m[0], m[1]) : tt('出错了，请再试一次', 'Something went wrong'); };
 function render() {
   const b = $('#box');
@@ -57,12 +66,12 @@ function render() {
       <button class="btn main" id="res" style="width:100%">${icon('chart-column')} ${tt('我的成绩', 'My results')}</button>
       <button class="btn ghost sm" id="out">${icon('log-out')} ${tt('退出登录', 'Sign out')}</button></div>`;
     $('#res').onclick = async () => { try { results = await api('/api/student/results'); render(); } catch (x) { VA.toast(err(x)); } };
-    $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); me = null; render(); };
+    $('#out').onclick = async () => { await api('/api/student/logout', { method: 'POST' }); try { localStorage.removeItem('kq_cards'); } catch (x) {} me = null; render(); };
     return;
   }
   if (!cls) {
     b.innerHTML = `${VA.mascot('hello', 96)}<h1>${icon('graduation-cap')} ${tt('学生登录', 'Student sign-in')}</h1>
-      <div class="muted">${tt('登录后，你收集的卡会一直保存，换设备也不会丢。输入老师给的班级码：', 'Sign in so your cards are saved for good. Enter the class code from your teacher:')}</div>
+      <div class="muted">${tt('登录后，你收集的卡会一直保存，换设备也不会丢；这台设备上已经有的卡也会一起存进账号。输入老师给的班级码：', 'Sign in so your cards are saved for good — cards already on this device move into your account too. Enter the class code from your teacher:')}</div>
       <form id="f1" style="display:flex;flex-direction:column;gap:10px"><input class="in code" id="code" maxlength="6" autocomplete="off" autocapitalize="off" placeholder="abc234" value="${esc(code)}"><div class="err" id="e1"></div><button class="btn go">${tt('下一步', 'Next')} ${icon('arrow-right')}</button></form>
       <a href="/play" class="muted" style="text-align:center">${tt('不登录，直接加入游戏', 'Just join a game without signing in')}</a>`;
     $('#f1').onsubmit = async e => { e.preventDefault(); code = $('#code').value.trim().toLowerCase(); try { cls = await api(`/api/class/${encodeURIComponent(code)}`); render(); } catch (x) { $('#e1').textContent = err(x); } };
@@ -76,7 +85,7 @@ function render() {
   $('#names').onclick = e => { const x = e.target.closest('button'); if (!x) return; picked = x.textContent; render(); setTimeout(() => $('#pin').focus(), 30); };
   $('#back').onclick = () => { cls = null; picked = ''; render(); };
   $('#pin').oninput = e => { e.target.value = e.target.value.replace(/\D/g, ''); };
-  $('#f2').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/login', { method: 'POST', body: { code, name: picked, pin: $('#pin').value } }); me = await api('/api/student/me'); try { localStorage.setItem('kq_name', me.name); } catch (x) {} if (QS.get('next')) location.href = QS.get('next').startsWith('/') ? QS.get('next') : '/'; else render(); } catch (x) { $('#e2').textContent = err(x); $('#pin').value = ''; } };
+  $('#f2').onsubmit = async e => { e.preventDefault(); try { await api('/api/student/login', { method: 'POST', body: { code, name: picked, pin: $('#pin').value } }); me = await api('/api/student/me'); try { localStorage.setItem('kq_name', me.name); } catch (x) {} await takeLocal().catch(() => {}); if (QS.get('next')) location.href = QS.get('next').startsWith('/') ? QS.get('next') : '/'; else render(); } catch (x) { $('#e2').textContent = err(x); $('#pin').value = ''; } };
 }
 document.addEventListener('langchange', render);
 api('/api/student/me').then(d => { me = d; }).catch(() => {}).finally(() => { if (code && !me) api(`/api/class/${encodeURIComponent(code)}`).then(d => { cls = d; }).catch(() => {}).finally(render); else render(); });

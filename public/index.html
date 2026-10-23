@@ -58,6 +58,16 @@
 .loop .cap{padding:14px 16px 16px}
 .loop .cap b{font-size:18px;display:flex;align-items:center;gap:8px}
 .loop .cap span{display:block;color:#c9c3ea;font-size:14px;line-height:1.6;margin-top:4px}
+/* 学生登录引导 */
+.stu-sec{max-width:1120px;margin:0 auto;padding:10px 24px 60px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;counter-reset:st}
+.step{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:18px 18px 20px}
+.step b{font-size:18px;display:flex;align-items:center;gap:10px}
+.step b::before{counter-increment:st;content:counter(st);flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7c3aed,#0891b2);font-family:"Fredoka",sans-serif;font-size:16px}
+.step span{display:block;color:#c9c3ea;font-size:14px;line-height:1.6;margin-top:8px}
+.step code{background:rgba(255,255,255,.12);border-radius:6px;padding:1px 6px;color:#fde68a;font-weight:800}
+.stu-note{margin-top:16px;color:#a39dc9;font-size:14px;line-height:1.6}
+.stu-note a{color:#c4b5fd;font-weight:800}
 /* 游戏库 */
 .gal{max-width:1120px;margin:0 auto;padding:8px 24px 56px}
 .gal .ggrid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -87,16 +97,17 @@
 .forgot{background:none;border:0;color:var(--brand2);font-weight:700;font-size:13px;cursor:pointer;justify-self:center}
 .stu{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;text-align:center;color:var(--muted)}
 .stu a{font-weight:800;text-decoration:none}
-@media (max-width:980px){.gal .ggrid,.loops{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr);gap:18px;padding:28px 16px 40px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.cta,.chips{justify-content:center}.stage{max-width:360px;grid-row:auto}.top{padding:12px 16px;gap:6px}.top .logo small{display:none}.how,.gal{padding-left:16px;padding-right:16px}.sec-h{font-size:26px}}
-@media (max-width:600px){.gal .ggrid,.loops{grid-template-columns:minmax(0,1fr)}.top .logo span{font-size:20px}.top .btn{padding:8px 10px;font-size:13px;min-height:40px}.cta{width:100%}.cta .btn{flex:1 1 100%;width:100%}.hero h1{font-size:clamp(42px,13vw,58px)}.hero .zh{font-size:20px}.hero p{font-size:15px}.stage{max-width:310px;margin-top:2px}.ready .cta{width:auto}.ready .cta .btn{width:auto}}
+@media (max-width:980px){.steps{grid-template-columns:minmax(0,1fr)}.gal .ggrid,.loops{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr);gap:18px;padding:28px 16px 40px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.cta,.chips{justify-content:center}.stage{max-width:360px;grid-row:auto}.top{padding:12px 16px;gap:6px}.top .logo small{display:none}.how,.gal,.stu-sec{padding-left:16px;padding-right:16px}.sec-h{font-size:26px}}
+#stuTop .sm{display:none}
+@media (max-width:600px){#stuTop .lg{display:none}#stuTop .sm{display:inline}.stu-sec .cta .btn{flex:1 1 100%;width:100%}.gal .ggrid,.loops{grid-template-columns:minmax(0,1fr)}.top .logo span{font-size:20px}.top .btn{padding:8px 10px;font-size:13px;min-height:40px}.cta{width:100%}.cta .btn{flex:1 1 100%;width:100%}.hero h1{font-size:clamp(42px,13vw,58px)}.hero .zh{font-size:20px}.hero p{font-size:15px}.stage{max-width:310px;margin-top:2px}.ready .cta{width:auto}.ready .cta .btn{width:auto}}
 @media (max-width:380px){.top{padding-left:10px;padding-right:10px;gap:4px}.top .logo{gap:0}.top .logo i{width:34px;height:34px}.top .btn{padding-left:8px;padding-right:8px;font-size:12px}.top .lang{padding-left:8px;padding-right:8px}.panel{padding:20px 16px}.hero{padding-left:12px;padding-right:12px}.chips{gap:6px}.chips span{font-size:12px;padding:5px 9px}}
 @media (max-width:480px){.top .logo span{display:none}.top .lang{padding:5px 9px}.auth{place-items:start center;overflow:auto;padding-top:max(16px,env(safe-area-inset-top))}}
 </style>
 </head>
 <body class="home">
 <div class="top"><a class="logo" href="/"><i></i><span>KaleidoQuest<small>by Vision Chinese Academy</small></span></a><span class="sp"></span>
-  <a class="btn go" href="/play" id="joinTop"></a><button class="btn ghost" type="button" id="loginBtn"></button><button class="lang" type="button">EN</button></div>
+  <a class="btn go" href="/play" id="joinTop"></a><a class="btn ghost" href="/me" id="stuTop"></a><button class="btn ghost" type="button" id="loginBtn"></button><button class="lang" type="button">EN</button></div>
 <section class="hero">
   <div>
     <h1>Every subject<br><span>is a quest.</span></h1>
@@ -113,6 +124,12 @@
 <section class="how">
   <h2 class="sec-h" id="howH"></h2><div class="sec-sub" id="howSub"></div>
   <div class="loops" id="loops"></div>
+</section>
+<section class="stu-sec" id="students">
+  <h2 class="sec-h" id="stuH"></h2><div class="sec-sub" id="stuSub"></div>
+  <div class="steps" id="stuSteps"></div>
+  <div class="cta" style="margin-top:22px"><a class="btn main" href="/me" id="stuGo"></a><a class="btn ghost" href="/play" id="stuJoin"></a></div>
+  <div class="stu-note" id="stuNote"></div>
 </section>
 <section class="gal" id="fest" hidden>
   <h2 class="sec-h" id="festH"></h2><div class="sec-sub" id="festSub"></div>
@@ -172,6 +189,18 @@ const LOOPS = () => [
 function renderText() {
   $('#joinTop').innerHTML = VA.icon('gamepad-2') + ' ' + tt('加入游戏', 'Join a game');
   $('#loginBtn').textContent = tt('老师登录', 'Teacher log in');
+  $('#stuTop').innerHTML = VA.icon('graduation-cap') + `<span class="lg"> ${tt('学生登录', 'Student sign-in')}</span><span class="sm"> ${tt('学生', 'Student')}</span>`;
+  $('#stuTop').title = tt('学生登录', 'Student sign-in');
+  $('#stuH').innerHTML = VA.icon('graduation-cap') + ' ' + tt('学生：登录后，卡和成绩都存进账号', 'Students: sign in to keep your cards and results');
+  $('#stuSub').textContent = tt('不登录也能用昵称直接玩；登录以后，收集的卡和每局成绩都会保存，换手机、换平板也看得到。', 'You can always play with just a nickname. Sign in and your cards and game results are saved — on any phone or tablet.');
+  $('#stuSteps').innerHTML = [
+    [tt('向老师拿登录条', 'Get your sign-in slip'), tt('学生不用自己注册。老师在后台「班级」里建好班，每人会有一个<code>班级码</code>和一个 4 位<code>密码</code>。', "No sign-up needed. Your teacher creates the class and gives you a <code>class code</code> and a 4-digit <code>PIN</code>.")],
+    [tt('打开 kaleido.quest/me', 'Go to kaleido.quest/me'), tt('输入班级码，点自己的名字，再输入 4 位密码。也可以直接扫登录条上的二维码。', 'Enter the class code, tap your name and type your PIN — or scan the QR code on your slip.')],
+    [tt('照常玩游戏、做作业', 'Play and do homework as usual'), tt('得到的卡进「我的卡册」，每局成绩进「我的成绩」。这台设备上之前收集的卡，登录时也会一起存进账号。', 'Cards go to “My card book” and scores to “My results”. Cards already on this device move into your account when you sign in.')]
+  ].map(([h, d]) => `<div class="step"><b>${h}</b><span>${d}</span></div>`).join('');
+  $('#stuGo').innerHTML = VA.icon('graduation-cap') + ' ' + tt('学生登录', 'Student sign-in');
+  $('#stuJoin').innerHTML = VA.icon('gamepad-2') + ' ' + tt('不登录，直接加入游戏', 'Join without signing in');
+  $('#stuNote').innerHTML = tt('老师：在后台「班级」里贴上学生名单，就能一键打印登录条，还能看到每个学生的学习记录和常错的题。', "Teachers: paste your class list under “Classes” to print sign-in slips and see each student's record and often-missed questions.") + ` <a href="/guide">${tt('看上手指南', 'Teacher guide')}</a>`;
   $('#zh').textContent = tt('每一门课，都是一场闯关', 'Every lesson becomes a game');
   $('#pitch').textContent = tt('全班一起玩的课堂答题游戏。华文、数学、英文、科学都能用；AI 一键出题，学生用手机扫码加入，不用注册。', 'Live quiz games your whole class plays together — Chinese, Math, English and Science. AI writes the questions; students join by QR, no sign-up.');
   $('#signupBtn').innerHTML = VA.icon('user-plus') + ' ' + tt('老师免费注册', 'Sign up free');
